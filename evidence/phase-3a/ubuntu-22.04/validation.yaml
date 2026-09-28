@@ -1,0 +1,13 @@
+schema_version: "1.0"
+evidence_scope: LOCAL_UNIT_AND_MOCK_ONLY
+previous_baseline: 223
+current_tests_passed: 236
+failures: 0
+new_caller_tests: 13
+live_azure_integration: NOT_RUN
+release_source_modified: false
+caller_helpers_added_outside_release: true
+lint: PASS
+bounded_credential_scan: PASS
+shellcheck: SKIPPED_NOT_INSTALLED
+shfmt: SKIPPED_NOT_INSTALLED

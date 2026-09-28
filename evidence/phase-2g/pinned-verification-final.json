@@ -1,0 +1,85 @@
+{
+  "artifact": {
+    "artifact_status": "METADATA_VERIFIED",
+    "byte_size": 660897206,
+    "catalogue_match": true,
+    "content_disposition_filename": null,
+    "content_type": "",
+    "effective_url": null,
+    "filename": "jitterbit-agent_12.10.1.1_amd64.deb",
+    "inspector": "dpkg-deb",
+    "integrity": "LOCALLY_CALCULATED",
+    "logical_version": "12.10",
+    "observed_at": "2026-09-26T12:06:36.014468+00:00",
+    "operation": "ARTIFACT_VERIFY",
+    "package_metadata": {
+      "Architecture": "amd64",
+      "Depends": "odbcinst, unixodbc",
+      "Package": "jitterbit-agent",
+      "Version": "12.10.1.1"
+    },
+    "package_version": "12.10.1.1",
+    "production_approved": false,
+    "qualification": "TESTED_LIVE",
+    "request_url": "https://download.jitterbit.com/12.10gdhdye6ehwgs5627u3udhdyd/jitterbit-agent_12.10.1.1_amd64.deb",
+    "requested_version": "12.10",
+    "retrieval": "LOCAL_FILE",
+    "runtime_qualification": "TESTED_LIVE",
+    "schema_version": "1.0",
+    "sha256": "604bec9889c49167328b93d032bb9d8580f758eb70c3d1dd42dfda23db974ee8",
+    "source_type": "PINNED",
+    "verification": "MATCHED_CATALOGUE_LOCAL_DIGEST"
+  },
+  "category": "SUCCESS",
+  "details": {
+    "artifact_status": "METADATA_VERIFIED",
+    "byte_size": 660897206,
+    "catalogue_match": true,
+    "content_disposition_filename": null,
+    "content_type": "",
+    "effective_url": null,
+    "filename": "jitterbit-agent_12.10.1.1_amd64.deb",
+    "inspector": "dpkg-deb",
+    "integrity": "LOCALLY_CALCULATED",
+    "logical_version": "12.10",
+    "observed_at": "2026-09-26T12:06:36.014468+00:00",
+    "operation": "ARTIFACT_VERIFY",
+    "package_metadata": {
+      "Architecture": "amd64",
+      "Depends": "odbcinst, unixodbc",
+      "Package": "jitterbit-agent",
+      "Version": "12.10.1.1"
+    },
+    "package_version": "12.10.1.1",
+    "production_approved": false,
+    "request_url": "https://download.jitterbit.com/12.10gdhdye6ehwgs5627u3udhdyd/jitterbit-agent_12.10.1.1_amd64.deb",
+    "requested_version": "12.10",
+    "retrieval": "LOCAL_FILE",
+    "runtime_qualification": "TESTED_LIVE",
+    "schema_version": "1.0",
+    "sha256": "604bec9889c49167328b93d032bb9d8580f758eb70c3d1dd42dfda23db974ee8",
+    "source_type": "PINNED",
+    "verification": "MATCHED_CATALOGUE_LOCAL_DIGEST"
+  },
+  "enterpriseConfiguration": {},
+  "error": null,
+  "health": {
+    "harmonyConfirmed": null,
+    "scope": null,
+    "serviceRunning": null
+  },
+  "operation": "ARTIFACT_VERIFY",
+  "platform": {},
+  "registration": {
+    "harmonyRegistered": null
+  },
+  "runId": "jbpa-6c8593d566bb46acb582b4ac4320ba35",
+  "schemaVersion": "1.0",
+  "state": "COMPLETE",
+  "status": "SUCCESS",
+  "versions": {
+    "jbpa": "1.0.0-rc1",
+    "requestedPA": "12.10",
+    "resolvedPA": "12.10.1.1"
+  }
+}

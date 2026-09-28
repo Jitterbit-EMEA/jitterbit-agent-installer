@@ -1,0 +1,10 @@
+2026-09-23T10:40:00Z INFO Auto Registration - Starting...
+2026-09-23T10:40:01Z INFO Auto Registration - Completed!
+2026-09-23T10:40:01Z INFO Read agent credentials file: /opt/jitterbit/Resources/credentials.txt
+2026-09-23T10:40:04Z INFO REST API RESPONSE: Status: true
+2026-09-23T10:40:04Z INFO Agent Logged in: AgentId = [REDACTED-ID]; AgentGroupId = [REDACTED-ID]
+2026-09-23T10:40:06Z INFO connection to agent services has been established
+2026-09-23T10:40:06Z INFO Connection established, agent logged in, and request flow has commenced
+2026-09-23T10:41:22Z INFO Agent synchronization for agent group ID [REDACTED-ID] completed
+2026-09-23T10:41:23Z INFO Will send heart beats for AgentId [REDACTED-ID]
+2026-09-23T10:41:23Z ERROR Unable to check if Jitterbit.conf is upto date. Error reason: Agent is not running.

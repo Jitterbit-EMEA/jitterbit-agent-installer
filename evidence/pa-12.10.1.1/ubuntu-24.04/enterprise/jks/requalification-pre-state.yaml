@@ -1,0 +1,25 @@
+schema_version: 1
+phase: 2F.1B
+captured_at_utc: '2026-09-26T03:10:27Z'
+pa_version: 12.10.1.1
+os: Ubuntu 24.04.5
+architecture: amd64
+agent_id: '646830'
+agent_group_id: '678370'
+truststore_path: /opt/jitterbit/jre/lib/security/cacerts
+truststore_type: PKCS12
+truststore_owner: root
+truststore_group: root
+truststore_mode: '0644'
+truststore_size_bytes: 189920
+truststore_sha256: 7a33aaf51d8460f3e57956e90a8fe179188e9c82578555020881f5cd48c4274b
+alias: qa-jitterbitlabs-uk-origin
+alias_state: ALIAS_ABSENT
+certificate_is_ca: false
+certificate_mode: EXPLICIT_ENDPOINT_TRUST
+certificate_fingerprint: f9c3d6035c60882fd636475baa39611d3b44c873fd29cdce40bc9c504d672525
+certificate_currently_valid: true
+steady_state_health: HEALTHY
+read_only_preflight_evidence: requalification-dry-run.json
+truststore_password_source: QA_PROVIDED
+truststore_password_exposed: false

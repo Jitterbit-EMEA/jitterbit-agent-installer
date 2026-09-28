@@ -1,0 +1,28 @@
+schema_version: 1
+evaluated_at_utc: '2026-09-26T02:40:30.254103Z'
+profile: POST_ROLLBACK_RESTART
+log_since_utc: '2026-09-25T21:32:40Z'
+automated_result: read-only-recovery-health-recheck.json
+agent_support_tools_about: PASS_EXPECTED_VERSION_NAME_GROUP
+harmony_authenticated_after_recovery_restart: true
+agent_services_connected_after_recovery_restart: true
+request_flow_after_recovery_restart: true
+heartbeat_after_recovery_restart: true
+credentials_present: true
+connection_check: PASS_HARMONY_APACHE_TOMCAT
+local_core_services: PASS_ALL_FOUR
+support_tool_service_status: UNCONFIRMED_NO_ROWS
+support_tool_service_status_launcher_exit_code: 0
+support_tool_service_status_rows: 0
+manual_service_status_contexts_checked: [root, jitterbit]
+fresh_sync_marker: FRESH_SYNC_MARKER_NOT_OBSERVED
+synchronization_required: false
+truststore_original_hash_restored: true
+truststore_sha256: 7a33aaf51d8460f3e57956e90a8fe179188e9c82578555020881f5cd48c4274b
+manual_console_status: Running
+manual_console_status_source: user-supplied screenshot; capture timestamp unavailable
+automated_console_status: NOT_AUTOMATED
+overall: UNCONFIRMED
+missing_mandatory_signal: SUPPORT_TOOL_SERVICES_PASS
+truststore_mutated_during_phase_2f1a: false
+services_restarted_during_phase_2f1a: false

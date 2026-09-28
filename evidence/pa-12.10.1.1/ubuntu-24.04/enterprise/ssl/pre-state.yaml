@@ -1,0 +1,8 @@
+schema_version: 1
+observed_on: '2026-09-25'
+config_path: /opt/jitterbit/jitterbit.conf
+ssl_section_present: true
+active_ssl_keys_in_section: []
+qa_certificate_and_key_references: PENDING_USER_DETAILS
+qa_mtls_endpoint: PENDING_USER_DETAILS
+mutation_performed: false

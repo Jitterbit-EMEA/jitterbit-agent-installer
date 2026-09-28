@@ -1,0 +1,41 @@
+{
+  "artifactApproval": "approved_for_test",
+  "changed": false,
+  "error": null,
+  "executionMode": "controlled-test",
+  "frameworkVersion": "0.3.0",
+  "harmonyRegistered": null,
+  "logAvailableAfterSeconds": null,
+  "packageVersion": "12.10.1.1",
+  "plan": [
+    "Would retrieve PA 12.10 build 12.10.1.1",
+    "Would install odbcinst, unixodbc and unzip if the exact package is absent",
+    "Would retrieve secret reference JBLAB-token through azure-key-vault",
+    "Would create /opt/jitterbit/Resources/register.json if credentials are absent",
+    "Would restart Jitterbit once and monitor /opt/jitterbit/log/jitterbit-agent.log",
+    "Would retrieve registration field cloud_url from JBLAB-cloudUrl",
+    "Would retrieve registration field agent_group_id from JBLAB-agentGroupId",
+    "Would retrieve registration field agent_name_prefix from JBLAB-agentNamePrefix",
+    "Would retrieve registration field deregister_on_drainstop from JBLAB-deregisterAgentOnDrainstop",
+    "Would retrieve registration field retry_count from JBLAB-retryCount",
+    "Would retrieve registration field retry_interval_seconds from JBLAB-retryIntervalSeconds"
+  ],
+  "platform": {
+    "architecture": "x86_64",
+    "os": "ubuntu",
+    "version": "24.04"
+  },
+  "registrationDurationSeconds": null,
+  "requestedVersion": "12.10",
+  "runId": "jbpa-77948c45b1ad4963a553c4067bd22719",
+  "schemaVersion": 2,
+  "serviceRunning": null,
+  "state": "ARTIFACT_APPROVED_FOR_TEST",
+  "stateHistory": [
+    "CONFIG_VALIDATED",
+    "PLATFORM_VALIDATED",
+    "ARTIFACT_APPROVED_FOR_TEST"
+  ],
+  "status": "PLANNED",
+  "timestamp": "2026-09-25T11:22:44.454620+00:00"
+}

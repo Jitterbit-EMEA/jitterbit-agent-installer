@@ -1,0 +1,16 @@
+{
+  "status": "PASS",
+  "previous_baseline": 279,
+  "tests_passed": 307,
+  "tests_failed": 0,
+  "new_tests": 28,
+  "lint": "PASS",
+  "schemas": "PASS",
+  "credential_scan": "PASS",
+  "shellcheck": "SKIPPED_NOT_INSTALLED",
+  "shfmt": "SKIPPED_NOT_INSTALLED",
+  "live_handoff": "NOT_RUN",
+  "GATE-10": "PENDING",
+  "GATE-13": "PENDING LIVE TEST",
+  "phase_status": "PARTIAL"
+}

@@ -1,0 +1,78 @@
+{
+  "artifact": {
+    "artifact_status": "METADATA_VERIFIED",
+    "byte_size": 660897206,
+    "cache_path": "/private/tmp/jbpa-2g-results/cache/12.10.1.1-604bec9889c49167328b93d032bb9d8580f758eb70c3d1dd42dfda23db974ee8.deb",
+    "catalogue_match": true,
+    "content_disposition_filename": null,
+    "content_type": "application/octet-stream",
+    "effective_url": "https://download.jitterbit.com/12.10gdhdye6ehwgs5627u3udhdyd/jitterbit-agent_12.10.1.1_amd64.deb",
+    "filename": "jitterbit-agent_12.10.1.1_amd64.deb",
+    "inspector": "dpkg-deb",
+    "integrity": "LOCALLY_CALCULATED",
+    "latest_observation_status": "LATEST_RESOLUTION_OBSERVED",
+    "logical_version": "12.10",
+    "observed_at": "2026-09-26T11:48:30.930494+00:00",
+    "package_metadata": {
+      "Architecture": "amd64",
+      "Depends": "odbcinst, unixodbc",
+      "Package": "jitterbit-agent",
+      "Version": "12.10.1.1"
+    },
+    "package_version": "12.10.1.1",
+    "production_approved": false,
+    "request_url": "https://login.jitterbit.com/jitterbit-cloud-mgmt-console/download/latest/agent/linuxdebian?architecture=x64",
+    "requested_version": "latest",
+    "runtime_qualification": "TESTED_LIVE",
+    "schema_version": "1.0",
+    "sha256": "604bec9889c49167328b93d032bb9d8580f758eb70c3d1dd42dfda23db974ee8",
+    "source_type": "DYNAMIC_MUTABLE"
+  },
+  "category": "SUCCESS",
+  "details": {
+    "artifact_status": "METADATA_VERIFIED",
+    "byte_size": 660897206,
+    "cache_path": "/private/tmp/jbpa-2g-results/cache/12.10.1.1-604bec9889c49167328b93d032bb9d8580f758eb70c3d1dd42dfda23db974ee8.deb",
+    "catalogue_match": true,
+    "content_disposition_filename": null,
+    "content_type": "application/octet-stream",
+    "effective_url": "https://download.jitterbit.com/12.10gdhdye6ehwgs5627u3udhdyd/jitterbit-agent_12.10.1.1_amd64.deb",
+    "filename": "jitterbit-agent_12.10.1.1_amd64.deb",
+    "inspector": "dpkg-deb",
+    "integrity": "LOCALLY_CALCULATED",
+    "latest_observation_status": "LATEST_RESOLUTION_OBSERVED",
+    "logical_version": "12.10",
+    "observed_at": "2026-09-26T11:48:30.930494+00:00",
+    "package_metadata": {
+      "Architecture": "amd64",
+      "Depends": "odbcinst, unixodbc",
+      "Package": "jitterbit-agent",
+      "Version": "12.10.1.1"
+    },
+    "package_version": "12.10.1.1",
+    "production_approved": false,
+    "request_url": "https://login.jitterbit.com/jitterbit-cloud-mgmt-console/download/latest/agent/linuxdebian?architecture=x64",
+    "requested_version": "latest",
+    "runtime_qualification": "TESTED_LIVE",
+    "schema_version": "1.0",
+    "sha256": "604bec9889c49167328b93d032bb9d8580f758eb70c3d1dd42dfda23db974ee8",
+    "source_type": "DYNAMIC_MUTABLE"
+  },
+  "enterpriseConfiguration": {},
+  "error": null,
+  "health": {},
+  "operation": "ARTIFACT",
+  "platform": {},
+  "registration": {
+    "harmonyRegistered": null
+  },
+  "runId": "jbpa-eb4ed2a89b7f44069293ed4fbe6bfb22",
+  "schemaVersion": "1.0",
+  "state": "COMPLETE",
+  "status": "SUCCESS",
+  "versions": {
+    "jbpa": "1.0.0-rc1",
+    "requestedPA": "latest",
+    "resolvedPA": "12.10.1.1"
+  }
+}

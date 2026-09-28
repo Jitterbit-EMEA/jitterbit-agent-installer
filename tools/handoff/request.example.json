@@ -1,0 +1,10 @@
+{
+  "schemaVersion": "1.0",
+  "target": "localhost",
+  "operation": "INSTALL",
+  "jbpaVersion": "1.0.0-rc2",
+  "paVersion": "12.10",
+  "allowUnqualified": false,
+  "configPath": "/etc/jbpa/agent.yaml",
+  "resultPath": "/var/lib/jbpa/new-result.json"
+}

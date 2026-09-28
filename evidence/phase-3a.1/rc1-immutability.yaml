@@ -1,0 +1,10 @@
+status: PASS
+RC1_IMMUTABILITY: PASS
+version: 1.0.0-rc1
+expected_sha256: 5a18ba2bbc87efdb5a9aa671a1fa6d87575f2446981d00814c27b847efc7eacd
+actual_sha256: 5a18ba2bbc87efdb5a9aa671a1fa6d87575f2446981d00814c27b847efc7eacd
+modified: false
+preserved_file_digests:
+  dist/jbpa-1.0.0-rc1.tar.gz: 5a18ba2bbc87efdb5a9aa671a1fa6d87575f2446981d00814c27b847efc7eacd
+  dist/jbpa-1.0.0-rc1.tar.gz.sha256: 70e26d033c9462e6d2c021099d23cdd0a5070af9c48fe4e9799591f1e699f5fb
+  dist/jbpa-1.0.0-rc1/release-manifest.json: 2b162727182a3e082c0f1471d10af5602c1287289638ee047d5920ac9b0083f1

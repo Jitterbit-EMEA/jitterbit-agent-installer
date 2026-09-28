@@ -1,0 +1,11 @@
+bicep_terraform_arm_vm_workflow_found: false
+existing_components:
+- azure/custom-script/release-bootstrap.sh
+- azure/integration/consumer.py
+existing_vm_creation_workflow_found: false
+existing_vm_provisioning_agent: EXTERNAL_PROVISIONING_AGENT_NOT_PRESENT
+interface: bin/jbpa-azure
+live: NOT_RUN
+new_component: azure/provisioning
+packaging: EXTERNAL_CALLABLE_NOT_IN_RC2
+scope: CURRENT_REPOSITORY

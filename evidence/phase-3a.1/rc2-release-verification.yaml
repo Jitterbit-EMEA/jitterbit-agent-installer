@@ -1,0 +1,17 @@
+status: PASS
+sha256: 68fa05cc43577a15f948c81a6e56e8d2b725d66d969934ec3f2eb6316e3266da
+files: 79
+jbpaVersion: 1.0.0-rc2
+archive_source: ACTUAL_RC2_ARCHIVE
+packaged_cli: PASS
+packaged_cli_version: 1.0.0-rc2
+packaged_bootstrap_interface: PASS
+packaged_bootstrap_bash_syntax: PASS
+lifecycle_source_unchanged: true
+changed_jbpa_modules:
+- __init__.py
+- release.py
+- release_cli.py
+guest_runtime_dependency_setup: NOT_RUN
+live_azure_dispatch: NOT_RUN
+ubuntu_22_04_qualification: NOT_RUN

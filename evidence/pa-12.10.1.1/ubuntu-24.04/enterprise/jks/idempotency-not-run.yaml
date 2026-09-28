@@ -1,0 +1,5 @@
+schema_version: 1
+executed: false
+reason: Initial live import failed the post-restart synchronization gate and was rolled back.
+alias_after_rollback: ALIAS_ABSENT
+qualification: NOT_TESTED_LIVE

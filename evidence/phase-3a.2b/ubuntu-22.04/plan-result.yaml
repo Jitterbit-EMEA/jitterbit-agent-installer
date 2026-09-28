@@ -1,0 +1,41 @@
+observed_at_utc: '2026-09-27T12:41:29.769614+00:00'
+scope: LOCAL_PLACEHOLDER_EXAMPLE_ONLY
+schema: PASS_FOR_EXAMPLE
+live_config_supplied: false
+required_fields: FAIL
+plan: NOT_PASS
+exit_code: 1
+adapter_result:
+  schemaVersion: '1.0'
+  status: FAILED
+  operation: PLAN
+  error:
+    category: AZURE_CONFIG_INCOMPLETE
+phase_failure_classification: AZURE_CONFIG_INVALID
+missing_field_names:
+- azure.subscription_id
+- azure.resource_group.name
+- azure.region
+- azure.network.resource_group
+- azure.network.vnet.name
+- azure.network.subnet.name
+- azure.vm.name
+- azure.vm.size
+- azure.vm.os_disk.size_gb
+- azure.vm.os_disk.sku
+- azure.vm.admin.username
+- azure.vm.admin.ssh_public_key_file
+- azure.identity.type
+- azure.key_vault.resource_id
+- azure.key_vault.secret_references
+- azure.release_delivery.type
+- azure.release_delivery.jbpa_sha256
+- azure.release_delivery.local_archive
+- azure.release_delivery.local_agent_config
+conditional_inputs:
+- azure.identity.user_assigned_identity_resource_id when USER_ASSIGNED
+- azure.network.vnet.cidr and azure.network.subnet.cidr when creating network resources
+- azure.release_delivery.storage_account, container, blob, wrapper_blob, config_blob,
+  storage_scope_resource_id when AZURE_BLOB
+- azure.release_delivery.archive_url, wrapper_url, config_url when HTTP
+live_azure_calls: 0

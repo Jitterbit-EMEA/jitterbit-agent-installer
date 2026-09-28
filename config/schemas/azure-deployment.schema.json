@@ -1,0 +1,621 @@
+{
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "schema_version",
+    "azure",
+    "jbpa",
+    "cleanup"
+  ],
+  "properties": {
+    "schema_version": {
+      "const": "1.0"
+    },
+    "azure": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "subscription_id",
+        "resource_group",
+        "region",
+        "network",
+        "vm",
+        "identity",
+        "key_vault",
+        "release_delivery",
+        "tags"
+      ],
+      "properties": {
+        "subscription_id": {
+          "anyOf": [
+            {
+              "type": "string",
+              "pattern": "^[a-fA-F0-9-]{36}$"
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "resource_group": {
+          "type": "object",
+          "additionalProperties": false,
+          "required": [
+            "name",
+            "create"
+          ],
+          "properties": {
+            "name": {
+              "anyOf": [
+                {
+                  "type": "string",
+                  "pattern": "^[A-Za-z0-9][A-Za-z0-9_.-]{0,79}$"
+                },
+                {
+                  "type": "null"
+                }
+              ]
+            },
+            "create": {
+              "type": "boolean"
+            }
+          }
+        },
+        "region": {
+          "anyOf": [
+            {
+              "type": "string",
+              "pattern": "^[a-z0-9]+$"
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "network": {
+          "type": "object",
+          "additionalProperties": false,
+          "required": [
+            "resource_group",
+            "vnet",
+            "subnet",
+            "nsg_resource_id",
+            "public_ip"
+          ],
+          "properties": {
+            "resource_group": {
+              "anyOf": [
+                {
+                  "type": "string",
+                  "pattern": "^[A-Za-z0-9][A-Za-z0-9_.-]{0,79}$"
+                },
+                {
+                  "type": "null"
+                }
+              ]
+            },
+            "vnet": {
+              "type": "object",
+              "additionalProperties": false,
+              "required": [
+                "name",
+                "create",
+                "cidr"
+              ],
+              "properties": {
+                "name": {
+                  "anyOf": [
+                    {
+                      "type": "string",
+                      "pattern": "^[A-Za-z0-9][A-Za-z0-9_.-]{0,79}$"
+                    },
+                    {
+                      "type": "null"
+                    }
+                  ]
+                },
+                "create": {
+                  "type": "boolean"
+                },
+                "cidr": {
+                  "anyOf": [
+                    {
+                      "type": "string"
+                    },
+                    {
+                      "type": "null"
+                    }
+                  ]
+                }
+              }
+            },
+            "subnet": {
+              "type": "object",
+              "additionalProperties": false,
+              "required": [
+                "name",
+                "create",
+                "cidr"
+              ],
+              "properties": {
+                "name": {
+                  "anyOf": [
+                    {
+                      "type": "string",
+                      "pattern": "^[A-Za-z0-9][A-Za-z0-9_.-]{0,79}$"
+                    },
+                    {
+                      "type": "null"
+                    }
+                  ]
+                },
+                "create": {
+                  "type": "boolean"
+                },
+                "cidr": {
+                  "anyOf": [
+                    {
+                      "type": "string"
+                    },
+                    {
+                      "type": "null"
+                    }
+                  ]
+                }
+              }
+            },
+            "nsg_resource_id": {
+              "anyOf": [
+                {
+                  "type": "string",
+                  "pattern": "^/subscriptions/[a-fA-F0-9-]{36}/resourceGroups/[^/]+/providers/[^/]+/.+$"
+                },
+                {
+                  "type": "null"
+                }
+              ]
+            },
+            "public_ip": {
+              "type": "boolean"
+            }
+          }
+        },
+        "vm": {
+          "type": "object",
+          "additionalProperties": false,
+          "required": [
+            "name",
+            "image",
+            "size",
+            "os_disk",
+            "admin",
+            "qa_sizing_exception",
+            "zone"
+          ],
+          "properties": {
+            "name": {
+              "anyOf": [
+                {
+                  "type": "string",
+                  "pattern": "^[A-Za-z0-9][A-Za-z0-9_.-]{0,79}$"
+                },
+                {
+                  "type": "null"
+                }
+              ]
+            },
+            "image": {
+              "type": "object",
+              "additionalProperties": false,
+              "required": [
+                "publisher",
+                "offer",
+                "sku",
+                "version"
+              ],
+              "properties": {
+                "publisher": {
+                  "const": "Canonical"
+                },
+                "offer": {
+                  "const": "0001-com-ubuntu-server-jammy"
+                },
+                "sku": {
+                  "const": "22_04-lts-gen2"
+                },
+                "version": {
+                  "type": "string",
+                  "minLength": 1
+                }
+              }
+            },
+            "size": {
+              "anyOf": [
+                {
+                  "type": "string",
+                  "pattern": "^[A-Za-z0-9][A-Za-z0-9_.-]{0,79}$"
+                },
+                {
+                  "type": "null"
+                }
+              ]
+            },
+            "os_disk": {
+              "type": "object",
+              "additionalProperties": false,
+              "required": [
+                "size_gb",
+                "sku"
+              ],
+              "properties": {
+                "size_gb": {
+                  "anyOf": [
+                    {
+                      "type": "integer",
+                      "minimum": 50
+                    },
+                    {
+                      "type": "null"
+                    }
+                  ]
+                },
+                "sku": {
+                  "anyOf": [
+                    {
+                      "enum": [
+                        "Standard_LRS",
+                        "StandardSSD_LRS",
+                        "Premium_LRS"
+                      ]
+                    },
+                    {
+                      "type": "null"
+                    }
+                  ]
+                }
+              }
+            },
+            "admin": {
+              "type": "object",
+              "additionalProperties": false,
+              "required": [
+                "username",
+                "ssh_public_key_file"
+              ],
+              "properties": {
+                "username": {
+                  "anyOf": [
+                    {
+                      "type": "string",
+                      "pattern": "^[A-Za-z0-9][A-Za-z0-9_.-]{0,79}$"
+                    },
+                    {
+                      "type": "null"
+                    }
+                  ]
+                },
+                "ssh_public_key_file": {
+                  "anyOf": [
+                    {
+                      "type": "string",
+                      "minLength": 1,
+                      "maxLength": 2048
+                    },
+                    {
+                      "type": "null"
+                    }
+                  ]
+                }
+              }
+            },
+            "qa_sizing_exception": {
+              "type": "boolean"
+            },
+            "zone": {
+              "anyOf": [
+                {
+                  "type": "string",
+                  "minLength": 1,
+                  "maxLength": 2048
+                },
+                {
+                  "type": "null"
+                }
+              ]
+            }
+          }
+        },
+        "identity": {
+          "type": "object",
+          "additionalProperties": false,
+          "required": [
+            "type",
+            "user_assigned_identity_resource_id"
+          ],
+          "properties": {
+            "type": {
+              "anyOf": [
+                {
+                  "enum": [
+                    "SYSTEM_ASSIGNED",
+                    "USER_ASSIGNED"
+                  ]
+                },
+                {
+                  "type": "null"
+                }
+              ]
+            },
+            "user_assigned_identity_resource_id": {
+              "anyOf": [
+                {
+                  "type": "string",
+                  "pattern": "^/subscriptions/[a-fA-F0-9-]{36}/resourceGroups/[^/]+/providers/[^/]+/.+$"
+                },
+                {
+                  "type": "null"
+                }
+              ]
+            }
+          }
+        },
+        "key_vault": {
+          "type": "object",
+          "additionalProperties": false,
+          "required": [
+            "resource_id",
+            "secret_references",
+            "grant_permissions"
+          ],
+          "properties": {
+            "resource_id": {
+              "anyOf": [
+                {
+                  "type": "string",
+                  "pattern": "^/subscriptions/[a-fA-F0-9-]{36}/resourceGroups/[^/]+/providers/[^/]+/.+$"
+                },
+                {
+                  "type": "null"
+                }
+              ]
+            },
+            "secret_references": {
+              "type": "array",
+              "items": {
+                "type": "string",
+                "pattern": "^[A-Za-z0-9-]+$"
+              },
+              "uniqueItems": true
+            },
+            "grant_permissions": {
+              "type": "boolean"
+            }
+          }
+        },
+        "release_delivery": {
+          "type": "object",
+          "additionalProperties": false,
+          "required": [
+            "type",
+            "storage_account",
+            "container",
+            "blob",
+            "wrapper_blob",
+            "config_blob",
+            "archive_url",
+            "wrapper_url",
+            "config_url",
+            "storage_scope_resource_id",
+            "grant_permissions",
+            "jbpa_sha256",
+            "local_archive",
+            "local_agent_config"
+          ],
+          "properties": {
+            "type": {
+              "anyOf": [
+                {
+                  "enum": [
+                    "AZURE_BLOB",
+                    "HTTP",
+                    "LOCAL_TEST"
+                  ]
+                },
+                {
+                  "type": "null"
+                }
+              ]
+            },
+            "storage_account": {
+              "anyOf": [
+                {
+                  "type": "string",
+                  "pattern": "^[a-z0-9]{3,24}$"
+                },
+                {
+                  "type": "null"
+                }
+              ]
+            },
+            "container": {
+              "anyOf": [
+                {
+                  "type": "string",
+                  "pattern": "^[A-Za-z0-9][A-Za-z0-9_.-]{0,79}$"
+                },
+                {
+                  "type": "null"
+                }
+              ]
+            },
+            "blob": {
+              "anyOf": [
+                {
+                  "type": "string",
+                  "minLength": 1,
+                  "maxLength": 2048
+                },
+                {
+                  "type": "null"
+                }
+              ]
+            },
+            "wrapper_blob": {
+              "anyOf": [
+                {
+                  "type": "string",
+                  "minLength": 1,
+                  "maxLength": 2048
+                },
+                {
+                  "type": "null"
+                }
+              ]
+            },
+            "config_blob": {
+              "anyOf": [
+                {
+                  "type": "string",
+                  "minLength": 1,
+                  "maxLength": 2048
+                },
+                {
+                  "type": "null"
+                }
+              ]
+            },
+            "archive_url": {
+              "anyOf": [
+                {
+                  "type": "string",
+                  "minLength": 1,
+                  "maxLength": 2048
+                },
+                {
+                  "type": "null"
+                }
+              ]
+            },
+            "wrapper_url": {
+              "anyOf": [
+                {
+                  "type": "string",
+                  "minLength": 1,
+                  "maxLength": 2048
+                },
+                {
+                  "type": "null"
+                }
+              ]
+            },
+            "config_url": {
+              "anyOf": [
+                {
+                  "type": "string",
+                  "minLength": 1,
+                  "maxLength": 2048
+                },
+                {
+                  "type": "null"
+                }
+              ]
+            },
+            "storage_scope_resource_id": {
+              "anyOf": [
+                {
+                  "type": "string",
+                  "pattern": "^/subscriptions/[a-fA-F0-9-]{36}/resourceGroups/[^/]+/providers/[^/]+/.+$"
+                },
+                {
+                  "type": "null"
+                }
+              ]
+            },
+            "grant_permissions": {
+              "type": "boolean"
+            },
+            "jbpa_sha256": {
+              "anyOf": [
+                {
+                  "type": "string",
+                  "pattern": "^[a-f0-9]{64}$"
+                },
+                {
+                  "type": "null"
+                }
+              ]
+            },
+            "local_archive": {
+              "anyOf": [
+                {
+                  "type": "string",
+                  "minLength": 1,
+                  "maxLength": 2048
+                },
+                {
+                  "type": "null"
+                }
+              ]
+            },
+            "local_agent_config": {
+              "anyOf": [
+                {
+                  "type": "string",
+                  "minLength": 1,
+                  "maxLength": 2048
+                },
+                {
+                  "type": "null"
+                }
+              ]
+            }
+          }
+        },
+        "tags": {
+          "type": "object",
+          "additionalProperties": {
+            "type": "string",
+            "maxLength": 256
+          }
+        }
+      }
+    },
+    "jbpa": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "version",
+        "operation",
+        "pa_version",
+        "allow_unqualified"
+      ],
+      "properties": {
+        "version": {
+          "const": "1.0.0-rc2"
+        },
+        "operation": {
+          "const": "INSTALL"
+        },
+        "pa_version": {
+          "const": "12.10"
+        },
+        "allow_unqualified": {
+          "type": "boolean"
+        }
+      }
+    },
+    "cleanup": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "on_failure"
+      ],
+      "properties": {
+        "on_failure": {
+          "const": false
+        }
+      }
+    }
+  },
+  "$schema": "https://json-schema.org/draft/2020-12/schema"
+}

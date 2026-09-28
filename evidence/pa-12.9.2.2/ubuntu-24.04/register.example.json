@@ -1,0 +1,9 @@
+{
+  "cloudUrl": "https://emea-west.jitterbit.com",
+  "agentGroupId": 200,
+  "token": "REDACTED",
+  "agentNamePrefix": "example-agent",
+  "deregisterAgentOnDrainstop": false,
+  "retryCount": 10,
+  "retryIntervalSeconds": 5
+}

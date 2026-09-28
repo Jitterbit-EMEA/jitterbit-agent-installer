@@ -1,0 +1,24 @@
+schema_version: 1
+observed_on: '2026-09-25'
+target: JBLAB-PA-AUTOMATION
+os: Ubuntu 24.04.5
+architecture: amd64
+cpu_count: 2
+memory_mib: 7882
+managed_os_disk_bytes: 68719476736
+root_filesystem_bytes: 65445814272
+qa_cpu_exception: APPROVED
+production_sizing: NOT_VALIDATED
+package_absent: true
+product_root_absent: true
+jitterbit_user_absent: true
+credentials_absent: true
+register_json_absent: true
+bundled_postgres_runtime_absent: true
+bundled_postgres_data_absent: true
+product_process_count: 0
+command_links_absent: true
+startup_integration_absent: true
+managed_identity_imds: PASS
+key_vault_seven_fields: PASS
+clean_reinstall_baseline: PASS

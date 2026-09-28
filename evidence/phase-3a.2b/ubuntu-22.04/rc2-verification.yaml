@@ -1,0 +1,12 @@
+observed_at_utc: '2026-09-27T12:41:29.769614+00:00'
+scope: LOCAL_PRE_RUN_ONLY
+RC2_IMMUTABILITY: PASS
+version: 1.0.0-rc2
+expected_sha256: 68fa05cc43577a15f948c81a6e56e8d2b725d66d969934ec3f2eb6316e3266da
+local_hash: 68fa05cc43577a15f948c81a6e56e8d2b725d66d969934ec3f2eb6316e3266da
+manifest_verification: PASS
+verified_files: 79
+archive_sidecar_manifest_unchanged: true
+vm_hash: null
+guest_verification: NOT_RUN
+modified: false

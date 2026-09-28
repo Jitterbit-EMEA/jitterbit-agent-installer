@@ -1,0 +1,14 @@
+{
+  "schemaVersion": "1.0",
+  "target": "qa-ubuntu22.example",
+  "operation": "INSTALL",
+  "jbpaVersion": "1.0.0-rc3",
+  "paVersion": "12.10",
+  "configPath": "/etc/jbpa/agent.yaml",
+  "resultPath": "/var/lib/jbpa/results/install-handoff-example.json",
+  "allowUnqualified": true,
+  "controlledTest": true,
+  "callerMetadata": {
+    "purpose": "controlled-ubuntu-22-04-qualification"
+  }
+}

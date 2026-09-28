@@ -1,0 +1,7 @@
+archive_sidecar_manifest_unchanged: true
+rc1_preserved: true
+rebuilt: false
+sha256: 68fa05cc43577a15f948c81a6e56e8d2b725d66d969934ec3f2eb6316e3266da
+status: PASS
+verified_files: 79
+version: 1.0.0-rc2

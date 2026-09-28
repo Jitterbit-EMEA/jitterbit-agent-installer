@@ -1,0 +1,17 @@
+observed_at_utc: '2026-09-27T12:00:28.091651+00:00'
+evidence_scope: LOCAL_PRE_RUN_ONLY
+RC2_IMMUTABILITY: PASS
+expected_sha256: 68fa05cc43577a15f948c81a6e56e8d2b725d66d969934ec3f2eb6316e3266da
+local_pre_run_sha256: 68fa05cc43577a15f948c81a6e56e8d2b725d66d969934ec3f2eb6316e3266da
+sidecar_match: true
+release_manifest: PASS
+verified_files: 79
+packaged_cli_version: 1.0.0-rc2
+packaged_cli_environment: EXTRACTED_ARCHIVE_WITH_EXISTING_LOCAL_PYTHON_DEPENDENCIES
+vm_sha256: null
+vm_verification: NOT_RUN
+modified: false
+immutable_file_digests:
+  dist/jbpa-1.0.0-rc2.tar.gz: 68fa05cc43577a15f948c81a6e56e8d2b725d66d969934ec3f2eb6316e3266da
+  dist/jbpa-1.0.0-rc2.tar.gz.sha256: 42426b814a999547073fa250a61b7bff8ce9b910263d9d0f5d8a7338f4c098a6
+  dist/jbpa-1.0.0-rc2/release-manifest.json: 67490dca911c264006a4b43934fa27377f25479d3efb9bed2415b11440935e9a

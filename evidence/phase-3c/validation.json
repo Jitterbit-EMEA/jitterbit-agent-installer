@@ -1,0 +1,19 @@
+{
+  "status": "PASS",
+  "observedAtUTC": "2026-09-27T14:20:04.510573+00:00",
+  "previous_baseline": 307,
+  "tests_passed": 384,
+  "tests_failed": 0,
+  "new_tests": 77,
+  "lint": "PASS",
+  "schemas": "PASS",
+  "bounded_credential_scan": "PASS",
+  "shellcheck": "SKIPPED_NOT_INSTALLED",
+  "shfmt": "SKIPPED_NOT_INSTALLED",
+  "release_verification": "PASS",
+  "packaged_cli": "PASS",
+  "rc2_immutability": "PASS",
+  "live_ubuntu_22": "NOT_RUN",
+  "GATE-10": "PENDING",
+  "GATE-13": "PENDING LIVE TEST"
+}

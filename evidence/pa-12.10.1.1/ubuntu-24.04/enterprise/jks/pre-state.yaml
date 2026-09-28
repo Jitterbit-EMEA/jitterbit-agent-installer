@@ -1,0 +1,21 @@
+schema_version: 1
+observed_on: '2026-09-25'
+package: jitterbit-agent
+version: 12.10.1.1
+platform: Ubuntu 24.04.5 amd64
+agent_id: '646830'
+local_health: ALL_FOUR_SERVICES_RUNNING
+bundled_jre_present: true
+bundled_keytool_present_executable: true
+bundled_java_version: OpenJDK Temurin 25+36 LTS
+truststore_path: /opt/jitterbit/jre/lib/security/cacerts
+truststore_present: true
+truststore_format: PKCS12
+truststore_default_password_verified: true
+truststore_sha256: 7a33aaf51d8460f3e57956e90a8fe179188e9c82578555020881f5cd48c4274b
+truststore_mode: '0644'
+truststore_owner: root
+truststore_group: root
+jre_override_present: false
+truststore_override_present: false
+mutation_performed: false

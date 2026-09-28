@@ -1,0 +1,6 @@
+scope: LIVE_EXTERNAL_CALLER
+status: NOT_RUN
+result_file_observed: false
+exit_code_observed: null
+consumed_by_actual_provisioner: false
+prior_mock_tests_are_live_evidence: false

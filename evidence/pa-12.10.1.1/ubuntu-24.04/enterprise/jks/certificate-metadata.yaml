@@ -1,0 +1,21 @@
+schema_version: 1
+input_filename: jitterbitlabs_uk_certificate.pem
+source_path: /Users/dharish.sewraj/Documents/Projects/RATP API Processing Verification/certificates/jitterbitlabs_uk_certificate.pem
+file_size_bytes: 1679
+file_sha256: 314e35de3c6dff8f59f01a40bad65462d20bb49a9bfa6a3a8252fa97ab94dc5b
+sha256_fingerprint: f9c3d6035c60882fd636475baa39611d3b44c873fd29cdce40bc9c504d672525
+subject: subject=O=CloudFlare, Inc., OU=CloudFlare Origin CA, CN=CloudFlare Origin
+  Certificate
+issuer: issuer=C=US, O=CloudFlare, Inc., OU=CloudFlare Origin SSL Certificate Authority,
+  L=San Francisco, ST=California
+serial: serial=10413218D8BC286C95129B8112D3A4E9445ABC75
+not_before_utc: '2026-06-23T07:11:00+00:00'
+not_after_utc: '2041-06-19T07:11:00+00:00'
+basic_constraints: CA:FALSE
+certificate_is_ca: false
+certificate_type: EXPLICIT_TRUSTED_ENDPOINT
+subject_alternative_names: DNS:*.jitterbitlabs.uk, DNS:jitterbitlabs.uk
+key_usage: Digital Signature, Key Encipherment
+extended_key_usage: TLS Web Client Authentication, TLS Web Server Authentication
+qa_use: EXPLICIT_TRUSTED_ENDPOINT
+original_input_modified: false

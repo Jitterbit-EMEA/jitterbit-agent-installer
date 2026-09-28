@@ -1,0 +1,10 @@
+{
+  "schemaVersion": "1.0",
+  "operation": "PLAN",
+  "status": "FAILED",
+  "error": {
+    "category": "AZURE_CONFIG_INCOMPLETE"
+  },
+  "scope": "NULL_ONLY_EXAMPLE",
+  "azure_calls": 0
+}

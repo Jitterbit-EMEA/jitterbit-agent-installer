@@ -1,0 +1,8 @@
+#!/usr/bin/env bash
+# NON_PRODUCTION: DEVELOPMENT_TEST_HARNESS; NOT_PART_OF_JBPA_RUNTIME.
+set -euo pipefail
+root="$(cd -- "$(dirname -- "${BASH_SOURCE[0]}")/.." && pwd)"
+python="${JBPA_PYTHON:-$root/.venv/bin/python}"
+export PYTHONDONTWRITEBYTECODE=1
+export PYTHONPATH="$root${PYTHONPATH:+:$PYTHONPATH}"
+exec "$python" -m azure.provisioning.cli "$@"

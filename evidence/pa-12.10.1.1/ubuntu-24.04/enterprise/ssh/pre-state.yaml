@@ -1,0 +1,8 @@
+schema_version: 1
+observed_on: '2026-09-25'
+config_path: /opt/jitterbit/jitterbit.conf
+ssh_section_present: true
+active_ssh_keys_in_section: []
+qa_key_references: PENDING_USER_DETAILS
+qa_sftp_endpoint: PENDING_USER_DETAILS
+mutation_performed: false

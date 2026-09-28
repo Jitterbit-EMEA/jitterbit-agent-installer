@@ -1,0 +1,7 @@
+schema_version: 1
+branch: ssl
+default_enabled: false
+private_material_provider: azure-key-vault
+config_path: /opt/jitterbit/jitterbit.conf
+mutation: BLOCKED_PENDING_SECRET_REFERENCES_AND_QA_ENDPOINT
+live_execution: NOT_RUN

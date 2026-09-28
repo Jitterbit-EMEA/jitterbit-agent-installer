@@ -1,0 +1,28 @@
+classification: LOCAL_SYNTHETIC_ONLY
+phase: 3D
+date: '2026-09-28'
+release:
+  version: 1.0.0-rc3
+  archive_sha256: 4b06e3715cb5faf3472354934fc12c04b54c7febe25d98f47bf1f038075ad90e
+  archive_verification: PASS
+  digest_snapshot_unchanged: true
+  host_verification: NOT_RUN
+external_caller:
+  transport: SSH_IMPLEMENTED_NOT_LIVE_TESTED
+  synthetic_tests: 6
+  result_retrieval_live: NOT_RUN
+  vendor_log_parsing: false
+validation:
+  full_tests_passed: 390
+  full_tests_failed: 0
+  lint: PASS
+  formatting: PASS
+  schemas_examples_markdown_links_credential_scan: PASS
+  release_validation: PASS
+  shellcheck: SKIPPED_NOT_INSTALLED
+  shfmt: SKIPPED_NOT_INSTALLED
+gates:
+  gate_10_ubuntu_22_04: PENDING_LIVE_TEST
+  gate_13_external_handoff: PENDING_LIVE_TEST
+  reinstall: NOT_TESTED_LIVE
+blocker: PRE_PROVISIONED_UBUNTU_22_04_HOST_ACCESS_AND_CONFIG_NOT_PROVIDED

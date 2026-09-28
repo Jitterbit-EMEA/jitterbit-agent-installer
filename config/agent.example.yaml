@@ -1,0 +1,45 @@
+schema_version: 1
+agent:
+  version: "12.10"
+  package_kind: deb
+  expected_os: {id: ubuntu, version: "22.04", architecture: x86_64}
+  name: az-pa-example
+harmony:
+  cloud_url: null
+  organization: null
+  environment: null
+  agent_group_id: null
+  agent_group_name: null
+  registration:
+    strategy: null
+    token_secret_ref: null
+    username_secret_ref: null
+    password_secret_ref: null
+    deregister_on_drainstop: false
+secrets:
+  provider: azure-key-vault
+  vault_uri: null
+  managed_identity_client_id: null
+network:
+  endpoint_profile: null
+  download_proxy_profile: null
+  package_proxy_profile: null
+proxy:
+  enabled: false
+  host: null
+  port: null
+  username_secret_ref: null
+  password_secret_ref: null
+  ntlm_domain: null
+  exceptions: []
+ssh: {enabled: false, identities: []}
+ssl: {enabled: false, identities: []}
+java_trust: {enabled: false, certificates: []}
+health:
+  registration_timeout_seconds: 300
+  poll_interval_seconds: 5
+  evidence_profile: null
+  require_cloud_confirmation: true
+output: {result_path: null, log_path: null}
+logging: {level: INFO}
+execution: {dry_run: false}

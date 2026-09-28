@@ -1,0 +1,10 @@
+schema_version: 1
+branch: proxy
+default_enabled: false
+package_download_proxy: SEPARATE_LAYER
+pa_application_proxy: SEPARATE_LAYER
+java_proxy: SEPARATE_LAYER
+tls_interception_trust: SEPARATE_LAYER
+registration_mode_auto_register_token: REGISTRATION_MODE_INCOMPATIBLE_WITH_PROXY
+alternate_registration_mode: PROXY_REGISTRATION_BLOCKED
+live_execution: NOT_RUN

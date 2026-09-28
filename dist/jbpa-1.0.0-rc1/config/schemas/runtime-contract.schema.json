@@ -1,0 +1,108 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "type": "object",
+  "required": [
+    "schema_version",
+    "package_version",
+    "qualification",
+    "platform",
+    "scope",
+    "evidence_refs",
+    "adapter_profile",
+    "dimensions"
+  ],
+  "properties": {
+    "schema_version": {
+      "const": "1.0"
+    },
+    "package_version": {
+      "type": "string",
+      "pattern": "^\\d+(?:\\.\\d+){3}$"
+    },
+    "qualification": {
+      "enum": [
+        "TESTED_MOCK",
+        "TESTED_LIVE"
+      ]
+    },
+    "platform": {
+      "type": "object",
+      "required": [
+        "os",
+        "version",
+        "architecture",
+        "package_kind"
+      ]
+    },
+    "scope": {
+      "type": "array",
+      "items": {
+        "type": "string"
+      }
+    },
+    "evidence_refs": {
+      "type": "array",
+      "items": {
+        "type": "string"
+      }
+    },
+    "adapter_profile": {
+      "const": "native-deb-register-json"
+    },
+    "dimensions": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "dependencies",
+        "silent_install",
+        "paths",
+        "registration",
+        "health_profiles",
+        "service_contract",
+        "operation_status_provider",
+        "drain_behavior",
+        "uninstall_behavior"
+      ],
+      "properties": {
+        "dependencies": {
+          "type": "array"
+        },
+        "silent_install": {
+          "type": "string"
+        },
+        "paths": {
+          "type": "object"
+        },
+        "registration": {
+          "type": "object"
+        },
+        "health_profiles": {
+          "type": "object"
+        },
+        "service_contract": {
+          "type": "array"
+        },
+        "operation_status_provider": {
+          "type": "object"
+        },
+        "drain_behavior": {
+          "type": [
+            "string",
+            "null"
+          ]
+        },
+        "uninstall_behavior": {
+          "type": [
+            "string",
+            "null"
+          ]
+        }
+      }
+    },
+    "startup_observation_seconds": {
+      "type": "number",
+      "minimum": 0
+    }
+  },
+  "additionalProperties": false
+}

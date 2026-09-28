@@ -1,0 +1,65 @@
+schema_version: 1
+evidence_id: LIVE-PA-121011-U2404
+evidence_maturity: TESTED_LIVE
+agent_version: 12.10.1.1
+platform: {os: ubuntu, version: '24.04.5', architecture: amd64, package_kind: deb}
+resource_policy: PASS_WITH_TEST_EXCEPTION
+cpu_test_exception: true
+qa_sizing_exception: APPROVED
+production_sizing_validated: false
+artifact:
+  sha256: 604bec9889c49167328b93d032bb9d8580f758eb70c3d1dd42dfda23db974ee8
+  integrity: LOCALLY_CALCULATED
+  approval: APPROVED_FOR_TEST_ONLY
+package:
+  name: jitterbit-agent
+  version: 12.10.1.1
+  architecture: amd64
+  depends: [odbcinst, unixodbc]
+  preinstalled_dependencies: [odbcinst, unixodbc, unzip]
+  installation_mechanism: 'silent_install=1 dpkg --install'
+  dpkg_status: install ok installed
+paths:
+  root: /opt/jitterbit
+  resources: /opt/jitterbit/Resources
+  register: /opt/jitterbit/Resources/register.json
+  credentials: /opt/jitterbit/Resources/credentials.txt
+  jre: /opt/jitterbit/jre
+  keytool: /opt/jitterbit/jre/bin/keytool
+  cacerts: /opt/jitterbit/jre/lib/security/cacerts
+  log_root: /opt/jitterbit/log
+  agent_log: /opt/jitterbit/log/jitterbit-agent.log
+  installer_log: /opt/jitterbit/log/Installer.log
+registration:
+  strategy: register-json-token
+  proxy: false
+  cloud: from_KeyVault_value_not_disclosed
+  input_writer_contract: 'jitterbit:jitterbit 0600'
+  input_transient_metadata_independently_observed: false
+  input_after_success: ABSENT
+  credentials_after_success: 'PRESENT jitterbit:jitterbit 0640'
+  restart_count: 1
+  auto_registration: COMPLETED
+  harmony_login: PASS
+  agent_services: CONNECTED
+  request_flow: STARTED
+  synchronization: COMPLETED
+  heartbeat: STARTED
+required_markers:
+  - Auto Registration - Completed!
+  - 'Read agent credentials file: /opt/jitterbit/Resources/credentials.txt'
+  - 'REST API RESPONSE: Status: true'
+  - connection to agent services has been established
+  - Connection established, agent logged in, and request flow has commenced
+  - Agent synchronization for agent group ID
+local_services: [JitterbitProcessEngine, Scheduler, FileCleanup, VerboseLogShipper]
+local_health: PASS
+timing:
+  dpkg_install_seconds: 52
+  restart_to_log_seconds: 55.007
+  registration_poll_seconds: 175.308
+  total_provisioning_seconds: 268
+boundaries:
+  - Functional regression only; 2-vCPU test exception does not validate production sizing.
+  - Ubuntu 22.04 was not tested.
+  - Artifact digest is locally calculated, not independently vendor verified.

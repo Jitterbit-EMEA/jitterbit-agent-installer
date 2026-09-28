@@ -1,0 +1,38 @@
+schema_version: 1
+observed_on: '2026-09-25'
+vm: JBLAB-PA-AUTOMATION
+os:
+  id: ubuntu
+  version: '24.04.5'
+  kernel: 6.17.0-1022-azure
+  architecture: x86_64
+resources:
+  cpu_count: 2
+  vendor_minimum_cpu_count: 4
+  cpu_test_exception: true
+  qa_sizing_exception: APPROVED
+  qa_sizing_exception_scope: 2_vcpu_functional_regression
+  production_sizing_validated: false
+  os_disk_gib: 64
+  os_disk_bytes: 68719476736
+  root_partition_bytes: 67644669440
+  root_filesystem_bytes: 65445814272
+  root_available_bytes: 60863111168
+  vendor_minimum_disk_bytes: 50000000000
+  memory_total_mb: 7882
+package_state:
+  previous_package_purged: true
+product_paths:
+  install_root: ABSENT
+  credentials_txt: ABSENT
+  register_json: ABSENT
+sudo_noninteractive: true
+clean_registration_target: true
+managed_identity_and_key_vault: PASS_AFTER_RESIZE
+required_secret_fields_validated: 7
+secret_values_recorded: false
+artifact_hash_match: true
+artifact_metadata_match: true
+resource_policy: PASS_WITH_TEST_EXCEPTION
+controlled_dry_run: PASS
+primary_regression: STARTED

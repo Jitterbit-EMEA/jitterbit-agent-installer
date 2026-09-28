@@ -1,0 +1,24 @@
+schema_version: 1
+artifact: jitterbit-agent_12.10.1.1_amd64.deb
+download_source: https://download.jitterbit.com/12.10gdhdye6ehwgs5627u3udhdyd/jitterbit-agent_12.10.1.1_amd64.deb
+downloaded_at_utc: "2026-09-23T12:15:37Z"
+locally_rehashed_on: "2026-09-25"
+byte_size: 660897206
+sha256: 604bec9889c49167328b93d032bb9d8580f758eb70c3d1dd42dfda23db974ee8
+integrity_level: LOCALLY_CALCULATED
+approval: APPROVED_FOR_TEST
+production_approved: false
+package_metadata:
+  package: jitterbit-agent
+  version: 12.10.1.1
+  architecture: amd64
+  depends: [odbcinst, unixodbc]
+  recommends: [python, unzip, tar, sudo, uuid-runtime]
+inspection:
+  local: CONTROL_ARCHIVE_EXTRACTED_WITH_AR_AND_TAR
+  vm: DPKG_DEB_FIELDS_AND_SHA256_MATCHED
+notes: >-
+  The downloaded bytes match the locally calculated SHA-256 and the vendor
+  response checksum header recorded in artifact-intake.md. That header is not
+  independent integrity evidence. Approval is limited to the controlled
+  Ubuntu 24.04 regression and does not authorize production deployment.

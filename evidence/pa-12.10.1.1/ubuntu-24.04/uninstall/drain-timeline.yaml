@@ -1,0 +1,29 @@
+schema_version: 1
+target: JBLAB-PA-AUTOMATION
+date_utc: '2026-09-25'
+first_attempt:
+  start: '19:20:42 UTC'
+  initial_active_operations: 0
+  drain_pause_requested: true
+  operations_drained: true
+  drain_stop_requested: true
+  core_agent_services_stopped: '0 out of 4 services are running'
+  bundled_support_processes_remaining: 81
+  result: DRAIN_STOP_TIMEOUT
+  package_removal_started: false
+  forced_stop_used: false
+  end: '19:25:43 UTC'
+  cause: Initial verifier counted bundled Apache/PostgreSQL support processes as agent services even after the four core services stopped.
+completion_attempt:
+  start: '19:28:48 UTC'
+  initial_core_agent_state: STOPPED
+  active_operation_query: SKIPPED_ALREADY_STOPPED
+  drain_pause_repeated: false
+  drain_stop_repeated: false
+  package_and_residual_removal: SUCCESS
+  forced_stop_used: false
+  end: '19:28:58 UTC'
+  final_state: LOCAL_UNINSTALL_COMPLETE
+notes:
+  - The first attempt's structured failure was preserved before the corrected completion run.
+  - No hard stop was used; no package or product files were removed during the failed first attempt.

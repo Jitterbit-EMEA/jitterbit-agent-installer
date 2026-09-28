@@ -1,0 +1,35 @@
+{
+  "artifactApproval": "approved_for_test",
+  "changed": false,
+  "error": {
+    "exitCode": 11,
+    "message": "Critical preflight checks failed",
+    "name": "PREFLIGHT_FAILED",
+    "phase": "PREFLIGHT",
+    "retryable": false
+  },
+  "executionMode": "controlled-test",
+  "frameworkVersion": "0.3.0",
+  "harmonyRegistered": null,
+  "logAvailableAfterSeconds": null,
+  "packageVersion": null,
+  "plan": [],
+  "platform": {
+    "architecture": "x86_64",
+    "os": "ubuntu",
+    "version": "24.04"
+  },
+  "registrationDurationSeconds": null,
+  "requestedVersion": "12.10",
+  "resourcePolicy": "BELOW_MINIMUM",
+  "runId": "jbpa-a1750a7c4d454424af3020972e162a18",
+  "schemaVersion": 2,
+  "serviceRunning": null,
+  "state": "PLATFORM_VALIDATED",
+  "stateHistory": [
+    "CONFIG_VALIDATED",
+    "PLATFORM_VALIDATED"
+  ],
+  "status": "FAILED",
+  "timestamp": "2026-09-25T11:30:42.052555+00:00"
+}

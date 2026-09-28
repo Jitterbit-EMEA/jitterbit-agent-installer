@@ -1,0 +1,10 @@
+# Whitelisted markers observed on 2026-09-25. Agent/group IDs are synthetic replacements.
+2026-09-25 16:57:31 Auto Registration - Starting...
+2026-09-25 16:57:32 Auto Registration - Completed!
+2026-09-25 16:57:32 Read agent credentials file: /opt/jitterbit/Resources/credentials.txt
+2026-09-25 16:57:34 REST API RESPONSE: Status: true
+2026-09-25 16:57:34 Agent Logged in: AgentId = 100; AgentGroupId = 200
+2026-09-25 16:57:36 connection to agent services has been established
+2026-09-25 16:57:36 Connection established, agent logged in, and request flow has commenced
+2026-09-25 16:59:28 Agent synchronization for agent group ID 200 completed
+2026-09-25 16:59:28 Will send heart beats for AgentId 100

@@ -1,0 +1,14 @@
+schema_version: "1.0"
+scope: LOCAL_CHECKS_ONLY
+status: PASS
+previous_baseline: 279
+tests_run: 279
+tests_failed: 0
+validation_exit_code: 0
+formatting: PASS
+schemas_examples_markdown_links: PASS
+bounded_credential_scan: PASS
+shellcheck: SKIPPED_NOT_INSTALLED
+shfmt: SKIPPED_NOT_INSTALLED
+log: validation.log
+live_azure_integration: NOT_RUN

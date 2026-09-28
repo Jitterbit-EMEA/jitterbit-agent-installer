@@ -1,0 +1,131 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "type": "object",
+  "required": [
+    "requested_version",
+    "package_version",
+    "filename",
+    "request_url",
+    "effective_url",
+    "content_type",
+    "observed_at",
+    "schema_version",
+    "logical_version",
+    "source_type",
+    "content_disposition_filename",
+    "byte_size",
+    "sha256",
+    "package_metadata",
+    "inspector",
+    "integrity",
+    "artifact_status",
+    "production_approved",
+    "runtime_qualification",
+    "catalogue_match"
+  ],
+  "properties": {
+    "requested_version": {
+      "type": "string"
+    },
+    "package_version": {
+      "type": "string"
+    },
+    "filename": {
+      "type": "string"
+    },
+    "request_url": {
+      "type": "string"
+    },
+    "effective_url": {
+      "type": [
+        "string",
+        "null"
+      ]
+    },
+    "content_type": {
+      "type": "string"
+    },
+    "observed_at": {
+      "type": "string"
+    },
+    "schema_version": {
+      "const": "1.0"
+    },
+    "logical_version": {
+      "type": [
+        "string",
+        "null"
+      ]
+    },
+    "source_type": {
+      "enum": [
+        "DYNAMIC_MUTABLE",
+        "PINNED"
+      ]
+    },
+    "content_disposition_filename": {
+      "type": [
+        "string",
+        "null"
+      ]
+    },
+    "byte_size": {
+      "type": "integer",
+      "minimum": 8,
+      "maximum": 2147483648
+    },
+    "sha256": {
+      "type": "string",
+      "pattern": "^[a-f0-9]{64}$"
+    },
+    "package_metadata": {
+      "type": "object",
+      "required": [
+        "Package",
+        "Version",
+        "Architecture",
+        "Depends"
+      ],
+      "additionalProperties": false,
+      "properties": {
+        "Package": {
+          "type": "string"
+        },
+        "Version": {
+          "type": "string"
+        },
+        "Architecture": {
+          "type": "string"
+        },
+        "Depends": {
+          "type": "string"
+        }
+      }
+    },
+    "inspector": {
+      "const": "dpkg-deb"
+    },
+    "integrity": {
+      "const": "LOCALLY_CALCULATED"
+    },
+    "artifact_status": {
+      "const": "METADATA_VERIFIED"
+    },
+    "production_approved": {
+      "const": false
+    },
+    "runtime_qualification": {
+      "type": "string"
+    },
+    "catalogue_match": {
+      "type": "boolean"
+    },
+    "retrieval": {
+      "enum": [
+        "HTTPS_DOWNLOAD",
+        "LOCAL_FILE"
+      ]
+    }
+  },
+  "additionalProperties": false
+}

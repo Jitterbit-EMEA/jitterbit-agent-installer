@@ -1,0 +1,34 @@
+{
+  "enterpriseConfiguration": {
+    "proxy": {
+      "changed": false,
+      "enabled": false,
+      "status": "SKIPPED"
+    },
+    "ssh": {
+      "changed": false,
+      "enabled": false,
+      "status": "SKIPPED"
+    },
+    "ssl": {
+      "changed": false,
+      "enabled": false,
+      "status": "SKIPPED"
+    },
+    "truststore": {
+      "changed": false,
+      "enabled": true,
+      "status": "JKS_ROLLBACK_FAILED"
+    }
+  },
+  "error": {
+    "exitCode": 40,
+    "message": "Truststore rollback failed",
+    "name": "JKS_ROLLBACK_FAILED",
+    "phase": "CONFIGURE",
+    "retryable": false
+  },
+  "runId": "jbpa-enterprise-e62727a23a3f4054a022ec2963f25435",
+  "schemaVersion": 1,
+  "status": "BLOCKED"
+}

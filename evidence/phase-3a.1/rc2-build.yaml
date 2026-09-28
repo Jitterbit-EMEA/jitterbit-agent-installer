@@ -1,0 +1,14 @@
+status: PASS
+version: 1.0.0-rc2
+archive: dist/jbpa-1.0.0-rc2.tar.gz
+sha256: 68fa05cc43577a15f948c81a6e56e8d2b725d66d969934ec3f2eb6316e3266da
+manifest: dist/jbpa-1.0.0-rc2/release-manifest.json
+pipeline: scripts/build-release.sh
+previous_tests: 236
+current_tests_passed: 252
+failed: 0
+lint: PASS
+schemas_catalogue_contracts_metadata: PASS
+bounded_credential_scan: PASS
+shellcheck: SKIPPED_NOT_INSTALLED
+shfmt: SKIPPED_NOT_INSTALLED

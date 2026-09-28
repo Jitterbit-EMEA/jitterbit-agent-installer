@@ -1,0 +1,28 @@
+schema_version: 1
+phase: 2G
+framework: 1.0.0-rc1
+status: COMPLETE_SCOPED_QA_RC
+previous_tests: 178
+passed_tests: 223
+failed_tests: 0
+lint: PASS
+format: PASS
+schemas: PASS
+catalogue: PASS_19_PINNED_1_DYNAMIC
+runtime_contracts: PASS
+metadata: PASS
+bounded_credential_scan: PASS
+shellcheck: UNAVAILABLE
+shfmt: UNAVAILABLE
+release_sha256: 5a18ba2bbc87efdb5a9aa671a1fa6d87575f2446981d00814c27b847efc7eacd
+release_verification:
+  status: VERIFIED
+  sha256: 5a18ba2bbc87efdb5a9aa671a1fa6d87575f2446981d00814c27b847efc7eacd
+  files: 75
+  jbpaVersion: 1.0.0-rc1
+bundled_cli: PASS
+latest_resolved_package: 12.10.1.1
+latest_sha256: 604bec9889c49167328b93d032bb9d8580f758eb70c3d1dd42dfda23db974ee8
+historical_bulk_intake: NOT_RUN
+live_lifecycle: NOT_RUN_THIS_PHASE
+production_approved: false

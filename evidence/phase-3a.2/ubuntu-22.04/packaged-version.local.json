@@ -1,0 +1,37 @@
+{
+  "artifact": {
+    "qualification": null
+  },
+  "category": "SUCCESS",
+  "details": {
+    "aliases": {
+      "latest-available-pinned": "12.10",
+      "latest-tested": "12.10",
+      "recommended": "12.10"
+    },
+    "dynamicLatest": "NOT_RESOLVED",
+    "jbpaVersion": "1.0.0-rc2",
+    "recommendedPackage": "12.10.1.1"
+  },
+  "enterpriseConfiguration": {},
+  "error": null,
+  "health": {
+    "harmonyConfirmed": null,
+    "scope": null,
+    "serviceRunning": null
+  },
+  "operation": "VERSION",
+  "platform": {},
+  "registration": {
+    "harmonyRegistered": null
+  },
+  "runId": "jbpa-fdb05f96a8db453485a12dc89720d6d9",
+  "schemaVersion": "1.0",
+  "state": "COMPLETE",
+  "status": "SUCCESS",
+  "versions": {
+    "jbpa": "1.0.0-rc2",
+    "requestedPA": null,
+    "resolvedPA": null
+  }
+}

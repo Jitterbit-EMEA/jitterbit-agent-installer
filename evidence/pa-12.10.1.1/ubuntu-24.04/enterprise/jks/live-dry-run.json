@@ -1,0 +1,49 @@
+{
+  "enterpriseConfiguration": {
+    "proxy": {
+      "changed": false,
+      "enabled": false,
+      "status": "SKIPPED"
+    },
+    "ssh": {
+      "changed": false,
+      "enabled": false,
+      "status": "SKIPPED"
+    },
+    "ssl": {
+      "changed": false,
+      "enabled": false,
+      "status": "SKIPPED"
+    },
+    "truststore": {
+      "certificates": [
+        {
+          "alias": "qa-jitterbitlabs-uk-origin",
+          "basic_constraints": "CA:FALSE",
+          "certificate_is_ca": false,
+          "certificate_type": "EXPLICIT_TRUSTED_ENDPOINT",
+          "extended_key_usage": "TLS Web Client Authentication, TLS Web Server Authentication",
+          "issuer": "issuer=C = US, O = \"CloudFlare, Inc.\", OU = CloudFlare Origin SSL Certificate Authority, L = San Francisco, ST = California",
+          "key_usage": "Digital Signature, Key Encipherment",
+          "not_after_utc": "2041-06-19T07:11:00+00:00",
+          "not_before_utc": "2026-06-23T07:11:00+00:00",
+          "serial": "serial=10413218D8BC286C95129B8112D3A4E9445ABC75",
+          "sha256_fingerprint": "f9c3d6035c60882fd636475baa39611d3b44c873fd29cdce40bc9c504d672525",
+          "subject": "subject=O = \"CloudFlare, Inc.\", OU = CloudFlare Origin CA, CN = CloudFlare Origin Certificate",
+          "subject_alternative_names": "DNS:*.jitterbitlabs.uk, DNS:jitterbitlabs.uk"
+        }
+      ],
+      "changed": false,
+      "enabled": true,
+      "restart_required": true,
+      "status": "PLANNED",
+      "would_import_aliases": [
+        "qa-jitterbitlabs-uk-origin"
+      ]
+    }
+  },
+  "error": null,
+  "runId": "jbpa-enterprise-40742bf3bf944acb8bdfa3292b3e5570",
+  "schemaVersion": 1,
+  "status": "PLANNED"
+}

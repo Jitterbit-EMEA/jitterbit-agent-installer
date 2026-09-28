@@ -1,0 +1,91 @@
+# Schema-valid template; replace example vault and references before execution.
+schema_version: 1
+agent:
+  version: '12.10'
+  package_kind: deb
+  expected_os:
+    id: ubuntu
+    version: '22.04'
+    architecture: x86_64
+  name: null
+harmony:
+  cloud_url: null
+  organization: null
+  environment: null
+  agent_group_id: null
+  agent_group_name: null
+  registration:
+    strategy: register-json-token
+    token_secret_ref:
+      provider: azure-key-vault
+      reference: pa-registration-token
+    username_secret_ref: null
+    password_secret_ref: null
+    deregister_on_drainstop: false
+secrets:
+  provider: azure-key-vault
+  vault_uri: https://example-pa.vault.azure.net/
+  managed_identity_client_id: null
+  registration_field_refs:
+    cloud_url:
+      provider: azure-key-vault
+      reference: pa-cloud-url
+    agent_group_id:
+      provider: azure-key-vault
+      reference: pa-agent-group-id
+    agent_name_prefix:
+      provider: azure-key-vault
+      reference: pa-agent-name-prefix
+    deregister_on_drainstop:
+      provider: azure-key-vault
+      reference: pa-deregister-on-drainstop
+    retry_count:
+      provider: azure-key-vault
+      reference: pa-retry-count
+    retry_interval_seconds:
+      provider: azure-key-vault
+      reference: pa-retry-interval-seconds
+network:
+  endpoint_profile: null
+  download_proxy_profile: null
+  package_proxy_profile: null
+proxy:
+  enabled: false
+  host: null
+  port: null
+  username_secret_ref: null
+  password_secret_ref: null
+  ntlm_domain: null
+  exceptions: []
+ssh:
+  enabled: false
+  identities: []
+ssl:
+  enabled: false
+  identities: []
+java_trust:
+  enabled: false
+  certificates: []
+health:
+  registration_timeout_seconds: 300
+  poll_interval_seconds: 5
+  evidence_profile: null
+  require_cloud_confirmation: true
+output:
+  result_path: null
+  log_path: null
+logging:
+  level: INFO
+execution:
+  dry_run: false
+artifact_policy:
+  provider: vendor-catalogue
+  require_production_approval: false
+uninstall_policy:
+  drain_pause_timeout_seconds: 1800
+  operation_poll_interval_seconds: 5
+  stop_timeout_seconds: 300
+  stop_poll_interval_seconds: 5
+qa_policy:
+  cpu_exception: EXPLICIT_CONTROLLED_TEST_FLAG_REQUIRED
+  production_sizing_validated: false

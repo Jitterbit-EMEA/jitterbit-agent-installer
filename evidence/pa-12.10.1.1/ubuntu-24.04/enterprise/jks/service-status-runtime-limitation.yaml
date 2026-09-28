@@ -1,0 +1,17 @@
+schema_version: 1
+phase: 2F.1B
+target: PA 12.10.1.1 / Ubuntu 24.04.5 amd64
+observed_execution_users:
+- root
+- jitterbit
+current_automated_user: root
+classification: SERVICE_STATUS_UNAVAILABLE
+launcherExitCode: 0
+rowsReturned: 0
+sanitizedHeader: Command | Pid | Start time | %CPU | %MEM | Full command
+status: UNAVAILABLE
+mandatory: false
+classification_is_agent_failure: false
+jitterbit_account_observation_source: read-only-recovery-health.yaml
+interpretation: Supplementary diagnostic unavailable; mandatory connectivity and core
+  service signals pass.

@@ -1,0 +1,14 @@
+{
+  "capturedOn": "2026-09-23",
+  "evidenceType": "read-only SSH probe",
+  "targetReference": "user-supplied test VM",
+  "observedOS": "ubuntu",
+  "observedOSVersion": "24.04",
+  "observedArchitecture": "x86_64",
+  "installedAgentVersion": "12.9.2.2",
+  "credentialsFilePresent": true,
+  "registrationInputPresent": false,
+  "managedIdentityHttpStatus": 400,
+  "managedIdentityError": "invalid_request",
+  "conclusion": "This VM cannot establish the required Ubuntu 22.04 PA 12.10 regression result. No package or identity mutation was performed."
+}

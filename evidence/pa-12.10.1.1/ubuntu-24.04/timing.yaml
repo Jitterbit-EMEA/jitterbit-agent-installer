@@ -1,0 +1,27 @@
+schema_version: 1
+observed_on: '2026-09-25'
+clock: VM_UTC
+artifact_download_duration_seconds: NOT_OBSERVED
+artifact_note: Package was already copied to VM and staged locally before the timed primary run; its independent SHA-256 was rechecked immediately before installation.
+dependency_installation:
+  apt_transaction_start: '2026-09-25 16:55:15 UTC'
+  apt_transaction_end: '2026-09-25 16:55:20 UTC'
+  duration_seconds: 5
+pa_installation:
+  dpkg_install_start: '2026-09-25 16:55:25 UTC'
+  dpkg_installed: '2026-09-25 16:56:17 UTC'
+  duration_seconds: 52
+runtime:
+  restart_to_log_creation_seconds: 55.007
+  restart_to_auto_registration_start_seconds_approx: 56
+  restart_to_auto_registration_completion_seconds_approx: 57
+  restart_to_credentials_detection_seconds_approx: 57
+  restart_to_harmony_login_seconds_approx: 59
+  restart_to_agent_services_connection_seconds_approx: 61
+  restart_to_synchronization_completion_seconds_approx: 173
+  registration_poll_duration_seconds: 175.308
+  timestamp_basis: Bootstrap monotonic durations plus second-resolution whitelisted agent-log events; restart timestamp inferred from the measured poll duration.
+total_provisioning:
+  start: '2026-09-25 16:55:03 UTC'
+  end: '2026-09-25 16:59:31 UTC'
+  duration_seconds: 268

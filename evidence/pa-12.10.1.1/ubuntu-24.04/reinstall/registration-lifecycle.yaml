@@ -1,0 +1,47 @@
+schema_version: 1
+baseline: CLEAN_REINSTALL_BASELINE_PASS
+dependency_preparation: ALREADY_INSTALLED
+package_reinstall: PASS
+product_paths_recreated: true
+jitterbit_user_recreated: true
+credentials_before_registration: ABSENT
+post_install_pre_registration_guard: PASSED
+register_json_created: PASS
+register_json_mode: 0600_BY_HARDENED_WRITER_NOT_INDEPENDENTLY_SAMPLED
+register_json_removed_after_success: true
+restart_count: 1
+auto_registration: COMPLETE
+credentials_created:
+  exists: true
+  group: jitterbit
+  mode: 0o640
+  mtime_epoch: 1790366256.9950013
+  owner: jitterbit
+harmony_authenticated: true
+new_agent_id: '646830'
+agent_services_connected: true
+synchronized: true
+local_services_healthy: true
+identity_distinct_from_old: UNVERIFIED_OLD_ID_UNAVAILABLE
+local_full_lifecycle: TESTED_LIVE
+reinstall_after_complete_uninstall: TESTED_LIVE
+fresh_registration_after_uninstall: TESTED_LIVE
+old_new_numeric_id_comparison: UNVERIFIED
+state_history:
+- PACKAGE_INSTALLED
+- OPTIONAL_CONFIGURATION_COMPLETE
+- REGISTER_JSON_CREATED
+- AGENT_RESTART_REQUESTED
+- WAITING_FOR_AGENT_RUNTIME
+- AGENT_LOG_AVAILABLE
+- AUTO_REGISTRATION_STARTED
+- AUTO_REGISTRATION_COMPLETED
+- CREDENTIALS_CREATED
+- HARMONY_AUTHENTICATED
+- AGENT_LOGGED_IN
+- AGENT_SERVICES_CONNECTED
+- REQUEST_FLOW_STARTED
+- AGENT_SYNCHRONIZED
+- HEARTBEAT_STARTED
+- LOCAL_SERVICES_HEALTHY
+- COMPLETE

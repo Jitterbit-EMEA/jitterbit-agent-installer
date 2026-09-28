@@ -1,0 +1,16 @@
+schema_version: 1
+phase: 2F.1A
+original_result_file: import-result.json
+original_result_sha256: 607fce7c7a70a9c2141ce693c8846cf05d8b3cc8f0547bd2848716d283500017
+original_workflow_result: JKS_ROLLBACK_FAILED
+historical_evidence_overwritten: false
+corrected_import_interpretation: JKS_IMPORT_MUTATION_VERIFIED
+corrected_post_import_health_interpretation: POST_RESTART_HEALTH_GATE_INCONCLUSIVE_UNDER_OLD_CONTRACT
+corrected_rollback_file_interpretation: JKS_ROLLBACK_FILE_RESTORATION_COMPLETED
+corrected_rollback_health_interpretation: POST_ROLLBACK_HEALTH_UNCONFIRMED
+fresh_sync_marker: FRESH_SYNC_MARKER_NOT_OBSERVED
+synchronization_required_for_existing_restart: false
+known_recovered_signals: [HARMONY_LOGIN, AGENT_SERVICES, REQUEST_FLOW, HEARTBEAT, LOCAL_CORE_SERVICES]
+current_supported_connection_check: PASS
+current_support_tool_service_status: UNCONFIRMED_NO_ROWS
+interpretation: The previous sync-only failure classification was too strict. Store restoration is verified, but full corrected health awaits supported service observations.

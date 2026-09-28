@@ -1,0 +1,9 @@
+observed_at_utc: 2026-09-27T22:22:45.693126+00:00
+scope: LOCAL_PRE_RUN_ONLY
+RC3_IMMUTABILITY: PASS
+expected_sha256: 4b06e3715cb5faf3472354934fc12c04b54c7febe25d98f47bf1f038075ad90e
+local_archive_sha256: 4b06e3715cb5faf3472354934fc12c04b54c7febe25d98f47bf1f038075ad90e
+verified_files: 88
+host_sha256: null
+host_verification: NOT_RUN
+modified: false

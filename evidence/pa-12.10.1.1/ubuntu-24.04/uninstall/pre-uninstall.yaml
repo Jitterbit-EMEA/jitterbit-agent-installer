@@ -1,0 +1,20 @@
+schema_version: 1
+observed_on: '2026-09-25'
+target: JBLAB-PA-AUTOMATION
+os: Ubuntu 24.04.5
+architecture: amd64
+agent_package: 'jitterbit-agent 12.10.1.1 install ok installed'
+local_services: All_services_running
+active_operation_count: 0
+active_operation_provider: TranDbOperationProvider
+credentials_txt: PRESENT_CONTENTS_NOT_READ
+register_json: ABSENT
+product_root: PRESENT
+jitterbit_user: PRESENT
+bundled_postgres_runtime: PRESENT
+bundled_postgres_data: PRESENT
+product_process_count: 97
+command_links: [/usr/bin/jitterbit, /usr/bin/jitterbit-config, /usr/bin/jitterbit-utils]
+startup_integration: [/etc/init.d/jitterbit, /etc/sysconfig/jitterbit, '/etc/rc*.d/*jitterbit']
+harmony_record_deletion_requested: false
+secrets_captured: false

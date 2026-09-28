@@ -1,0 +1,324 @@
+{
+  "scope": "LOCAL_MAC_NOT_UBUNTU_QUALIFICATION",
+  "releaseSHA256": "4b06e3715cb5faf3472354934fc12c04b54c7febe25d98f47bf1f038075ad90e",
+  "version_exit_code": 0,
+  "version": {
+    "artifact": {
+      "qualification": null
+    },
+    "category": "SUCCESS",
+    "details": {
+      "aliases": {
+        "latest-available-pinned": "12.10",
+        "latest-tested": "12.10",
+        "recommended": "12.10"
+      },
+      "capabilities": [
+        "INSTALL",
+        "REINSTALL",
+        "UNINSTALL",
+        "HEALTH",
+        "DIAGNOSTICS",
+        "ENTERPRISE_CONFIGURE",
+        "ARTIFACT_VERIFY",
+        "VALIDATE"
+      ],
+      "dynamicLatest": "NOT_RESOLVED",
+      "jbpaVersion": "1.0.0-rc3",
+      "recommendedPackage": "12.10.1.1"
+    },
+    "enterpriseConfiguration": {},
+    "error": null,
+    "health": {
+      "harmonyConfirmed": null,
+      "scope": null,
+      "serviceRunning": null
+    },
+    "operation": "VERSION",
+    "platform": {},
+    "registration": {
+      "harmonyRegistered": null
+    },
+    "runId": "jbpa-1c90b3621e1c4314bc6b893b8d6c47e5",
+    "schemaVersion": "1.0",
+    "state": "COMPLETE",
+    "status": "SUCCESS",
+    "versions": {
+      "jbpa": "1.0.0-rc3",
+      "requestedPA": null,
+      "resolvedPA": null
+    }
+  },
+  "validate_exit_code": 11,
+  "validate_result": {
+    "artifact": {
+      "qualification": null
+    },
+    "category": "PLATFORM_ERROR",
+    "details": {
+      "error": {
+        "exitCode": 11,
+        "message": "Critical preflight checks failed",
+        "name": "PREFLIGHT_FAILED",
+        "phase": "PREFLIGHT",
+        "retryable": false
+      },
+      "platform": {
+        "architecture": "aarch64",
+        "codename": null,
+        "cpuCount": 14,
+        "diskAvailableBytes": 632496209920,
+        "diskTotalBytes": 994662584320,
+        "hostname": "DSEWRAJ-M0625.local",
+        "kernel": "25.4.0",
+        "memoryBytes": null,
+        "os": "darwin",
+        "packageManager": null,
+        "packageType": null,
+        "system": "Darwin",
+        "version": null
+      },
+      "preflight": {
+        "checks": {
+          "agentServices": {
+            "blocking": false,
+            "evidence": {},
+            "provider": "host-readiness/agentServices",
+            "reason": "PRODUCT_CONNECTION_CHECK_AFTER_REGISTRATION",
+            "status": "UNCONFIRMED",
+            "timestamp": "2026-09-27T14:22:37.853138+00:00"
+          },
+          "architecture": {
+            "blocking": true,
+            "evidence": {
+              "architecture": "aarch64"
+            },
+            "provider": "host-readiness/architecture",
+            "reason": "UNSUPPORTED_ARCHITECTURE",
+            "status": "FAIL",
+            "timestamp": "2026-09-27T14:22:37.853138+00:00"
+          },
+          "cpu": {
+            "blocking": true,
+            "evidence": {
+              "minimum": null,
+              "observed": 14
+            },
+            "provider": "host-readiness/cpu",
+            "reason": "RESOURCE_POLICY",
+            "status": "UNCONFIRMED",
+            "timestamp": "2026-09-27T14:22:37.853138+00:00"
+          },
+          "diskCapacity": {
+            "blocking": true,
+            "evidence": {
+              "minimum": null,
+              "observed": 994662584320
+            },
+            "provider": "host-readiness/diskCapacity",
+            "reason": "RESOURCE_POLICY",
+            "status": "UNCONFIRMED",
+            "timestamp": "2026-09-27T14:22:37.853138+00:00"
+          },
+          "endpoint:0": {
+            "blocking": false,
+            "evidence": {},
+            "provider": "host-readiness/endpoint:0",
+            "reason": "NOT_RUN_DRY_RUN",
+            "status": "UNCONFIRMED",
+            "timestamp": "2026-09-27T14:22:37.853138+00:00"
+          },
+          "existingAgent": {
+            "blocking": true,
+            "evidence": {},
+            "provider": "host-readiness/existingAgent",
+            "reason": "UNKNOWN_STATE",
+            "status": "FAIL",
+            "timestamp": "2026-09-27T14:22:37.853138+00:00"
+          },
+          "harmonyEndpoint": {
+            "blocking": false,
+            "evidence": {},
+            "provider": "host-readiness/harmonyEndpoint",
+            "reason": "CONFIGURED_ENDPOINT_UNRESOLVED",
+            "status": "UNCONFIRMED",
+            "timestamp": "2026-09-27T14:22:37.853138+00:00"
+          },
+          "memory": {
+            "blocking": true,
+            "evidence": {
+              "minimum": null,
+              "observed": null
+            },
+            "provider": "host-readiness/memory",
+            "reason": "RESOURCE_POLICY",
+            "status": "UNCONFIRMED",
+            "timestamp": "2026-09-27T14:22:37.853138+00:00"
+          },
+          "os": {
+            "blocking": true,
+            "evidence": {
+              "codename": null,
+              "kernel": "25.4.0",
+              "os": "darwin",
+              "version": null
+            },
+            "provider": "host-readiness/os",
+            "reason": "UNSUPPORTED_OS",
+            "status": "FAIL",
+            "timestamp": "2026-09-27T14:22:37.853138+00:00"
+          },
+          "packageManager": {
+            "blocking": true,
+            "evidence": {},
+            "provider": "host-readiness/packageManager",
+            "reason": "PACKAGE_MANAGER_INCONSISTENT",
+            "status": "FAIL",
+            "timestamp": "2026-09-27T14:22:37.853138+00:00"
+          },
+          "privilege": {
+            "blocking": true,
+            "evidence": {
+              "capability": "NONE",
+              "effectiveUid": 501
+            },
+            "provider": "host-readiness/privilege",
+            "reason": "INSUFFICIENT_PRIVILEGE",
+            "status": "FAIL",
+            "timestamp": "2026-09-27T14:22:37.853138+00:00"
+          },
+          "repository": {
+            "blocking": true,
+            "evidence": {},
+            "provider": "host-readiness/repository",
+            "reason": "EXISTING_METADATA_DEPENDENCY_SIMULATION",
+            "status": "UNCONFIRMED",
+            "timestamp": "2026-09-27T14:22:37.853138+00:00"
+          },
+          "secretProvider": {
+            "blocking": false,
+            "evidence": {},
+            "provider": "host-readiness/secretProvider",
+            "reason": "NOT_RUN_DRY_RUN",
+            "status": "UNCONFIRMED",
+            "timestamp": "2026-09-27T14:22:37.853138+00:00"
+          },
+          "space:/": {
+            "blocking": true,
+            "evidence": {
+              "availableBytes": 632496201728,
+              "freeBytes": 632496201728,
+              "packageBytes": 660897206,
+              "requiredBytes": 4378227854,
+              "totalBytes": 994662584320
+            },
+            "provider": "host-readiness/space:/",
+            "reason": "OPERATIONAL_FREE_SPACE_THRESHOLD",
+            "status": "PASS",
+            "timestamp": "2026-09-27T14:22:37.853138+00:00"
+          },
+          "space:/opt": {
+            "blocking": true,
+            "evidence": {
+              "availableBytes": 632496201728,
+              "freeBytes": 632496201728,
+              "packageBytes": 660897206,
+              "requiredBytes": 4378227854,
+              "totalBytes": 994662584320
+            },
+            "provider": "host-readiness/space:/opt",
+            "reason": "OPERATIONAL_FREE_SPACE_THRESHOLD",
+            "status": "PASS",
+            "timestamp": "2026-09-27T14:22:37.853138+00:00"
+          },
+          "space:/var": {
+            "blocking": true,
+            "evidence": {
+              "availableBytes": 632496201728,
+              "freeBytes": 632496201728,
+              "packageBytes": 660897206,
+              "requiredBytes": 4378227854,
+              "totalBytes": 994662584320
+            },
+            "provider": "host-readiness/space:/var",
+            "reason": "OPERATIONAL_FREE_SPACE_THRESHOLD",
+            "status": "PASS",
+            "timestamp": "2026-09-27T14:22:37.853138+00:00"
+          },
+          "time": {
+            "blocking": true,
+            "evidence": {},
+            "provider": "host-readiness/time",
+            "reason": "TIME_SYNC_UNCONFIRMED",
+            "status": "UNCONFIRMED",
+            "timestamp": "2026-09-27T14:22:37.853138+00:00"
+          }
+        },
+        "hostState": "UNKNOWN_STATE",
+        "mutationPerformed": false,
+        "platform": {
+          "architecture": "aarch64",
+          "codename": null,
+          "cpuCount": 14,
+          "diskAvailableBytes": 632496209920,
+          "diskTotalBytes": 994662584320,
+          "hostname": "DSEWRAJ-M0625.local",
+          "kernel": "25.4.0",
+          "memoryBytes": null,
+          "os": "darwin",
+          "packageManager": null,
+          "packageType": null,
+          "system": "Darwin",
+          "version": null
+        },
+        "profile": "INSTALL",
+        "status": "FAIL"
+      },
+      "status": "FAIL"
+    },
+    "enterpriseConfiguration": {},
+    "error": {
+      "category": "PLATFORM_ERROR",
+      "exitCode": 11,
+      "message": "Critical preflight checks failed",
+      "name": "PREFLIGHT_FAILED",
+      "phase": "PREFLIGHT",
+      "retryable": false
+    },
+    "health": {
+      "harmonyConfirmed": null,
+      "scope": null,
+      "serviceRunning": null
+    },
+    "operation": "VALIDATE",
+    "platform": {
+      "architecture": "aarch64",
+      "codename": null,
+      "cpuCount": 14,
+      "diskAvailableBytes": 632496209920,
+      "diskTotalBytes": 994662584320,
+      "hostname": "DSEWRAJ-M0625.local",
+      "kernel": "25.4.0",
+      "memoryBytes": null,
+      "os": "darwin",
+      "packageManager": null,
+      "packageType": null,
+      "system": "Darwin",
+      "version": null
+    },
+    "registration": {
+      "harmonyRegistered": null
+    },
+    "runId": "jbpa-24dca448ec324c12ba1ea154bece488c",
+    "schemaVersion": "1.0",
+    "state": "FAIL",
+    "status": "FAILED",
+    "versions": {
+      "jbpa": "1.0.0-rc3",
+      "requestedPA": null,
+      "resolvedPA": null
+    }
+  },
+  "result_schema": "PASS",
+  "mutationPerformed": false
+}

@@ -1,0 +1,107 @@
+{
+  "type": "object",
+  "properties": {
+    "schema_version": {
+      "const": 1
+    },
+    "platforms": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "properties": {
+          "os_id": {
+            "type": "string",
+            "pattern": "^[A-Za-z0-9][A-Za-z0-9._-]{0,127}$"
+          },
+          "os_version": {
+            "type": "string",
+            "minLength": 1,
+            "maxLength": 256,
+            "pattern": "^[^\\x00-\\x1f\\x7f]+$"
+          },
+          "architecture": {
+            "enum": [
+              "x86_64",
+              "aarch64"
+            ]
+          },
+          "package_kind": {
+            "enum": [
+              "deb",
+              "rpm",
+              "tar"
+            ]
+          },
+          "package_manager": {
+            "type": "string",
+            "pattern": "^[A-Za-z0-9][A-Za-z0-9._-]{0,127}$"
+          },
+          "agent_versions": {
+            "type": "array",
+            "items": {
+              "type": "string",
+              "minLength": 1,
+              "maxLength": 256,
+              "pattern": "^[^\\x00-\\x1f\\x7f]+$"
+            }
+          },
+          "minimum": {
+            "type": "object",
+            "properties": {
+              "cpu_count": {
+                "type": "integer",
+                "minimum": 1
+              },
+              "memory_bytes": {
+                "type": "integer",
+                "minimum": 1
+              },
+              "disk_total_bytes": {
+                "type": "integer",
+                "minimum": 1
+              }
+            },
+            "required": [
+              "cpu_count",
+              "memory_bytes",
+              "disk_total_bytes"
+            ],
+            "additionalProperties": false
+          },
+          "evidence_refs": {
+            "type": "array",
+            "items": {
+              "type": "string",
+              "pattern": "^[A-Za-z0-9][A-Za-z0-9._-]{0,127}$"
+            }
+          },
+          "runtime_validation": {
+            "enum": [
+              "not_run",
+              "passed",
+              "failed"
+            ]
+          }
+        },
+        "required": [
+          "os_id",
+          "os_version",
+          "architecture",
+          "package_kind",
+          "package_manager",
+          "agent_versions",
+          "minimum",
+          "evidence_refs",
+          "runtime_validation"
+        ],
+        "additionalProperties": false
+      }
+    }
+  },
+  "required": [
+    "schema_version",
+    "platforms"
+  ],
+  "additionalProperties": false,
+  "$schema": "https://json-schema.org/draft/2020-12/schema"
+}

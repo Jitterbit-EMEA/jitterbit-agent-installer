@@ -1,0 +1,16 @@
+schema_version: "1.0"
+observed_at_utc: "2026-09-26T23:58:02.752925+00:00"
+run_mode: PREPARATION_ONLY
+status: HANDOFF_ONLY_NO_LIVE_DISPATCH
+actual_vm_provisioning_source_found: false
+integration_implemented: false
+live_azure_integration: NOT_RUN
+result_consumption: NOT_RUN
+azure_mutation_performed: false
+existing_qa_vm_mutation_performed: false
+new_vm_created: false
+required_for_eventual_live_run:
+  - Integration through the separate provisioning project execution and result transport API
+  - Approved Phase 3A VM environment configuration
+vm_resource_id: null
+managed_identity_principal_id: null

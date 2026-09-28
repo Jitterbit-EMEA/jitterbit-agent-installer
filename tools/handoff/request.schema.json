@@ -1,0 +1,111 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "schemaVersion",
+    "target",
+    "operation",
+    "jbpaVersion",
+    "paVersion",
+    "configPath",
+    "resultPath",
+    "allowUnqualified"
+  ],
+  "properties": {
+    "schemaVersion": {
+      "const": "1.0"
+    },
+    "target": {
+      "type": "string",
+      "minLength": 1
+    },
+    "operation": {
+      "enum": [
+        "INSTALL",
+        "HEALTH",
+        "DIAGNOSTICS",
+        "ENTERPRISE_CONFIGURE",
+        "UNINSTALL",
+        "REINSTALL",
+        "ARTIFACT_VERIFY"
+      ]
+    },
+    "jbpaVersion": {
+      "enum": [
+        "1.0.0-rc2",
+        "1.0.0-rc3"
+      ]
+    },
+    "paVersion": {
+      "type": "string",
+      "pattern": "^(?:[0-9]+\\.)+[0-9]+$"
+    },
+    "configPath": {
+      "type": "string",
+      "minLength": 1
+    },
+    "resultPath": {
+      "type": "string",
+      "minLength": 1
+    },
+    "allowUnqualified": {
+      "type": "boolean",
+      "default": false
+    },
+    "controlledTest": {
+      "type": "boolean",
+      "default": false
+    },
+    "callerMetadata": {
+      "type": "object",
+      "additionalProperties": {
+        "type": "string"
+      }
+    },
+    "expectedIdentity": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "agentId",
+        "agentGroupId",
+        "agentName",
+        "agentGroupName"
+      ],
+      "properties": {
+        "agentId": {
+          "type": "integer",
+          "minimum": 1
+        },
+        "agentGroupId": {
+          "type": "integer",
+          "minimum": 1
+        },
+        "agentName": {
+          "type": "string",
+          "minLength": 1
+        },
+        "agentGroupName": {
+          "type": "string",
+          "minLength": 1
+        }
+      }
+    }
+  },
+  "allOf": [
+    {
+      "if": {
+        "properties": {
+          "operation": {
+            "const": "ENTERPRISE_CONFIGURE"
+          }
+        }
+      },
+      "then": {
+        "required": [
+          "expectedIdentity"
+        ]
+      }
+    }
+  ]
+}

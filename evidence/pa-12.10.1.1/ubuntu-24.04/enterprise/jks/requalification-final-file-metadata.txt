@@ -1,0 +1,3 @@
+/opt/jitterbit/jre/lib/security/cacerts|root|root|644|191260
+/var/lib/jbpa/backups/jbpa-enterprise-22b9a288348842639341de5c6c7e8fb1|root|root|700|4096
+/var/lib/jbpa/backups/jbpa-enterprise-22b9a288348842639341de5c6c7e8fb1/cacerts|root|root|600|189920

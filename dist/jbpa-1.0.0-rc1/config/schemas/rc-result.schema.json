@@ -1,0 +1,162 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "type": "object",
+  "required": [
+    "versions",
+    "artifact",
+    "registration",
+    "health",
+    "enterpriseConfiguration",
+    "details",
+    "runId",
+    "operation",
+    "state",
+    "category",
+    "schemaVersion",
+    "status",
+    "platform",
+    "error"
+  ],
+  "properties": {
+    "versions": {
+      "type": "object",
+      "required": [
+        "jbpa",
+        "requestedPA",
+        "resolvedPA"
+      ],
+      "additionalProperties": false,
+      "properties": {
+        "jbpa": {
+          "type": [
+            "string",
+            "null"
+          ],
+          "pattern": "^\\d+\\.\\d+\\.\\d+(?:-rc\\d+)?$"
+        },
+        "requestedPA": {
+          "type": [
+            "string",
+            "null"
+          ]
+        },
+        "resolvedPA": {
+          "type": [
+            "string",
+            "null"
+          ]
+        }
+      }
+    },
+    "artifact": {
+      "type": "object"
+    },
+    "registration": {
+      "type": "object"
+    },
+    "health": {
+      "type": "object"
+    },
+    "enterpriseConfiguration": {
+      "type": "object"
+    },
+    "details": {
+      "type": "object"
+    },
+    "runId": {
+      "type": "string"
+    },
+    "operation": {
+      "type": "string"
+    },
+    "state": {
+      "type": "string"
+    },
+    "category": {
+      "enum": [
+        "SUCCESS",
+        "CONFIGURATION_ERROR",
+        "VERSION_ERROR",
+        "PLATFORM_ERROR",
+        "ARTIFACT_ERROR",
+        "DEPENDENCY_ERROR",
+        "INSTALL_ERROR",
+        "REGISTRATION_ERROR",
+        "HEALTH_ERROR",
+        "ENTERPRISE_CONFIGURATION_ERROR",
+        "DRAIN_ERROR",
+        "UNINSTALL_ERROR",
+        "SECRET_PROVIDER_ERROR",
+        "RELEASE_ERROR"
+      ]
+    },
+    "schemaVersion": {
+      "const": "1.0"
+    },
+    "status": {
+      "enum": [
+        "SUCCESS",
+        "FAILED"
+      ]
+    },
+    "platform": {
+      "type": [
+        "object",
+        "null"
+      ]
+    },
+    "error": {
+      "type": [
+        "object",
+        "null"
+      ],
+      "required": [
+        "name",
+        "exitCode",
+        "message",
+        "phase",
+        "retryable",
+        "category"
+      ],
+      "properties": {
+        "name": {
+          "type": "string"
+        },
+        "exitCode": {
+          "type": "integer",
+          "minimum": 0,
+          "maximum": 255
+        },
+        "message": {
+          "type": "string"
+        },
+        "phase": {
+          "type": "string"
+        },
+        "retryable": {
+          "type": "boolean"
+        },
+        "category": {
+          "enum": [
+            "SUCCESS",
+            "CONFIGURATION_ERROR",
+            "VERSION_ERROR",
+            "PLATFORM_ERROR",
+            "ARTIFACT_ERROR",
+            "DEPENDENCY_ERROR",
+            "INSTALL_ERROR",
+            "REGISTRATION_ERROR",
+            "HEALTH_ERROR",
+            "ENTERPRISE_CONFIGURATION_ERROR",
+            "DRAIN_ERROR",
+            "UNINSTALL_ERROR",
+            "SECRET_PROVIDER_ERROR",
+            "RELEASE_ERROR"
+          ]
+        }
+      },
+      "additionalProperties": false
+    }
+  },
+  "additionalProperties": false
+}

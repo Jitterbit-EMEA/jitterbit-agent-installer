@@ -1,0 +1,16 @@
+schema_version: 1
+run_id: jbpa-enterprise-e62727a23a3f4054a022ec2963f25435
+truststore_path: /opt/jitterbit/jre/lib/security/cacerts
+truststore_type: PKCS12
+backup_path: /var/lib/jbpa/backups/jbpa-enterprise-e62727a23a3f4054a022ec2963f25435/cacerts
+backup_directory_owner: root
+backup_directory_group: root
+backup_directory_mode: '0700'
+backup_owner: root
+backup_group: root
+backup_mode: '0600'
+source_size_bytes: 189920
+backup_size_bytes: 189920
+source_sha256: 7a33aaf51d8460f3e57956e90a8fe179188e9c82578555020881f5cd48c4274b
+backup_sha256: 7a33aaf51d8460f3e57956e90a8fe179188e9c82578555020881f5cd48c4274b
+hash_match: true

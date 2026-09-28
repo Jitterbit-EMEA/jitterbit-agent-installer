@@ -1,0 +1,11 @@
+#!/usr/bin/env bash
+set -euo pipefail
+root="$(cd -- "$(dirname -- "${BASH_SOURCE[0]}")/.." && pwd)"
+python="${JBPA_PYTHON:-$root/.venv/bin/python}"
+if [[ ! -x "$python" ]]; then
+  printf '%s\n' 'Framework runtime missing. Follow README.md setup instructions.' >&2
+  exit 99
+fi
+export PYTHONDONTWRITEBYTECODE=1
+export PYTHONPATH="$root/src"
+exec "$python" -m jbpa.cli diagnostics "$@"

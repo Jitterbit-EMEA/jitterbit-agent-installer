@@ -1,0 +1,31 @@
+schema_version: 1
+phase: 2F.1A
+review_date_utc: '2026-09-26'
+target: {pa: 12.10.1.1, os: Ubuntu 24.04.5, architecture: amd64}
+agent_id: '646830'
+agent_group_id: '678370'
+profiles:
+  INITIAL_REGISTRATION: {synchronization_required: true}
+  EXISTING_AGENT_START: {synchronization_required: false}
+  EXISTING_AGENT_RESTART: {synchronization_required: false}
+  POST_CONFIGURATION_RESTART: {synchronization_required: false}
+  POST_ROLLBACK_RESTART: {synchronization_required: false}
+existing_agent_mandatory_signals:
+  - EXISTING_CREDENTIALS
+  - FRESH_HARMONY_AUTHENTICATION_AND_EXPECTED_IDENTITY
+  - FRESH_AGENT_SERVICES_CONNECTION
+  - FRESH_REQUEST_FLOW
+  - SUPPORTED_CONNECTIVITY_CHECK_PASS
+  - LOCAL_CORE_SERVICES_HEALTHY
+  - SUPPORT_TOOL_SERVICES_PASS
+rollback_additional_requirement: VERIFIED_ORIGINAL_FILE_STATE
+supporting_signals: [FRESH_HEARTBEAT, FRESH_SYNC_MARKER]
+initial_registration_implementation_changed: false
+support_tools_interface: documented run.sh launcher with allowlisted commands on stdin followed by exit
+launcher_exit_zero_is_not_inner_diagnostic_pass: true
+control_plane_provider: NOT_AUTOMATED
+manual_control_plane_evidence: management-console-running.png
+manual_screenshot_agent_status: Running
+manual_screenshot_capture_time: NOT_PROVIDED
+new_truststore_mutation_allowed: false
+reason: Support Tools service-status has no service rows; read-only recovery gate is UNCONFIRMED.

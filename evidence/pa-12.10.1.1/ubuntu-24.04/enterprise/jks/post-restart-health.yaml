@@ -1,0 +1,17 @@
+schema_version: 1
+run_id: jbpa-enterprise-e62727a23a3f4054a022ec2963f25435
+restart_count_after_import: 1
+poll_timeout_seconds: 300
+fresh_harmony_authenticated: true
+fresh_agent_login: true
+fresh_heartbeat: true
+fresh_agent_services_connected: true
+fresh_request_flow: true
+fresh_synchronization_marker: false
+local_process_engine_running: true
+local_scheduler_running: true
+local_file_cleanup_running: true
+local_verbose_log_shipper_running: true
+local_all_services_running: true
+full_health_gate: FAIL_NO_FRESH_SYNCHRONIZATION_MARKER
+source: sanitized agent log milestones and jitterbit status

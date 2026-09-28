@@ -1,0 +1,2 @@
+e78fb451ab17f2d1fe11801a846542129661ceae3e7b464ab483e3cd245c4c19  /opt/jitterbit/jre/lib/security/cacerts
+7a33aaf51d8460f3e57956e90a8fe179188e9c82578555020881f5cd48c4274b  /var/lib/jbpa/backups/jbpa-enterprise-22b9a288348842639341de5c6c7e8fb1/cacerts

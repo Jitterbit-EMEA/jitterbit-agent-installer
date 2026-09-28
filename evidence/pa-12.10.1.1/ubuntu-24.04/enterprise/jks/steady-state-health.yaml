@@ -1,0 +1,34 @@
+schema_version: 1
+phase: 2F.1B
+source: requalification-dry-run.json
+health:
+  agentIdentityConfirmed: true
+  agentServicesConnected: true
+  autoRegistrationCompleted: true
+  connectionCheck: true
+  credentialsPresent: true
+  freshSynchronizationObserved: false
+  harmonyAuthenticated: true
+  heartbeatObserved: true
+  historicalSynchronizationObserved: true
+  localCoreServices: true
+  logSinceUtc: null
+  profile: STEADY_STATE_EXISTING_AGENT
+  requestFlowStarted: true
+  rollbackFileVerified: null
+  runtimeLogEvidenceScope: SUPPORTING_HISTORY
+  serviceStatus:
+    classification: SERVICE_STATUS_UNAVAILABLE
+    launcherExitCode: 0
+    rowsReturned: 0
+    sanitizedHeader: Command | Pid | Start time | %CPU | %MEM | Full command
+    status: UNAVAILABLE
+  serviceStatusMandatory: false
+  status: HEALTHY
+  synchronizationRequired: false
+  synchronizationState: NOT_REQUIRED_STEADY_STATE
+original_store_hash_matched: true
+restart_performed: false
+note: Historical synchronization is supporting history, not a fresh restart event.
+  The initial steady-state-health.json snapshot used a fresh-named field for that
+  history; corrected metadata is preserved here.

@@ -1,0 +1,19 @@
+GATE_10: PENDING
+GATE_13: PENDING
+bounded_credential_scan: PASS
+current_passed: 279
+decision: BUILT_ADAPTER
+external_agent_found: false
+failed: 0
+final_affected_suite: 27 PASS
+full_suite: PASS
+lint: PASS
+live_azure_mutation: false
+new_provisioning_tests: 27
+previous_baseline: 252
+schema_version: '1.0'
+schemas_catalogue_contracts: PASS
+scope: LOCAL_UNIT_FAKE_ONLY
+shellcheck: SKIPPED_NOT_INSTALLED
+shfmt: SKIPPED_NOT_INSTALLED
+status: PASS

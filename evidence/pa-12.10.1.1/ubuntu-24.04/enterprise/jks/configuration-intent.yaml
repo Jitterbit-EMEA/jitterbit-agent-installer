@@ -1,0 +1,16 @@
+schema_version: 1
+branch: truststore
+default_enabled: false
+qa_alias: PENDING_CERTIFICATE_DETAILS
+qa_certificate_path: PENDING_USER_DETAILS
+certificate_sha256_fingerprint: PENDING_USER_DETAILS
+mutation_order:
+  - validate_bundled_runtime_store_certificate_and_alias
+  - create_root_private_backup
+  - import_with_bundled_keytool_without_prompt
+  - validate_alias_fingerprint_and_store
+  - restart_once_if_changed
+  - validate_harmony_agent_services_synchronization_and_local_health
+  - rerun_for_idempotency
+rollback_on_failed_postcheck: restore_backup_restart_and_validate
+live_execution: PENDING_QA_CERTIFICATE_PATH

@@ -1,0 +1,29 @@
+observedAtUtc: '2026-09-25'
+target: JBLAB-PA-AUTOMATION
+previousPackage:
+  name: jitterbit-agent
+  version: 12.9.2.2
+  dpkgStatus: deinstall ok config-files
+  installed: false
+productTree:
+  path: /opt/jitterbit
+  owner: jitterbit
+  group: jitterbit
+  mode: '0755'
+  sizeApproximate: 552M
+  topLevelEntries: [telegraf, pgbouncer, DataInterchange, apache, jitterbit.conf.pkg, Connectors-, log, Connectors, CleanupRules.xml.pkg, pgbouncer_old, pgsql, scripts, tomcat, JdbcDrivers.conf.pkg, Resources]
+registrationFiles:
+  credentials:
+    path: /opt/jitterbit/Resources/credentials.txt
+    present: true
+    owner: jitterbit
+    group: jitterbit
+    mode: '0640'
+    sizeBytes: 216
+    mtimeUtc: '2026-09-23 10:40:01.901414617 +0000'
+  register:
+    path: /opt/jitterbit/Resources/register.json
+    present: false
+decision: STALE_PRODUCT_TREE_REMOVED
+reason: Previous package is absent but a 552M PA 12.9.2.2 tree and registration credential remain on the disposable regression VM; a fresh-install baseline requires their removal.
+secretContentsCaptured: false

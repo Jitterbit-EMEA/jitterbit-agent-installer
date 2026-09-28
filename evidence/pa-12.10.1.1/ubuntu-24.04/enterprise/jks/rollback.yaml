@@ -1,0 +1,28 @@
+schema_version: 1
+run_id: jbpa-enterprise-e62727a23a3f4054a022ec2963f25435
+trigger: POST_IMPORT_HEALTH_TIMEOUT_NO_FRESH_SYNCHRONIZATION_MARKER
+executed: true
+truststore_backup_restored: true
+original_sha256: 7a33aaf51d8460f3e57956e90a8fe179188e9c82578555020881f5cd48c4274b
+restored_sha256: 7a33aaf51d8460f3e57956e90a8fe179188e9c82578555020881f5cd48c4274b
+restored_hash_match: true
+restored_size_bytes: 189920
+restored_owner: root
+restored_group: root
+restored_mode: '0644'
+alias_after_restore: ALIAS_ABSENT
+restart_count_after_restore: 1
+fresh_harmony_authenticated: true
+fresh_agent_login: true
+fresh_heartbeat: true
+fresh_agent_services_connected: true
+fresh_request_flow: true
+fresh_synchronization_marker: false
+local_services: ALL_FOUR_RUNNING
+package_status: install ok installed
+credentials_file_present: true
+registration_file_present: false
+full_recovery_gate: FAIL_NO_FRESH_SYNCHRONIZATION_MARKER
+workflow_result: JKS_ROLLBACK_FAILED
+interpretation: Store restoration and local runtime passed; post-restart synchronization remains unverified.
+final_read_only_check_utc: '2026-09-25T21:37:52Z'

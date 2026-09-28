@@ -1,0 +1,15 @@
+schema_version: "1.0"
+observed_at_utc: "2026-09-26T23:58:02.752925+00:00"
+evidence_scope: LOCAL_RELEASE_VERIFICATION
+jbpa_version: 1.0.0-rc1
+archive: dist/jbpa-1.0.0-rc1.tar.gz
+expected_sha256: 5a18ba2bbc87efdb5a9aa671a1fa6d87575f2446981d00814c27b847efc7eacd
+actual_sha256: 5a18ba2bbc87efdb5a9aa671a1fa6d87575f2446981d00814c27b847efc7eacd
+hash_match: true
+verification_status: VERIFIED
+verified_files: 75
+rebuilt: false
+release_source_modified: false
+guest_download: NOT_RUN
+guest_hash_verification: NOT_RUN
+guest_installation: NOT_RUN

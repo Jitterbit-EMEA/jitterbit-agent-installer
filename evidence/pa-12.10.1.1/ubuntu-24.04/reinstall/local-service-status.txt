@@ -1,0 +1,5 @@
+JitterbitProcessEngine is running with PID 14130
+JitterbitScheduler is running with PID 14232
+JitterbitFileCleanup is running with PID 14550
+JitterbitVerboseLogShipper is running with PID 14288
+All services are running

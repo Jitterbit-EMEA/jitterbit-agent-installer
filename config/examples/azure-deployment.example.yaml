@@ -1,0 +1,55 @@
+schema_version: "1.0"
+azure:
+  subscription_id: null
+  resource_group:
+    name: null
+    create: false
+  region: null
+  network:
+    resource_group: null
+    vnet: {name: null, create: false, cidr: null}
+    subnet: {name: null, create: false, cidr: null}
+    nsg_resource_id: null
+    public_ip: false
+  vm:
+    name: null
+    image:
+      publisher: Canonical
+      offer: 0001-com-ubuntu-server-jammy
+      sku: 22_04-lts-gen2
+      version: latest
+    size: null
+    os_disk: {size_gb: null, sku: null}
+    admin: {username: null, ssh_public_key_file: null}
+    qa_sizing_exception: false
+    zone: null
+  identity:
+    type: null
+    user_assigned_identity_resource_id: null
+  key_vault:
+    resource_id: null
+    secret_references: []
+    grant_permissions: false
+  release_delivery:
+    type: null
+    storage_account: null
+    container: null
+    blob: null
+    wrapper_blob: null
+    config_blob: null
+    archive_url: null
+    wrapper_url: null
+    config_url: null
+    storage_scope_resource_id: null
+    grant_permissions: false
+    jbpa_sha256: null
+    local_archive: null
+    local_agent_config: null
+  tags: {}
+jbpa:
+  version: "1.0.0-rc2"
+  operation: INSTALL
+  pa_version: "12.10"
+  allow_unqualified: true
+cleanup:
+  on_failure: false

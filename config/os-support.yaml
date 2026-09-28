@@ -1,0 +1,26 @@
+schema_version: 1
+platforms:
+  - os_id: ubuntu
+    os_version: "24.04"
+    architecture: x86_64
+    package_kind: deb
+    package_manager: apt
+    agent_versions: ["12.9", "12.9.2.2", "12.10"]
+    minimum:
+      cpu_count: 4
+      memory_bytes: 8000000000
+      disk_total_bytes: 50000000000
+    evidence_refs: [LIVE-PA-1292-U2404]
+    runtime_validation: passed
+  - os_id: ubuntu
+    os_version: "22.04"
+    architecture: x86_64
+    package_kind: deb
+    package_manager: apt
+    agent_versions: ["12.10"]
+    minimum:
+      cpu_count: 4
+      memory_bytes: 8000000000
+      disk_total_bytes: 50000000000
+    evidence_refs: [J02]
+    runtime_validation: not_run

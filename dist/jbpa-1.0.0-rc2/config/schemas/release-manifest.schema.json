@@ -1,0 +1,97 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "type": "object",
+  "required": [
+    "schemaVersion",
+    "jbpaVersion",
+    "releaseStatus",
+    "schemaVersions",
+    "recommendedPA",
+    "latestTestedPA",
+    "latestAvailablePinnedPA",
+    "testedPackages",
+    "testedPlatforms",
+    "runtimeScopes",
+    "productionApproved",
+    "pythonRequirement",
+    "files"
+  ],
+  "properties": {
+    "schemaVersion": {
+      "const": "1.0"
+    },
+    "jbpaVersion": {
+      "type": "string",
+      "pattern": "^\\d+\\.\\d+\\.\\d+(?:-rc\\d+)?$"
+    },
+    "releaseStatus": {
+      "const": "RELEASE_CANDIDATE_QA"
+    },
+    "schemaVersions": {
+      "type": "object",
+      "required": [
+        "config",
+        "result",
+        "catalogue",
+        "runtimeContract",
+        "artifactManifest"
+      ],
+      "additionalProperties": false,
+      "properties": {
+        "config": {
+          "const": "1.0"
+        },
+        "result": {
+          "const": "1.0"
+        },
+        "catalogue": {
+          "const": "2.0"
+        },
+        "runtimeContract": {
+          "const": "1.0"
+        },
+        "artifactManifest": {
+          "const": "1.0"
+        }
+      }
+    },
+    "recommendedPA": {
+      "type": "string"
+    },
+    "latestTestedPA": {
+      "type": "string"
+    },
+    "latestAvailablePinnedPA": {
+      "type": "string"
+    },
+    "testedPackages": {
+      "type": "array",
+      "items": {
+        "type": "string"
+      }
+    },
+    "testedPlatforms": {
+      "type": "array",
+      "items": {
+        "type": "object"
+      }
+    },
+    "runtimeScopes": {
+      "type": "object"
+    },
+    "productionApproved": {
+      "const": false
+    },
+    "pythonRequirement": {
+      "const": ">=3.10"
+    },
+    "files": {
+      "type": "object",
+      "additionalProperties": {
+        "type": "string",
+        "pattern": "^[a-f0-9]{64}$"
+      }
+    }
+  },
+  "additionalProperties": false
+}

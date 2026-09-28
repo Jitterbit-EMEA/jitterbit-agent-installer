@@ -1,0 +1,16 @@
+{
+  "status": "PASS",
+  "version": "1.0.0-rc2",
+  "sha256": "68fa05cc43577a15f948c81a6e56e8d2b725d66d969934ec3f2eb6316e3266da",
+  "verified_files": 79,
+  "rebuilt": false,
+  "archive_sidecar_staged_manifest_consistent": true,
+  "excluded_runtime_paths": [
+    "bin/jbpa-azure",
+    "bin/jbpa-handoff",
+    "azure/provisioning/adapter.py",
+    "tools/handoff/caller.py",
+    "tools/handoff/request.schema.json"
+  ],
+  "guest_verification": "NOT_RUN"
+}

@@ -1,0 +1,13 @@
+observedAtUtc: '2026-09-25'
+target: JBLAB-PA-AUTOMATION
+cleanupClassification: STALE_PRODUCT_TREE_REMOVED
+previousPackagePurged: true
+previousPackageInstalled: false
+staleCredentialsPresent: false
+staleRegisterPresent: false
+staleProductTreePresent: false
+cleanBaseline: PASS
+notes:
+  - Previous 12.9.2.2 package was in deinstall ok config-files state before purge.
+  - Purge reported an odbcinst post-uninstall warning because odbcinst was absent; dpkg purge completed and the old product tree was removed.
+  - No credential or registration file contents were read or retained.

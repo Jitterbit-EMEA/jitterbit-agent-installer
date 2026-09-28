@@ -1,0 +1,15 @@
+schema_version: 1
+observed_on: "2026-09-25"
+inspection_host: JBLAB-PA-AUTOMATION
+inspection_method: dpkg-deb --field
+file: /home/azureuser/jitterbit-agent_12.10.1.1_amd64.deb
+byte_size: 660897206
+sha256: 604bec9889c49167328b93d032bb9d8580f758eb70c3d1dd42dfda23db974ee8
+package: jitterbit-agent
+version: 12.10.1.1
+architecture: amd64
+depends: [odbcinst, unixodbc]
+recommends: [python, unzip, tar, sudo, uuid-runtime]
+metadata_validation: PASS
+installation_performed: true
+installed_package_status: install ok installed

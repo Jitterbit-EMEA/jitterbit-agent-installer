@@ -1,0 +1,15 @@
+observed_at_utc: '2026-09-27T12:00:28.091651+00:00'
+requested_run_mode: LIVE_AZURE_INTEGRATION
+actual_run_mode: LOCAL_PREPARATION_ONLY
+phase_status: PARTIAL
+live_dispatch: NOT_RUN
+new_vm_created: false
+existing_ubuntu24_qa_mutated: false
+actual_external_agent_source: null
+manual_guest_invocation: false
+missing_inputs:
+- Separate provisioning-agent repository or callable endpoint and invocation instructions
+- Approved Azure environment and release-delivery configuration
+failure_classification: null
+reason: Required external integration inputs absent; no provisioning attempt or runtime
+  failure occurred

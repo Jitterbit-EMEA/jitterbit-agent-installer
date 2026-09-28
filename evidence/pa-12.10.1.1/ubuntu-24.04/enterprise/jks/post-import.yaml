@@ -1,0 +1,16 @@
+schema_version: 1
+run_id: jbpa-enterprise-e62727a23a3f4054a022ec2963f25435
+keytool_path: /opt/jitterbit/jre/bin/keytool
+keytool_import_exit_code: 0
+keytool_stdout: SANITIZED_NOT_RETAINED
+keytool_stderr: SANITIZED_NOT_RETAINED
+alias: qa-jitterbitlabs-uk-origin
+alias_initial_state: ALIAS_ABSENT
+alias_after_import: ALIAS_PRESENT_MATCH
+source_fingerprint: f9c3d6035c60882fd636475baa39611d3b44c873fd29cdce40bc9c504d672525
+stored_fingerprint_match: true
+baseline_truststore_sha256: 7a33aaf51d8460f3e57956e90a8fe179188e9c82578555020881f5cd48c4274b
+post_import_truststore_sha256: e78fb451ab17f2d1fe11801a846542129661ceae3e7b464ab483e3cd245c4c19
+truststore_changed: true
+restart_required: true
+qualification_result: FAILED_POST_RESTART_HEALTH_GATE

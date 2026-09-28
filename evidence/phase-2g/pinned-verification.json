@@ -1,0 +1,43 @@
+{
+  "artifact": {
+    "qualification": null
+  },
+  "category": "CONFIGURATION_ERROR",
+  "details": {
+    "error": {
+      "exitCode": 2,
+      "message": "Configuration or arguments are invalid",
+      "name": "CONFIG_INVALID",
+      "phase": "CONFIG",
+      "retryable": false
+    }
+  },
+  "enterpriseConfiguration": {},
+  "error": {
+    "category": "CONFIGURATION_ERROR",
+    "exitCode": 2,
+    "message": "Configuration or arguments are invalid",
+    "name": "CONFIG_INVALID",
+    "phase": "CONFIG",
+    "retryable": false
+  },
+  "health": {
+    "harmonyConfirmed": null,
+    "scope": null,
+    "serviceRunning": null
+  },
+  "operation": "ARTIFACT",
+  "platform": {},
+  "registration": {
+    "harmonyRegistered": null
+  },
+  "runId": "jbpa-513eadb0268a4a5bac0978761a007ae5",
+  "schemaVersion": "1.0",
+  "state": "FAILED",
+  "status": "FAILED",
+  "versions": {
+    "jbpa": "1.0.0-rc1",
+    "requestedPA": null,
+    "resolvedPA": null
+  }
+}

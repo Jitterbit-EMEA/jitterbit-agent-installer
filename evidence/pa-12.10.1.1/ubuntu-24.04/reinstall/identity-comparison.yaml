@@ -1,0 +1,16 @@
+schema_version: 1
+previous:
+  agent_id: null
+  status: OLD_AGENT_IDENTITY_NOT_AVAILABLE
+  source: previous sanitized Phase 2C evidence
+reinstalled:
+  agent_id: '646830'
+  agent_group_id: '678370'
+  display_name: null
+comparison:
+  same_agent_id: null
+  identity_distinct: UNVERIFIED_OLD_ID_UNAVAILABLE
+  stale_credentials_reused: false
+  new_registration_confirmed: true
+  old_harmony_record_removed: false
+  old_harmony_record_state: NOT_OBSERVED

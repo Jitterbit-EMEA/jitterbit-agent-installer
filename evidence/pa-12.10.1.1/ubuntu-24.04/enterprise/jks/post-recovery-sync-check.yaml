@@ -1,0 +1,9 @@
+schema_version: 1
+checked_at_utc: '2026-09-25T21:44:02Z'
+method: read-only search of agent log for group synchronization markers
+agent_group_id: '678370'
+last_sync_started_utc: '2026-09-25T19:57:39Z'
+last_sync_completed_utc: '2026-09-25T19:58:34Z'
+new_sync_marker_after_import_restart: false
+new_sync_marker_after_recovery_restart: false
+interpretation: The only observed synchronization predates the Phase 2F.1 live import.

@@ -1,0 +1,11 @@
+{
+  "schemaVersion": "1.0",
+  "target": "existing-agent.example",
+  "operation": "UNINSTALL",
+  "jbpaVersion": "1.0.0-rc3",
+  "paVersion": "12.10",
+  "configPath": "/etc/jbpa/agent.yaml",
+  "resultPath": "/var/lib/jbpa/results/uninstall-new.json",
+  "allowUnqualified": false,
+  "controlledTest": false
+}

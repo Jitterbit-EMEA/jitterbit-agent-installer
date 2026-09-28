@@ -1,0 +1,29 @@
+{
+  "agentSupportToolsAbout": {
+    "Agent_Group_Name": "7-Automated Infrastructure",
+    "Agent_Name": "automated-agent_2026-09-25 19:57:36.923",
+    "VersionNumber": "12.10.1.1"
+  },
+  "controlPlaneStatus": "NOT_AUTOMATED",
+  "evaluatedAtUtc": "2026-09-26T02:40:30.254103+00:00",
+  "health": {
+    "agentServicesConnected": true,
+    "autoRegistrationCompleted": false,
+    "connectionCheck": true,
+    "credentialsPresent": true,
+    "freshSynchronizationObserved": false,
+    "harmonyAuthenticated": true,
+    "heartbeatObserved": true,
+    "localCoreServices": true,
+    "profile": "POST_ROLLBACK_RESTART",
+    "requestFlowStarted": true,
+    "rollbackFileVerified": true,
+    "status": "UNCONFIRMED",
+    "supportToolServices": null,
+    "synchronizationRequired": false,
+    "synchronizationState": "FRESH_SYNC_MARKER_NOT_OBSERVED"
+  },
+  "logSinceUtc": "2026-09-25T21:32:40+00:00",
+  "schemaVersion": 1,
+  "truststoreHashMatchedExpected": true
+}

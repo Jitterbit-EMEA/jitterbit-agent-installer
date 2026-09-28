@@ -1,0 +1,45 @@
+{
+  "agent_group_id": "678370",
+  "agent_id": "646830",
+  "agent_log_present": true,
+  "credentials": {
+    "exists": true,
+    "group": "jitterbit",
+    "mode": "0o640",
+    "mtime_epoch": 1790366256.9950013,
+    "owner": "jitterbit"
+  },
+  "installer_error_line_count": 6,
+  "installer_log_present": true,
+  "jitterbit_user_present": true,
+  "markers": {
+    "AGENT_LOGGED_IN": "2026-09-25 19:57:39",
+    "AGENT_SERVICES_CONNECTED": "2026-09-25 19:57:40",
+    "AGENT_SYNCHRONIZED": "2026-09-25 19:57:39",
+    "AUTO_REGISTRATION_COMPLETED": "2026-09-25 19:57:36",
+    "AUTO_REGISTRATION_STARTED": "2026-09-25 19:57:35",
+    "CREDENTIALS_CREATED": "2026-09-25 19:57:36",
+    "HARMONY_AUTHENTICATED": "2026-09-25 19:57:39",
+    "HEARTBEAT_STARTED": "2026-09-25 19:58:34",
+    "REQUEST_FLOW_STARTED": "2026-09-25 19:57:41"
+  },
+  "package": "jitterbit-agent|12.10.1.1|amd64|install ok installed",
+  "package_query_exit_code": 0,
+  "product_paths": {
+    "": true,
+    "Resources": true,
+    "bin": true,
+    "jre": true,
+    "log": true,
+    "pgsql": true
+  },
+  "register_json_present_after_success": false,
+  "service_status": [
+    "JitterbitProcessEngine is running with PID 14130",
+    "JitterbitScheduler is running with PID 14232",
+    "JitterbitFileCleanup is running with PID 14550",
+    "JitterbitVerboseLogShipper is running with PID 14288",
+    "All services are running"
+  ],
+  "status_exit_code": 0
+}

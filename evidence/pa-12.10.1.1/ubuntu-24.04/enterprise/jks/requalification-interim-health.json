@@ -1,0 +1,39 @@
+{
+  "agentSupportToolsAbout": {
+    "Agent_Group_Name": "7-Automated Infrastructure",
+    "Agent_Name": "automated-agent_2026-09-25 19:57:36.923",
+    "VersionNumber": "12.10.1.1"
+  },
+  "controlPlaneStatus": "NOT_AUTOMATED",
+  "evaluatedAtUtc": "2026-09-26T03:14:26.811936+00:00",
+  "health": {
+    "agentIdentityConfirmed": null,
+    "agentServicesConnected": true,
+    "autoRegistrationCompleted": false,
+    "connectionCheck": true,
+    "credentialsPresent": true,
+    "freshSynchronizationObserved": false,
+    "harmonyAuthenticated": true,
+    "heartbeatObserved": true,
+    "localCoreServices": true,
+    "logSinceUtc": "2026-09-26T03:10:27+00:00",
+    "profile": "POST_CONFIGURATION_RESTART",
+    "requestFlowStarted": true,
+    "rollbackFileVerified": null,
+    "runtimeLogEvidenceScope": "AFTER_EVENT_T0",
+    "serviceStatus": {
+      "classification": "SERVICE_STATUS_UNAVAILABLE",
+      "launcherExitCode": 0,
+      "rowsReturned": 0,
+      "sanitizedHeader": "Command | Pid | Start time | %CPU | %MEM | Full command",
+      "status": "UNAVAILABLE"
+    },
+    "serviceStatusMandatory": false,
+    "status": "HEALTHY",
+    "synchronizationRequired": false,
+    "synchronizationState": "FRESH_SYNC_MARKER_NOT_OBSERVED"
+  },
+  "logSinceUtc": "2026-09-26T03:10:27+00:00",
+  "schemaVersion": 1,
+  "truststoreHashMatchedExpected": null
+}

@@ -1,0 +1,14 @@
+schema_version: 1
+phase: 2F.1A
+second_live_import_executed: false
+new_backup_created: false
+restart_performed: false
+idempotency_executed: false
+reason: Corrected read-only recovery gate remains UNCONFIRMED because AgentSupportTools service-status supplies no service rows.
+certificate_mode: JAVA_TRUSTSTORE_EXPLICIT_ENDPOINT_TRUST
+certificate_is_ca: false
+JAVA_TRUSTSTORE_CERTIFICATE_IMPORT: NOT_TESTED_LIVE
+EXPLICIT_ENDPOINT_TRUST: NOT_TESTED_LIVE
+CUSTOM_CA: NOT_TESTED_WITH_THIS_CERTIFICATE
+final_truststore_hash: 7a33aaf51d8460f3e57956e90a8fe179188e9c82578555020881f5cd48c4274b
+test_alias: ABSENT_IN_EXACT_RESTORED_STORE

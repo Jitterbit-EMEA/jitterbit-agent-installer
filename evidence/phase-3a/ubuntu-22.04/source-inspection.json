@@ -1,0 +1,32 @@
+{
+  "observedAtUtc": "2026-09-26T23:58:02.752925+00:00",
+  "scope": "KNOWN_REPOSITORY_ONLY",
+  "repository": "/Users/dharish.sewraj/Documents/Projects/AI Engineer - MS Azure/infra-master",
+  "filesInspectedOrInventoried": [
+    "AGENTS.md",
+    "CLAUDE.md",
+    "HANDOVER.md",
+    "README.md",
+    "bump-version.sh",
+    "demo/hello-world-plan.json",
+    "docs/azure-ai-engineer-solution.md",
+    "docs/hello-world-demo.md",
+    "infra/environments/hello-world-network.bicep",
+    "scripts/azure-ai-hello-world.sh",
+    "scripts/install-macos-apple-silicon.sh",
+    "tmp/hello-world/deployment.json",
+    "tmp/hello-world/normalized-plan.json",
+    "tmp/hello-world/parameters.json",
+    "tmp/hello-world/vnet-inventory.json",
+    "tmp/hello-world/what-if.txt",
+    "version.json"
+  ],
+  "implementation": "VNET_SUBNET_LOCAL_ORCHESTRATION",
+  "vmProvisioningAgentFound": false,
+  "evidence": {
+    "readme": "README.md lines 5-9 explicitly describes VNet/subnet only and hosted agent not implemented",
+    "implementation": "scripts/azure-ai-hello-world.sh and infra/environments/hello-world-network.bicep"
+  },
+  "limitation": "Does not establish that no implementation exists elsewhere; source/tool endpoint has been requested.",
+  "externalRepositoryModified": false
+}

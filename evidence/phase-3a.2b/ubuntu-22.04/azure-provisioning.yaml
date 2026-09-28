@@ -1,0 +1,14 @@
+phase_status: PARTIAL
+run_state: BLOCKED_MISSING_APPROVED_CONFIG
+live_config_supplied: false
+schema_live: NOT_RUN
+plan_live: NOT_RUN
+azure_authenticated: NOT_RUN
+execute: NOT_RUN
+resources_created: false
+vm_created: false
+existing_ubuntu24_qa_mutated: false
+new_agent_observed: false
+qualification_promoted: false
+GATE_10: PENDING
+GATE_13: PENDING

@@ -1,0 +1,26 @@
+schema_version: 1
+timezone: UTC
+bootstrap_start: '2026-09-25T19:55:15.775524+00:00'
+dependencies:
+  status: all_preinstalled
+  duration_seconds: NOT_INSTRUMENTED
+package:
+  dpkg_install_start: '2026-09-25T19:55:29+00:00'
+  dpkg_installed: '2026-09-25T19:56:22+00:00'
+  duration_seconds: 53
+restart:
+  count: 1
+  exact_t0: NOT_INSTRUMENTED
+  to_agent_log_available_seconds: 55.007
+  to_healthy_completion_seconds: 115.191
+runtime_events:
+  AGENT_LOGGED_IN: 2026-09-25 19:57:39 UTC
+  AGENT_SERVICES_CONNECTED: 2026-09-25 19:57:40 UTC
+  AGENT_SYNCHRONIZED: 2026-09-25 19:57:39 UTC
+  AUTO_REGISTRATION_COMPLETED: 2026-09-25 19:57:36 UTC
+  AUTO_REGISTRATION_STARTED: 2026-09-25 19:57:35 UTC
+  CREDENTIALS_CREATED: 2026-09-25 19:57:36 UTC
+  HARMONY_AUTHENTICATED: 2026-09-25 19:57:39 UTC
+  HEARTBEAT_STARTED: 2026-09-25 19:58:34 UTC
+  REQUEST_FLOW_STARTED: 2026-09-25 19:57:41 UTC
+total_bootstrap_to_healthy_seconds: NOT_INSTRUMENTED

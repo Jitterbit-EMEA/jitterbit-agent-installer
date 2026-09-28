@@ -1,0 +1,15 @@
+{
+  "unchanged_proven_components": [
+    "native_linux.py",
+    "restart_health.py",
+    "health.py",
+    "pending_operations.py",
+    "enterprise.py",
+    "azure_identity.py"
+  ],
+  "new_operations": [
+    "REINSTALL"
+  ],
+  "expanded_boundary": "HOST_READINESS",
+  "live_validation": "NOT_RUN"
+}

@@ -1,0 +1,62 @@
+{
+  "drain": {
+    "drainPauseUsed": false,
+    "drainStopUsed": false,
+    "finalActiveOperations": null,
+    "forcedStopUsed": false,
+    "initialActiveOperations": null,
+    "operationCounts": []
+  },
+  "error": null,
+  "final": {
+    "commandPathsPresent": [],
+    "credentialsPresent": false,
+    "packageStatus": null,
+    "postgresDataPresent": false,
+    "postgresRuntimePresent": false,
+    "processCount": 0,
+    "registerPresent": false,
+    "rootPresent": false,
+    "startupPathsPresent": [],
+    "userPresent": false
+  },
+  "frameworkVersion": "0.3.0",
+  "harmony": {
+    "expectedState": "STOPPED_OR_EXISTING",
+    "removalRequested": false,
+    "status": "HARMONY_REMOVAL_NOT_REQUESTED"
+  },
+  "initial": {
+    "commandPathsPresent": [],
+    "credentialsPresent": false,
+    "packageStatus": null,
+    "postgresDataPresent": false,
+    "postgresRuntimePresent": false,
+    "processCount": 0,
+    "registerPresent": false,
+    "rootPresent": false,
+    "startupPathsPresent": [],
+    "userPresent": false
+  },
+  "localUninstall": {
+    "commandsRemaining": false,
+    "jitterbitRootRemoved": true,
+    "packageRemoved": true,
+    "postgresRemoved": true,
+    "processesRemaining": false,
+    "registrationStateRemoved": true,
+    "startupIntegrationRemaining": false,
+    "userRemoved": true
+  },
+  "operation": "UNINSTALL",
+  "plan": [],
+  "runId": "jbpa-e4941f1f82ed4b73a724127fb64c8958",
+  "state": "LOCAL_UNINSTALL_COMPLETE",
+  "stateHistory": [
+    "UNINSTALL_INITIALIZED",
+    "CURRENT_STATE_CAPTURED",
+    "LOCAL_UNINSTALL_COMPLETE"
+  ],
+  "status": "ALREADY_UNINSTALLED",
+  "timestamp": "2026-09-25T19:39:35.558692+00:00"
+}

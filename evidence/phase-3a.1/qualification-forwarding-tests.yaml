@@ -1,0 +1,23 @@
+status: PASS
+scope: LOCAL_UNIT_MOCK_ONLY
+new_tests: 16
+previous_baseline: 236
+current_passed: 252
+failed: 0
+default_override_enabled: false
+bootstrap_true_forwarded_once: true
+bootstrap_false_omitted: true
+strict_boolean_caller: true
+ubuntu22_default: DENIED
+ubuntu22_explicit: ALLOWED_TO_QUALIFY
+ubuntu24_tested: NORMAL
+historical_default: DENIED
+historical_explicit: EXPERIMENTAL_PATH
+latest_exact_package_enforced: true
+mock_promotion_removes_override_requirement: true
+catalogue_promoted: false
+artifact_and_architecture_failures_propagate_before_mutation: true
+config_validation_enforced: true
+result_audit_metadata: true
+argument_injection_test: PASS
+invocation_fixture: Stops with exit 51, never fabricates install success

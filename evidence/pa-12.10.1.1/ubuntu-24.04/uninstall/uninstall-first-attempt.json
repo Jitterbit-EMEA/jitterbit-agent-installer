@@ -1,0 +1,74 @@
+{
+  "drain": {
+    "drainPauseUsed": true,
+    "drainStopUsed": true,
+    "finalActiveOperations": 0,
+    "forcedStopUsed": false,
+    "initialActiveOperations": 0,
+    "operationCounts": []
+  },
+  "error": {
+    "exitCode": 74,
+    "message": "Agent did not stop in time",
+    "name": "DRAIN_STOP_TIMEOUT",
+    "phase": "UNINSTALL",
+    "retryable": true
+  },
+  "final": null,
+  "frameworkVersion": "0.3.0",
+  "harmony": {
+    "expectedState": "STOPPED_OR_EXISTING",
+    "removalRequested": false,
+    "status": "HARMONY_REMOVAL_NOT_REQUESTED"
+  },
+  "initial": {
+    "commandPathsPresent": [
+      "/usr/bin/jitterbit",
+      "/usr/bin/jitterbit-config",
+      "/usr/bin/jitterbit-utils"
+    ],
+    "credentialsPresent": true,
+    "packageStatus": "install ok installed|12.10.1.1",
+    "postgresDataPresent": true,
+    "postgresRuntimePresent": true,
+    "processCount": 97,
+    "registerPresent": false,
+    "rootPresent": true,
+    "startupPathsPresent": [
+      "/etc/init.d/jitterbit",
+      "/etc/sysconfig/jitterbit",
+      "/etc/rc4.d/S01jitterbit",
+      "/etc/rc0.d/K01jitterbit",
+      "/etc/rc5.d/S01jitterbit",
+      "/etc/rc1.d/K01jitterbit",
+      "/etc/rc3.d/S01jitterbit",
+      "/etc/rc6.d/K01jitterbit",
+      "/etc/rc2.d/S01jitterbit"
+    ],
+    "userPresent": true
+  },
+  "localUninstall": {
+    "commandsRemaining": null,
+    "jitterbitRootRemoved": false,
+    "packageRemoved": false,
+    "postgresRemoved": false,
+    "processesRemaining": null,
+    "registrationStateRemoved": false,
+    "startupIntegrationRemaining": null,
+    "userRemoved": false
+  },
+  "operation": "UNINSTALL",
+  "plan": [],
+  "runId": "jbpa-9e44c3df29cf49d1992ea24b07480c4d",
+  "state": "DRAIN_STOP_REQUESTED",
+  "stateHistory": [
+    "UNINSTALL_INITIALIZED",
+    "CURRENT_STATE_CAPTURED",
+    "ACTIVE_OPERATION_CHECK_COMPLETE",
+    "DRAIN_PAUSE_REQUESTED",
+    "OPERATIONS_DRAINED",
+    "DRAIN_STOP_REQUESTED"
+  ],
+  "status": "FAILED",
+  "timestamp": "2026-09-25T19:20:42.909801+00:00"
+}

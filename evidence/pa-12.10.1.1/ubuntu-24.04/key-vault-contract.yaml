@@ -1,0 +1,20 @@
+schema_version: 1
+observed_on: "2026-09-25"
+vm: JBLAB-PA-AUTOMATION
+authentication: VM_MANAGED_IDENTITY
+vault: https://jblab-pa-automated.vault.azure.net/
+method: KEY_VAULT_GET_SECRET_VALIDATE_WITHOUT_OUTPUT
+secret_values_recorded: false
+checks:
+  JBLAB-cloudUrl: HTTPS_URL_OK
+  JBLAB-agentGroupId: POSITIVE_INTEGER_OK
+  JBLAB-agentNamePrefix: AGENT_NAME_PATTERN_OK
+  JBLAB-deregisterAgentOnDrainstop: QUALIFIED_FALSE_OK
+  JBLAB-retryCount: QUALIFIED_10_OK
+  JBLAB-retryIntervalSeconds: QUALIFIED_5_OK
+  JBLAB-token: NONEMPTY_OK
+result: PASS
+note: >-
+  This confirms only the qualified field shapes and fixed options. It does not
+  validate Harmony registration, token acceptance, or the exact nonsecret
+  field values, which were not printed or stored.

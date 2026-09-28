@@ -1,0 +1,14 @@
+schema_version: 1
+run_id: jbpa-enterprise-22b9a288348842639341de5c6c7e8fb1
+backup_path: /var/lib/jbpa/backups/jbpa-enterprise-22b9a288348842639341de5c6c7e8fb1/cacerts
+source_sha256: 7a33aaf51d8460f3e57956e90a8fe179188e9c82578555020881f5cd48c4274b
+backup_sha256: 7a33aaf51d8460f3e57956e90a8fe179188e9c82578555020881f5cd48c4274b
+hash_match: true
+source_size_bytes: 189920
+backup_size_bytes: 189920
+owner: root
+group: root
+file_mode: '0600'
+directory_mode: '0700'
+new_backup_created: true
+independent_verification: requalification-final-file-metadata.txt

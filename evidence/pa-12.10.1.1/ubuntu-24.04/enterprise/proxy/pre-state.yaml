@@ -1,0 +1,8 @@
+schema_version: 1
+observed_on: '2026-09-25'
+current_pa_registration: AUTO_REGISTER_TOKEN
+current_pa_proxy: DISABLED
+qa_proxy_endpoint: PENDING_USER_DETAILS
+auto_registration_compatibility: BLOCKED_BY_VENDOR_CONTRACT
+alternate_registration: NOT_QUALIFIED
+mutation_performed: false

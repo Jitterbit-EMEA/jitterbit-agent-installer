@@ -1,0 +1,107 @@
+{
+  "enterpriseConfiguration": {
+    "proxy": {
+      "changed": false,
+      "enabled": false,
+      "status": "SKIPPED"
+    },
+    "ssh": {
+      "changed": false,
+      "enabled": false,
+      "status": "SKIPPED"
+    },
+    "ssl": {
+      "changed": false,
+      "enabled": false,
+      "status": "SKIPPED"
+    },
+    "truststore": {
+      "backup_path": "/var/lib/jbpa/backups/jbpa-enterprise-22b9a288348842639341de5c6c7e8fb1/cacerts",
+      "backup_sha256": "7a33aaf51d8460f3e57956e90a8fe179188e9c82578555020881f5cd48c4274b",
+      "baseline_health": {
+        "agentIdentityConfirmed": true,
+        "agentServicesConnected": true,
+        "autoRegistrationCompleted": true,
+        "connectionCheck": true,
+        "credentialsPresent": true,
+        "freshSynchronizationObserved": false,
+        "harmonyAuthenticated": true,
+        "heartbeatObserved": true,
+        "historicalSynchronizationObserved": true,
+        "localCoreServices": true,
+        "logSinceUtc": null,
+        "profile": "STEADY_STATE_EXISTING_AGENT",
+        "requestFlowStarted": true,
+        "rollbackFileVerified": null,
+        "runtimeLogEvidenceScope": "SUPPORTING_HISTORY",
+        "serviceStatus": {
+          "classification": "SERVICE_STATUS_UNAVAILABLE",
+          "launcherExitCode": 0,
+          "rowsReturned": 0,
+          "sanitizedHeader": "Command | Pid | Start time | %CPU | %MEM | Full command",
+          "status": "UNAVAILABLE"
+        },
+        "serviceStatusMandatory": false,
+        "status": "HEALTHY",
+        "synchronizationRequired": false,
+        "synchronizationState": "NOT_REQUIRED_STEADY_STATE"
+      },
+      "certificates": [
+        {
+          "alias": "qa-jitterbitlabs-uk-origin",
+          "basic_constraints": "CA:FALSE",
+          "certificate_is_ca": false,
+          "certificate_type": "EXPLICIT_TRUSTED_ENDPOINT",
+          "extended_key_usage": "TLS Web Client Authentication, TLS Web Server Authentication",
+          "issuer": "issuer=C = US, O = \"CloudFlare, Inc.\", OU = CloudFlare Origin SSL Certificate Authority, L = San Francisco, ST = California",
+          "key_usage": "Digital Signature, Key Encipherment",
+          "not_after_utc": "2041-06-19T07:11:00+00:00",
+          "not_before_utc": "2026-06-23T07:11:00+00:00",
+          "serial": "serial=10413218D8BC286C95129B8112D3A4E9445ABC75",
+          "sha256_fingerprint": "f9c3d6035c60882fd636475baa39611d3b44c873fd29cdce40bc9c504d672525",
+          "subject": "subject=O = \"CloudFlare, Inc.\", OU = CloudFlare Origin CA, CN = CloudFlare Origin Certificate",
+          "subject_alternative_names": "DNS:*.jitterbitlabs.uk, DNS:jitterbitlabs.uk"
+        }
+      ],
+      "changed": true,
+      "enabled": true,
+      "original_sha256": "7a33aaf51d8460f3e57956e90a8fe179188e9c82578555020881f5cd48c4274b",
+      "post_restart_health": {
+        "agentIdentityConfirmed": null,
+        "agentServicesConnected": true,
+        "autoRegistrationCompleted": false,
+        "connectionCheck": true,
+        "credentialsPresent": true,
+        "freshSynchronizationObserved": false,
+        "harmonyAuthenticated": true,
+        "heartbeatObserved": true,
+        "localCoreServices": true,
+        "logSinceUtc": "2026-09-26T03:11:12+00:00",
+        "profile": "POST_CONFIGURATION_RESTART",
+        "requestFlowStarted": true,
+        "rollbackFileVerified": null,
+        "runtimeLogEvidenceScope": "AFTER_EVENT_T0",
+        "serviceStatus": {
+          "classification": "SERVICE_STATUS_UNAVAILABLE",
+          "launcherExitCode": 0,
+          "rowsReturned": 0,
+          "sanitizedHeader": "Command | Pid | Start time | %CPU | %MEM | Full command",
+          "status": "UNAVAILABLE"
+        },
+        "serviceStatusMandatory": false,
+        "status": "HEALTHY",
+        "synchronizationRequired": false,
+        "synchronizationState": "FRESH_SYNC_MARKER_NOT_OBSERVED"
+      },
+      "post_sha256": "e78fb451ab17f2d1fe11801a846542129661ceae3e7b464ab483e3cd245c4c19",
+      "restart_count": 1,
+      "restart_performed": true,
+      "restart_required": true,
+      "status": "SUCCESS"
+    }
+  },
+  "error": null,
+  "runId": "jbpa-enterprise-22b9a288348842639341de5c6c7e8fb1",
+  "schemaVersion": 1,
+  "status": "SUCCESS"
+}

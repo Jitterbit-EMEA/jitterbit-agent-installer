@@ -1,0 +1,7 @@
+# Product Installer.log was present; raw lines excluded.
+package=jitterbit-agent
+version=12.10.1.1
+install_start_utc=2026-09-25T19:55:29Z
+install_complete_utc=2026-09-25T19:56:22Z
+error_word_line_count=6
+package_status=install_ok_installed

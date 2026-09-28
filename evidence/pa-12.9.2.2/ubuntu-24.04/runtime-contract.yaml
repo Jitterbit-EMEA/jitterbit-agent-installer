@@ -1,0 +1,25 @@
+schema_version: 1
+evidence_id: LIVE-PA-1292-U2404
+evidence_maturity: TESTED_LIVE
+agent_version: 12.9.2.2
+platform: {os: ubuntu, version: "24.04", architecture: amd64, package_kind: deb}
+registration: {strategy: register-json-token, proxy: false, cloud: harmony-emea-west}
+paths:
+  root: /opt/jitterbit
+  register: /opt/jitterbit/Resources/register.json
+  credentials: /opt/jitterbit/Resources/credentials.txt
+  agent_log: /opt/jitterbit/log/jitterbit-agent.log
+  installer_log: /opt/jitterbit/log/Installer.log
+polling: {timeout_seconds: 300, interval_seconds: 5}
+required_markers:
+  - Auto Registration - Completed!
+  - "Read agent credentials file: /opt/jitterbit/Resources/credentials.txt"
+  - "REST API RESPONSE: Status: true"
+  - connection to agent services has been established
+  - Connection established, agent logged in, and request flow has commenced
+  - Agent synchronization for agent group ID
+local_services: [JitterbitProcessEngine, Scheduler, FileCleanup, VerboseLogShipper]
+boundaries:
+  - Qualification does not apply to PA 12.10 or Ubuntu 22.04.
+  - No trusted artifact digest was supplied.
+  - Generic ERROR or WARN text is not a terminal failure by itself.

@@ -1,0 +1,251 @@
+{
+  "evidenceScope": "SYNTHETIC_UNIT_FIXTURE_ONLY",
+  "result": {
+    "profile": "INSTALL",
+    "status": "PASS_WITH_WARNINGS",
+    "checks": {
+      "os": {
+        "status": "PASS",
+        "blocking": true,
+        "reason": "SUPPORTED_OS",
+        "provider": "host-readiness/os",
+        "timestamp": "2026-09-27T14:18:13.927299+00:00",
+        "evidence": {
+          "os": "ubuntu",
+          "version": "24.04",
+          "codename": "noble",
+          "kernel": "fixture"
+        }
+      },
+      "architecture": {
+        "status": "PASS",
+        "blocking": true,
+        "reason": "SUPPORTED_ARCHITECTURE",
+        "provider": "host-readiness/architecture",
+        "timestamp": "2026-09-27T14:18:13.927299+00:00",
+        "evidence": {
+          "architecture": "x86_64"
+        }
+      },
+      "privilege": {
+        "status": "PASS",
+        "blocking": true,
+        "reason": "PRIVILEGE_READY",
+        "provider": "host-readiness/privilege",
+        "timestamp": "2026-09-27T14:18:13.927299+00:00",
+        "evidence": {
+          "effectiveUid": 501,
+          "capability": "ROOT"
+        }
+      },
+      "cpu": {
+        "status": "PASS",
+        "blocking": true,
+        "reason": "RESOURCE_POLICY",
+        "provider": "host-readiness/cpu",
+        "timestamp": "2026-09-27T14:18:13.927299+00:00",
+        "evidence": {
+          "observed": 4,
+          "minimum": 4
+        }
+      },
+      "memory": {
+        "status": "PASS",
+        "blocking": true,
+        "reason": "RESOURCE_POLICY",
+        "provider": "host-readiness/memory",
+        "timestamp": "2026-09-27T14:18:13.927299+00:00",
+        "evidence": {
+          "observed": 8589934592,
+          "minimum": 8000000000
+        }
+      },
+      "diskCapacity": {
+        "status": "PASS",
+        "blocking": true,
+        "reason": "RESOURCE_POLICY",
+        "provider": "host-readiness/diskCapacity",
+        "timestamp": "2026-09-27T14:18:13.927299+00:00",
+        "evidence": {
+          "observed": 64424509440,
+          "minimum": 50000000000
+        }
+      },
+      "packageManager": {
+        "status": "PASS",
+        "blocking": true,
+        "reason": "PACKAGE_MANAGER_READY",
+        "provider": "host-readiness/packageManager",
+        "timestamp": "2026-09-27T14:18:13.927299+00:00",
+        "evidence": {}
+      },
+      "repository": {
+        "status": "PASS",
+        "blocking": true,
+        "reason": "EXISTING_METADATA_DEPENDENCY_SIMULATION",
+        "provider": "host-readiness/repository",
+        "timestamp": "2026-09-27T14:18:13.927299+00:00",
+        "evidence": {}
+      },
+      "space:/": {
+        "status": "PASS",
+        "blocking": true,
+        "reason": "OPERATIONAL_FREE_SPACE_THRESHOLD",
+        "provider": "host-readiness/space:/",
+        "timestamp": "2026-09-27T14:18:13.927299+00:00",
+        "evidence": {
+          "totalBytes": 64424509440,
+          "freeBytes": 21474836480,
+          "availableBytes": 21474836480,
+          "requiredBytes": 4378227854,
+          "packageBytes": 660897206
+        }
+      },
+      "space:/opt": {
+        "status": "PASS",
+        "blocking": true,
+        "reason": "OPERATIONAL_FREE_SPACE_THRESHOLD",
+        "provider": "host-readiness/space:/opt",
+        "timestamp": "2026-09-27T14:18:13.927299+00:00",
+        "evidence": {
+          "totalBytes": 64424509440,
+          "freeBytes": 21474836480,
+          "availableBytes": 21474836480,
+          "requiredBytes": 4378227854,
+          "packageBytes": 660897206
+        }
+      },
+      "space:/var": {
+        "status": "PASS",
+        "blocking": true,
+        "reason": "OPERATIONAL_FREE_SPACE_THRESHOLD",
+        "provider": "host-readiness/space:/var",
+        "timestamp": "2026-09-27T14:18:13.927299+00:00",
+        "evidence": {
+          "totalBytes": 64424509440,
+          "freeBytes": 21474836480,
+          "availableBytes": 21474836480,
+          "requiredBytes": 4378227854,
+          "packageBytes": 660897206
+        }
+      },
+      "existingAgent": {
+        "status": "PASS",
+        "blocking": true,
+        "reason": "CLEAN_HOST",
+        "provider": "host-readiness/existingAgent",
+        "timestamp": "2026-09-27T14:18:13.927299+00:00",
+        "evidence": {
+          "packageStatus": null,
+          "userPresent": false,
+          "rootPresent": false,
+          "credentialsPresent": false,
+          "registerPresent": false,
+          "postgresRuntimePresent": false,
+          "postgresDataPresent": false,
+          "processCount": 0,
+          "commandPathsPresent": [],
+          "startupPathsPresent": []
+        }
+      },
+      "time": {
+        "status": "PASS",
+        "blocking": true,
+        "reason": "TIME_SYNC_READY",
+        "provider": "host-readiness/time",
+        "timestamp": "2026-09-27T14:18:13.927299+00:00",
+        "evidence": {}
+      },
+      "secretProvider": {
+        "status": "PASS",
+        "blocking": true,
+        "reason": "SECRET_PROVIDER_READY",
+        "provider": "host-readiness/secretProvider",
+        "timestamp": "2026-09-27T14:18:13.927299+00:00",
+        "evidence": {}
+      },
+      "endpoint:0:dns": {
+        "status": "PASS",
+        "blocking": true,
+        "reason": "DNS_READY",
+        "provider": "host-readiness/endpoint:0:dns",
+        "timestamp": "2026-09-27T14:18:13.927299+00:00",
+        "evidence": {
+          "host": "download.jitterbit.com"
+        }
+      },
+      "endpoint:0:tls": {
+        "status": "PASS",
+        "blocking": true,
+        "reason": "TLS_VERIFIED_HTTP_REACHABLE",
+        "provider": "host-readiness/endpoint:0:tls",
+        "timestamp": "2026-09-27T14:18:13.927299+00:00",
+        "evidence": {
+          "host": "download.jitterbit.com"
+        }
+      },
+      "endpoint:1:dns": {
+        "status": "PASS",
+        "blocking": true,
+        "reason": "DNS_READY",
+        "provider": "host-readiness/endpoint:1:dns",
+        "timestamp": "2026-09-27T14:18:13.927299+00:00",
+        "evidence": {
+          "host": "harmony.example.invalid"
+        }
+      },
+      "endpoint:1:tls": {
+        "status": "PASS",
+        "blocking": true,
+        "reason": "TLS_VERIFIED_HTTP_REACHABLE",
+        "provider": "host-readiness/endpoint:1:tls",
+        "timestamp": "2026-09-27T14:18:13.927299+00:00",
+        "evidence": {
+          "host": "harmony.example.invalid"
+        }
+      },
+      "endpoint:2:dns": {
+        "status": "PASS",
+        "blocking": true,
+        "reason": "DNS_READY",
+        "provider": "host-readiness/endpoint:2:dns",
+        "timestamp": "2026-09-27T14:18:13.927299+00:00",
+        "evidence": {
+          "host": "example-pa.vault.azure.net"
+        }
+      },
+      "endpoint:2:tls": {
+        "status": "PASS",
+        "blocking": true,
+        "reason": "TLS_VERIFIED_HTTP_REACHABLE",
+        "provider": "host-readiness/endpoint:2:tls",
+        "timestamp": "2026-09-27T14:18:13.927299+00:00",
+        "evidence": {
+          "host": "example-pa.vault.azure.net"
+        }
+      },
+      "agentServices": {
+        "status": "UNCONFIRMED",
+        "blocking": false,
+        "reason": "PRODUCT_CONNECTION_CHECK_AFTER_REGISTRATION",
+        "provider": "host-readiness/agentServices",
+        "timestamp": "2026-09-27T14:18:13.927299+00:00",
+        "evidence": {}
+      }
+    },
+    "hostState": "CLEAN_HOST",
+    "platform": {
+      "os": "ubuntu",
+      "version": "24.04",
+      "system": "Linux",
+      "architecture": "x86_64",
+      "kernel": "fixture",
+      "packageType": "deb",
+      "codename": "noble",
+      "cpuCount": 4,
+      "memoryBytes": 8589934592,
+      "diskTotalBytes": 64424509440
+    },
+    "mutationPerformed": false
+  }
+}

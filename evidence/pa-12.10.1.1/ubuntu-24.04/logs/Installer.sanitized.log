@@ -1,0 +1,10 @@
+# Sanitized from actual PA 12.10.1.1 Installer.log
+# Only whitelisted milestone labels and timestamps retained; no raw product log lines.
+log_present: True
+size_bytes: 3327
+line_count: 29
+lines_containing_error_case_insensitive: 6
+dpkg_install_start_utc: 2026-09-25 16:55:25
+dpkg_installed_utc: 2026-09-25 16:56:17
+dpkg_final_status: install ok installed
+stdout_stderr_capture: NOT_RETAINED_BY_BOOTSTRAP

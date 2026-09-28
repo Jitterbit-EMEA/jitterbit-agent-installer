@@ -1,0 +1,17 @@
+schema_version: 1
+phase: 2F.1A
+previous_test_baseline: 158
+current_tests_passed: 172
+tests_failed: 0
+ruff: PASS
+formatting: PASS
+yaml_lint: PASS
+shell_syntax: PASS
+schema_and_markdown_links: PASS
+bounded_text_credential_scan: PASS
+binary_png_credential_scan: NOT_APPLICABLE_TEXT_SCAN
+shellcheck: SKIPPED_NOT_INSTALLED
+shfmt: SKIPPED_NOT_INSTALLED
+native_initial_registration_implementation_changed: false
+new_live_import_executed: false
+read_only_live_health_evaluator: EXECUTED_UNCONFIRMED_NO_SUPPORT_SERVICE_ROWS

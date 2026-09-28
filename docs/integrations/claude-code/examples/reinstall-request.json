@@ -1,0 +1,11 @@
+{
+  "schemaVersion": "1.0",
+  "target": "qa-ubuntu22.example",
+  "operation": "REINSTALL",
+  "jbpaVersion": "1.0.0-rc3",
+  "paVersion": "12.10",
+  "configPath": "/etc/jbpa/agent.yaml",
+  "resultPath": "/var/lib/jbpa/results/reinstall-new.json",
+  "allowUnqualified": true,
+  "controlledTest": true
+}

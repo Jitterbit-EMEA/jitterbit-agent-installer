@@ -1,0 +1,12 @@
+schema_version: 1
+package: jitterbit-agent
+version: 12.10.1.1
+architecture: amd64
+sha256_expected: 604bec9889c49167328b93d032bb9d8580f758eb70c3d1dd42dfda23db974ee8
+sha256_recalculated_on_vm: 604bec9889c49167328b93d032bb9d8580f758eb70c3d1dd42dfda23db974ee8
+hash_match: true
+integrity: LOCALLY_CALCULATED
+approval: QA_TEST_ONLY
+deb_declared_dependencies: [odbcinst, unixodbc]
+preinstalled_dependencies: [odbcinst, unixodbc, unzip]
+package_manager_audit: CLEAN
