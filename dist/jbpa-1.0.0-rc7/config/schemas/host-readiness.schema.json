@@ -1,0 +1,80 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "type": "object",
+  "required": [
+    "profile",
+    "status",
+    "checks",
+    "hostState",
+    "platform",
+    "mutationPerformed"
+  ],
+  "properties": {
+    "profile": {
+      "enum": [
+        "INSTALL",
+        "REINSTALL",
+        "HEALTH",
+        "UNINSTALL"
+      ]
+    },
+    "status": {
+      "enum": [
+        "PASS",
+        "PASS_WITH_WARNINGS",
+        "FAIL"
+      ]
+    },
+    "checks": {
+      "type": "object",
+      "additionalProperties": {
+        "type": "object",
+        "required": [
+          "status",
+          "blocking",
+          "reason",
+          "provider",
+          "timestamp",
+          "evidence"
+        ],
+        "properties": {
+          "status": {
+            "enum": [
+              "PASS",
+              "WARN",
+              "FAIL",
+              "NOT_APPLICABLE",
+              "UNCONFIRMED"
+            ]
+          },
+          "blocking": {
+            "type": "boolean"
+          },
+          "reason": {
+            "type": "string"
+          },
+          "provider": {
+            "type": "string"
+          },
+          "timestamp": {
+            "type": "string"
+          },
+          "evidence": {
+            "type": "object"
+          }
+        },
+        "additionalProperties": false
+      }
+    },
+    "hostState": {
+      "type": "string"
+    },
+    "platform": {
+      "type": "object"
+    },
+    "mutationPerformed": {
+      "const": false
+    }
+  },
+  "additionalProperties": false
+}

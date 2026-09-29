@@ -1,0 +1,35 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "type": "object",
+  "required": ["schemaVersion", "frameworkVersion", "runId", "timestamp", "status", "executionMode", "artifactApproval", "resourcePolicy", "state", "stateHistory", "requestedVersion", "packageVersion", "platform", "changed", "serviceRunning", "harmonyRegistered", "logAvailableAfterSeconds", "registrationDurationSeconds", "plan", "error"],
+  "properties": {
+    "schemaVersion": {"const": 2},
+    "frameworkVersion": {"type": "string"},
+    "runId": {"type": "string"},
+    "timestamp": {"type": "string", "format": "date-time"},
+    "status": {"enum": ["COMPLETE", "PLANNED", "BLOCKED", "FAILED"]},
+    "executionMode": {"enum": ["production", "controlled-test"]},
+    "artifactApproval": {"enum": ["pending", "approved_for_test", "approved", "denied", null]},
+    "resourcePolicy": {"enum": ["MINIMUM_MET", "PASS_WITH_TEST_EXCEPTION", "BELOW_MINIMUM", "UNKNOWN", null]},
+    "cpuTestException": {"type": "boolean"},
+    "productionSizingValidated": {"type": "boolean"},
+    "state": {"type": "string"},
+    "stateHistory": {"type": "array", "items": {"type": "string"}},
+    "requestedVersion": {"type": ["string", "null"]},
+    "packageVersion": {"type": ["string", "null"]},
+    "platform": {
+      "type": ["object", "null"],
+      "properties": {"os": {"type": "string"}, "version": {"type": ["string", "null"]}, "architecture": {"type": "string"}},
+      "required": ["os", "version", "architecture"],
+      "additionalProperties": false
+    },
+    "changed": {"type": "boolean"},
+    "serviceRunning": {"type": ["boolean", "null"]},
+    "harmonyRegistered": {"type": ["boolean", "null"]},
+    "logAvailableAfterSeconds": {"type": ["number", "null"], "minimum": 0},
+    "registrationDurationSeconds": {"type": ["number", "null"], "minimum": 0},
+    "plan": {"type": "array", "items": {"type": "string"}},
+    "error": {"type": ["object", "null"]}
+  },
+  "additionalProperties": false
+}

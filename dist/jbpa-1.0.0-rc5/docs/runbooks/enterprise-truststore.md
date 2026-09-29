@@ -1,0 +1,3 @@
+# Enterprise truststore runbook
+
+Use the existing branch-specific [truststore procedure](native-linux-jks-custom-ca.md). Public PEM source and expected hash must be supplied through validated configuration; secrets are references. Preflight existing identity and health, inspect the alias, make a new private backup, import once, verify fingerprint/hash, restart once and evaluate mandatory fresh health. A matching alias returns NO_CHANGE with zero restart and steady-state health. Mandatory failure restores the exact original store and validates rollback health. Do not infer CUSTOM_CA qualification from a CA:FALSE endpoint certificate. SSH, SSL and proxy remain deferred.

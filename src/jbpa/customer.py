@@ -1,0 +1,599 @@
+"""Small customer-facing launcher over the governed JBPA commands.
+
+This module uses only the Python standard library so it can prepare the release
+venv before the framework's pinned dependencies are available.
+"""
+
+from __future__ import annotations
+
+import argparse
+import getpass
+import json
+import os
+import platform
+import re
+import stat
+import subprocess
+import sys
+import uuid
+from datetime import datetime, timezone
+from pathlib import Path
+from urllib.parse import urlsplit
+
+ROOT = Path(__file__).resolve().parents[2]
+CONFIG = Path("/etc/jbpa/agent.yaml")
+SECRETS = Path("/etc/jbpa/secrets")
+RESULTS = Path("/var/lib/jbpa/results")
+CREDENTIALS_FILE = Path("/etc/jbpa/credentials.json")
+SECRET_NAMES = (
+    "pa-registration-token",
+    "pa-cloud-url",
+    "pa-agent-group-id",
+    "pa-agent-name-prefix",
+    "pa-deregister-on-drainstop",
+    "pa-retry-count",
+    "pa-retry-interval-seconds",
+)
+FIXED = {
+    "pa-deregister-on-drainstop": "false",
+    "pa-retry-count": "10",
+    "pa-retry-interval-seconds": "5",
+}
+
+
+class CustomerError(Exception):
+    pass
+
+
+def say(message=""):
+    sys.stdout.write(message + "\n")
+    sys.stdout.flush()
+
+
+def require_root():
+    if os.geteuid() != 0:
+        raise CustomerError("Run this launcher with sudo, for example: sudo ./bin/jbpa-customer")
+
+
+def require_qa_host():
+    try:
+        fields = dict(
+            line.split("=", 1)
+            for line in Path("/etc/os-release").read_text().splitlines()
+            if "=" in line
+        )
+    except OSError as exc:
+        raise CustomerError("Cannot identify this Linux host") from exc
+    if (
+        fields.get("ID", "").strip('"') != "ubuntu"
+        or fields.get("VERSION_ID", "").strip('"') != "24.04"
+        or platform.machine() != "x86_64"
+    ):
+        raise CustomerError("RC6 guided setup is qualified only for Ubuntu 24.04 amd64 QA")
+
+
+def command(argv, *, capture=False, visible_stderr=False):
+    try:
+        return subprocess.run(
+            argv,
+            check=False,
+            text=True,
+            stdout=subprocess.PIPE if capture else None,
+            stderr=None if visible_stderr or not capture else subprocess.PIPE,
+        )
+    except OSError as exc:
+        raise CustomerError(f"Could not run {argv[0]}") from exc
+
+
+def ensure_runtime():
+    python = ROOT / ".venv/bin/python"
+    ready = (
+        python.is_file()
+        and command([str(python), "-c", "import yaml,jsonschema"], capture=True).returncode == 0
+    )
+    if ready:
+        return
+    require_qa_host()
+    say("Preparing the tool's Python environment. This can take a few minutes...")
+    for argv in (
+        ["apt-get", "update"],
+        ["apt-get", "install", "-y", "python3-venv", "python3-pip"],
+        ["python3", "-m", "venv", str(ROOT / ".venv")],
+        [str(python), "-m", "pip", "install", "-r", str(ROOT / "requirements.txt")],
+    ):
+        if command(argv).returncode:
+            raise CustomerError(f"Preparation failed while running {argv[0]}; see output above")
+
+
+def private_directory(path):
+    if path.is_symlink():
+        raise CustomerError(f"Unsafe symbolic-link directory: {path}")
+    path.mkdir(parents=True, exist_ok=True, mode=0o700)
+    if path.stat().st_uid != 0:
+        raise CustomerError(f"Directory must be root-owned: {path}")
+    os.chmod(path, 0o700)
+
+
+def write_private(path, value, *, replace=False):
+    if path.is_symlink() or (path.exists() and not replace):
+        raise CustomerError(f"Existing file was not changed: {path.name}")
+    if path.exists() and (not path.is_file() or path.stat().st_uid != os.geteuid()):
+        raise CustomerError(f"Unsafe existing file: {path.name}")
+    staged = path.with_name(".jbpa-" + uuid.uuid4().hex)
+    try:
+        descriptor = os.open(staged, os.O_WRONLY | os.O_CREAT | os.O_EXCL | os.O_NOFOLLOW, 0o600)
+        with os.fdopen(descriptor, "w", encoding="utf-8") as output:
+            output.write(value)
+            output.flush()
+            os.fsync(output.fileno())
+        os.chmod(staged, 0o600)
+        if replace:
+            os.replace(staged, path)
+        else:
+            os.link(staged, path, follow_symlinks=False)
+    finally:
+        staged.unlink(missing_ok=True)
+
+
+def prompt_details():
+    if not sys.stdin.isatty():
+        raise CustomerError(
+            "A terminal is required to enter Harmony details; or stage private files"
+        )
+    say("Enter Harmony registration details. The token will not be displayed.")
+    token = getpass.getpass("Registration credential (hidden): ")
+    cloud = input("Harmony cloud URL (https://...): ").strip()
+    group = input("Numeric agent group ID: ").strip()
+    prefix = input("Agent name prefix: ").strip()
+    url = urlsplit(cloud)
+    if (
+        not token
+        or any(ord(char) < 32 or ord(char) == 127 for char in token)
+        or url.scheme != "https"
+        or not url.hostname
+        or url.username
+        or url.password
+        or url.query
+        or url.fragment
+        or not group.isascii()
+        or not group.isdecimal()
+        or int(group) < 1
+        or not re.fullmatch(r"[A-Za-z0-9][A-Za-z0-9._-]{0,127}", prefix)
+    ):
+        raise CustomerError("The Harmony details are invalid; no credential files were changed")
+    return {
+        "pa-registration-token": token,
+        "pa-cloud-url": cloud,
+        "pa-agent-group-id": group,
+        "pa-agent-name-prefix": prefix,
+    }
+
+
+def credential_document(values):
+    return {
+        "schemaVersion": 1,
+        "harmony": {
+            "registrationToken": values["pa-registration-token"],
+            "cloudUrl": values["pa-cloud-url"],
+            "agentGroupId": int(values["pa-agent-group-id"]),
+        },
+        "agent": {"namePrefix": values["pa-agent-name-prefix"]},
+        "registration": {
+            "deregisterOnDrainstop": False,
+            "retryCount": 10,
+            "retryIntervalSeconds": 5,
+        },
+    }
+
+
+def validate_credentials():
+    from .json_secrets import REFERENCES, JsonFileSecretProvider
+
+    provider = JsonFileSecretProvider(str(CREDENTIALS_FILE))
+    try:
+        for key in REFERENCES:
+            provider.resolve({"provider": "local-json", "reference": key})
+    except Exception as exc:
+        raise CustomerError("The private JSON credential file is invalid or unsafe") from exc
+    finally:
+        provider.clear()
+
+
+def legacy_config():
+    return CONFIG.is_file() and "provider: local-file" in CONFIG.read_text()
+
+
+def import_credentials(source):
+    """Copy one private JSON document without following links or echoing its value."""
+    from .errors import FrameworkError
+    from .json_secrets import parse_credentials
+
+    path = Path(source)
+    if not path.is_absolute() or ".." in path.parts or path == CREDENTIALS_FILE:
+        raise CustomerError("Provide an absolute source path outside /etc/jbpa/credentials.json")
+    try:
+        descriptor = os.open(path, os.O_RDONLY | os.O_NOFOLLOW | os.O_CLOEXEC)
+        try:
+            info = os.fstat(descriptor)
+            allowed = {os.geteuid()}
+            if os.environ.get("SUDO_UID", "").isdecimal():
+                allowed.add(int(os.environ["SUDO_UID"]))
+            if (
+                not stat.S_ISREG(info.st_mode)
+                or info.st_uid not in allowed
+                or info.st_mode & 0o077
+                or info.st_nlink != 1
+                or not 0 < info.st_size <= 65536
+            ):
+                raise CustomerError("Credential source must be a private regular file")
+            raw = os.read(descriptor, 65537)
+        finally:
+            os.close(descriptor)
+        if len(raw) != info.st_size:
+            raise CustomerError("Credential source changed during reading")
+        document = raw.decode("utf-8")
+        parse_credentials(document)
+    except FrameworkError as exc:
+        raise CustomerError("Credential JSON does not match the required schema") from exc
+    except (OSError, UnicodeError) as exc:
+        raise CustomerError("Could not read a private UTF-8 credential source") from exc
+    write_private(CREDENTIALS_FILE, document)
+    say("Imported one private JSON credential file; token not displayed")
+
+
+def configure(*, replace=False, credentials_file=None):
+    require_qa_host()
+    private_directory(CONFIG.parent)
+    private_directory(RESULTS)
+    if not CONFIG.exists():
+        template = ROOT / "config/examples/local-json-qa.example.yaml"
+        if not template.is_file():
+            raise CustomerError("Local-JSON config template is missing from this release")
+        write_private(CONFIG, template.read_text())
+        say(f"Created {CONFIG} from the Ubuntu 24.04 template")
+    elif CONFIG.is_symlink() or not CONFIG.is_file():
+        raise CustomerError("Existing configuration path is unsafe")
+    if credentials_file and legacy_config():
+        raise CustomerError("Existing local-file configuration cannot import JSON credentials")
+    if not legacy_config():
+        if credentials_file and CREDENTIALS_FILE.exists():
+            raise CustomerError("Credentials already exist; omit --credentials-file or reconfigure")
+        if replace or not CREDENTIALS_FILE.exists():
+            if credentials_file:
+                import_credentials(credentials_file)
+            else:
+                values = prompt_details()
+                from .json_secrets import parse_credentials
+
+                document = credential_document(values)
+                parse_credentials(json.dumps(document))
+                write_private(
+                    CREDENTIALS_FILE, json.dumps(document, indent=2) + "\n", replace=replace
+                )
+                say("Harmony details stored in one root-only JSON file; token not displayed")
+        else:
+            say("Using existing private JSON credential file; token not displayed")
+        validate_credentials()
+        say(f"Configuration ready at {CONFIG}")
+        return
+    private_directory(SECRETS)
+    required = SECRET_NAMES[:4]
+    existing = [name for name in required if (SECRETS / name).exists()]
+    if existing and len(existing) != len(required) and not replace:
+        raise CustomerError(
+            "Some Harmony files already exist. Use setup --reconfigure to replace all four"
+        )
+    if replace or not existing:
+        values = prompt_details()
+        for name in required:
+            write_private(SECRETS / name, values[name], replace=replace)
+        say("Harmony details stored in root-only local files; values were not displayed")
+    else:
+        say("Using existing Harmony files; no token was displayed or changed")
+    for name, value in FIXED.items():
+        if not (SECRETS / name).exists():
+            write_private(SECRETS / name, value)
+    say(f"Configuration ready at {CONFIG}")
+
+
+def jbpa(argv):
+    ensure_runtime()
+    result = command([str(ROOT / "bin/jbpa"), *argv], capture=True, visible_stderr=True)
+    try:
+        data = json.loads(result.stdout)
+    except (ValueError, TypeError) as exc:
+        raise CustomerError(
+            "JBPA returned invalid JSON; inspect the local release and logs"
+        ) from exc
+    if result.returncode or data.get("status") != "SUCCESS":
+        error = data.get("error") or {}
+        name = error.get("name", "UNKNOWN_ERROR")
+        if name == "AGENT_CAPACITY_REACHED":
+            raise CustomerError(
+                "Harmony agent-group or organization limit reached. "
+                "Have an administrator review unused stopped agents and licensed capacity "
+                "in Management Console before retrying"
+            )
+        raise CustomerError(f"JBPA stopped: {name}. Inspect the result file or run diagnostics")
+    return data
+
+
+def result_file(action):
+    private_directory(RESULTS)
+    stamp = datetime.now(timezone.utc).strftime("%Y%m%dT%H%M%SZ")
+    return RESULTS / f"customer-{action}-{stamp}-{uuid.uuid4().hex[:8]}.json"
+
+
+def agent_installed():
+    result = command(["dpkg-query", "-W", "-f=${Status}", "jitterbit-agent"], capture=True)
+    return result.returncode == 0 and result.stdout.strip() == "install ok installed"
+
+
+def show_versions():
+    data = jbpa(["versions"])["details"]
+    say("PA versions in the governed catalogue (listing is not approval):")
+    for row in data["versions"]:
+        say(
+            f"  {row['version']:7} build {row['packageVersion']:11} "
+            f"{row['approval']} / {row['qualification']}"
+        )
+    say("  latest  current vendor endpoint, inspected when selected")
+
+
+def preflight(version=None):
+    argv = ["validate", "--config", str(CONFIG), "--controlled-test"]
+    if version:
+        argv.extend(["--version", version])
+    data = jbpa(argv)
+    result = data["details"]["status"]
+    say(f"Preflight: {result}")
+    if result not in {"PASS", "PASS_WITH_WARNINGS"}:
+        raise CustomerError("Preflight did not pass")
+    if result == "PASS_WITH_WARNINGS":
+        for name, check in data["details"]["preflight"]["checks"].items():
+            if check["status"] == "WARN":
+                say(f"  Warning: {name} ({check['reason']})")
+
+
+def choose_version(provided=None):
+    if provided:
+        return provided
+    show_versions()
+    if not sys.stdin.isatty():
+        return "latest"
+    return input("PA version to use [latest]: ").strip() or "latest"
+
+
+def install(version=None, *, non_interactive=False):
+    ensure_runtime()
+    if agent_installed():
+        raise CustomerError("A PA is already installed; choose upgrade or status")
+    ready = (
+        all((SECRETS / name).is_file() for name in SECRET_NAMES)
+        if legacy_config()
+        else CREDENTIALS_FILE.is_file()
+    )
+    if not CONFIG.is_file() or not ready:
+        if non_interactive:
+            raise CustomerError("Run setup or stage the protected files before unattended install")
+        configure()
+    selected = choose_version(version)
+    preflight(selected)
+    path = result_file("install")
+    say(f"Installing PA {selected} in controlled QA mode...")
+    mode = "--non-interactive" if non_interactive else "--interactive"
+    try:
+        data = jbpa(
+            [
+                "install",
+                mode,
+                "--config",
+                str(CONFIG),
+                "--version",
+                selected,
+                "--controlled-test",
+                "--result-file",
+                str(path),
+            ]
+        )
+    except CustomerError:
+        say(f"Private result: {path}")
+        raise
+    say(
+        f"Installed PA {data['versions']['resolvedPA']}; "
+        f"Harmony registered: {data['registration']['harmonyRegistered']}"
+    )
+    say(f"Private result: {path}")
+
+
+def run(version=None, *, non_interactive=False, credentials_file=None):
+    """One customer command for setup, selection, install and verification."""
+    if non_interactive and not version:
+        raise CustomerError("Unattended installation requires --version")
+    ensure_runtime()
+    if agent_installed():
+        raise CustomerError("A PA is already installed; use upgrade or status")
+    configure(credentials_file=credentials_file)
+    selected = choose_version(version)
+    install(selected, non_interactive=non_interactive)
+    verify()
+
+
+def verify():
+    """Summarize the latest private install result and current host state."""
+    candidates = sorted(RESULTS.glob("customer-install-*.json"), reverse=True)
+    if not candidates:
+        raise CustomerError("No customer install result found; run install first")
+    path = candidates[0]
+    try:
+        info = path.lstat()
+    except OSError as exc:
+        raise CustomerError("Install result is unavailable") from exc
+    if not stat.S_ISREG(info.st_mode) or info.st_uid != os.geteuid() or info.st_mode & 0o077:
+        raise CustomerError("Install result is not a private regular file")
+    try:
+        data = json.loads(path.read_text())
+    except (OSError, ValueError) as exc:
+        raise CustomerError("Install result is invalid") from exc
+    registered = data.get("registration", {}).get("harmonyRegistered") is True
+    running = data.get("health", {}).get("serviceRunning") is True
+    if (
+        data.get("operation") != "INSTALL"
+        or data.get("status") != "SUCCESS"
+        or not (registered and running)
+    ):
+        raise CustomerError("Latest install result did not confirm registration and service health")
+    if not agent_installed():
+        raise CustomerError(
+            "Install result succeeded, but the agent package is no longer installed"
+        )
+    diagnostics = jbpa(["diagnostics"])["details"]
+    version = data.get("versions", {}).get("resolvedPA")
+    if (
+        diagnostics.get("installedVersion") != version
+        or diagnostics.get("packageState") != "INSTALLED"
+        or diagnostics.get("connectionCheck") is not True
+        or diagnostics.get("coreServicesHealthy") is not True
+    ):
+        raise CustomerError("Install evidence and current package, connection or services disagree")
+    say(f"Install verified: PA {version}; Harmony registered: True; services running: True")
+    say(f"Private evidence: {path}")
+    say("Current connection: True; core services healthy: True")
+    say("Confirm the agent is Running in Harmony Management Console.")
+
+
+def upgrade(version=None, *, yes=False):
+    if not CONFIG.is_file():
+        raise CustomerError("Run setup first")
+    selected = choose_version(version)
+    if not yes:
+        if not sys.stdin.isatty() or input("Type UPGRADE to proceed: ").strip() != "UPGRADE":
+            raise CustomerError("Upgrade cancelled")
+    path = result_file("upgrade")
+    say(f"Checking upgrade to {selected} in controlled QA mode...")
+    data = jbpa(
+        [
+            "upgrade",
+            "--config",
+            str(CONFIG),
+            "--version",
+            selected,
+            "--non-interactive",
+            "--controlled-test",
+            "--result-file",
+            str(path),
+        ]
+    )
+    say(f"Upgrade: {data['state']}; package changed: {data['details']['changed']}")
+    say(f"Private result: {path}")
+
+
+def status():
+    data = jbpa(["diagnostics"])["details"]
+    say(f"Installed PA: {data.get('installedVersion') or 'none'}")
+    say(f"Package state: {data.get('packageState')}")
+    say(f"Agent connection check: {data.get('connectionCheck')}")
+    say(f"Core services healthy: {data.get('coreServicesHealthy')}")
+    say("This is diagnostic output; confirm the agent in Harmony Management Console.")
+
+
+def menu():
+    while True:
+        say("\nJBPA customer launcher — controlled QA")
+        say("1. Set up the tool and enter Harmony details")
+        say("2. List available PA versions")
+        say("3. Install PA")
+        say("4. Upgrade PA")
+        say("5. Check agent status")
+        say("6. Change Harmony details")
+        say("7. Verify latest installation")
+        say("0. Exit")
+        choice = input("Choose 0–7: ").strip()
+        if choice == "0":
+            return
+        try:
+            if choice == "1":
+                ensure_runtime()
+                configure()
+                if agent_installed():
+                    status()
+                else:
+                    preflight()
+            elif choice == "2":
+                show_versions()
+            elif choice == "3":
+                install()
+            elif choice == "4":
+                upgrade()
+            elif choice == "5":
+                status()
+            elif choice == "6":
+                configure(replace=True)
+                if agent_installed():
+                    status()
+                else:
+                    preflight()
+            elif choice == "7":
+                verify()
+            else:
+                say("Choose one of the displayed numbers")
+        except CustomerError as exc:
+            say(f"Stopped: {exc}")
+
+
+def main(argv=None):
+    parser = argparse.ArgumentParser(description="Guided customer launcher for JBPA RC6 QA")
+    sub = parser.add_subparsers(dest="action")
+    setup = sub.add_parser("setup", help="Prepare Python, YAML and protected Harmony files")
+    setup.add_argument("--reconfigure", action="store_true", help="Replace Harmony files")
+    sub.add_parser("versions", help="List governed PA versions")
+    sub.add_parser("verify", help="Verify latest install result and current agent status")
+    installing = sub.add_parser("install", help="Preflight and install PA")
+    installing.add_argument("--version")
+    installing.add_argument("--non-interactive", action="store_true")
+    running = sub.add_parser("run", help="Set up, select, install and verify in one command")
+    running.add_argument("--version")
+    running.add_argument("--non-interactive", action="store_true")
+    running.add_argument("--credentials-file")
+    upgrading = sub.add_parser("upgrade", help="Upgrade an existing PA")
+    upgrading.add_argument("--version")
+    upgrading.add_argument("--yes", action="store_true", help="Skip UPGRADE confirmation")
+    sub.add_parser("status", help="Show installed package and diagnostic state")
+    args = parser.parse_args(argv)
+    try:
+        require_root()
+        if args.action is None:
+            if not sys.stdin.isatty():
+                raise CustomerError("The menu needs a terminal; use a named command for automation")
+            menu()
+        elif args.action == "setup":
+            ensure_runtime()
+            configure(replace=args.reconfigure)
+            if agent_installed():
+                status()
+            else:
+                preflight()
+        elif args.action == "versions":
+            show_versions()
+        elif args.action == "install":
+            install(args.version, non_interactive=args.non_interactive)
+        elif args.action == "run":
+            run(
+                args.version,
+                non_interactive=args.non_interactive,
+                credentials_file=args.credentials_file,
+            )
+        elif args.action == "upgrade":
+            upgrade(args.version, yes=args.yes)
+        elif args.action == "status":
+            status()
+        elif args.action == "verify":
+            verify()
+    except (CustomerError, EOFError, KeyboardInterrupt) as exc:
+        say(f"Stopped: {exc or 'cancelled'}")
+        return 1
+    return 0
+
+
+if __name__ == "__main__":
+    raise SystemExit(main())

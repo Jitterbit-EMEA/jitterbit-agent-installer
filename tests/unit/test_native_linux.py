@@ -149,6 +149,38 @@ class FakeBackend:
 
 
 class NativeLinuxWorkflowTests(unittest.TestCase):
+    def test_registration_capacity_errors_are_distinct(self):
+        workflow = NativeLinuxWorkflow(FakeBackend())
+        self.assertEqual(
+            workflow._runtime_failure(
+                "You have reached the maximum agents limit allowed for your organization. Auto Registration - Failed"
+            ),
+            "AGENT_CAPACITY_REACHED",
+        )
+        self.assertEqual(
+            workflow._runtime_failure(
+                "You've reached the maximum number of agent(s) configured for your Jitterbit organization"
+            ),
+            "AGENT_CAPACITY_REACHED",
+        )
+
+    def test_ten_successful_slots_then_eleventh_capacity_failure(self):
+        successful = 0
+        for _ in range(10):
+            backend = FakeBackend()
+            secret = Secret("synthetic-test-token")
+            result = NativeLinuxWorkflow(backend).run(config(), artifact(), secret)
+            self.assertTrue(result["harmonyRegistered"])
+            successful += 1
+        self.assertEqual(successful, 10)
+        full_group_log = (
+            "Auto Registration - Failed: You have reached the maximum agents limit "
+            "allowed for your organization. Contact your Jitterbit representative."
+        )
+        backend = FakeBackend(log=full_group_log, credentials_at=1000)
+        self.assert_error("AGENT_CAPACITY_REACHED", backend)
+        self.assertIn(REGISTER_JSON, backend.files)
+
     def run_success(self, backend=None, cfg=None):
         backend = backend or FakeBackend()
         secret = Secret("synthetic-test-token")

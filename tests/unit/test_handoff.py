@@ -246,4 +246,5 @@ class HandoffTests(unittest.TestCase):
         r = request()
         r.update(jbpaVersion="1.0.0-rc3", operation="REINSTALL")
         data = envelope("reinstall", 0, {"status": "COMPLETE"})
+        data["versions"]["jbpa"] = "1.0.0-rc3"
         self.assertTrue(consume(r, 0, json.dumps(data))["success"])

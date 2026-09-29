@@ -53,34 +53,34 @@ class SyntheticTransport:
 
     def result(self, path):
         if path.endswith(".preflight.json"):
-            return json.dumps(
-                envelope(
-                    "validate",
-                    0,
-                    {
-                        "preflight": {
-                            "profile": self.operation,
-                            "status": self.preflight_status,
-                            "checks": {},
-                            "hostState": self.host_state,
-                            "platform": {
-                                "system": "Linux",
-                                "os": "ubuntu",
-                                "version": self.host_version,
-                                "architecture": "x86_64",
-                            },
-                            "mutationPerformed": False,
-                        }
-                    },
-                )
-            )
-        return json.dumps(
-            envelope(
-                self.operation.lower(),
+            result = envelope(
+                "validate",
                 0,
-                {"status": "COMPLETE", "requestedVersion": "12.10"},
+                {
+                    "preflight": {
+                        "profile": self.operation,
+                        "status": self.preflight_status,
+                        "checks": {},
+                        "hostState": self.host_state,
+                        "platform": {
+                            "system": "Linux",
+                            "os": "ubuntu",
+                            "version": self.host_version,
+                            "architecture": "x86_64",
+                        },
+                        "mutationPerformed": False,
+                    }
+                },
             )
+            result["versions"]["jbpa"] = "1.0.0-rc3"
+            return json.dumps(result)
+        result = envelope(
+            self.operation.lower(),
+            0,
+            {"status": "COMPLETE", "requestedVersion": "12.10"},
         )
+        result["versions"]["jbpa"] = "1.0.0-rc3"
+        return json.dumps(result)
 
 
 class SSHHandoffTests(unittest.TestCase):

@@ -1,0 +1,68 @@
+# Production readiness
+
+The framework release candidate is QA-ready; production approval is not asserted. Maturity and artifact approval are separate.
+
+## Core framework
+
+| Capability | Current evidence |
+| --- | --- |
+| Native installer, token registration, initial health | TESTED_LIVE for PA 12.10.1.1 / Ubuntu 24.04.5 amd64 / no proxy |
+| Graceful drain and TranDb operation polling | TESTED_LIVE zero-active path; timeout/failure/decreasing-count mocks |
+| Complete local uninstall and clean reinstall | TESTED_LIVE on the same tuple; no Harmony deletion |
+| Managed Identity / Key Vault | TESTED_LIVE on QA VM; caller provisioning and fleet RBAC unqualified |
+| Version/artifact resolution and latest pinning | Implemented, mock tested; latest metadata inspected explicitly in Phase 2G |
+| Composite existing-agent health | TESTED_LIVE; mandatory identity/connectivity/core and fresh restart markers; sync/service-status supplementary |
+| Release packaging and verification | Source/mocks/archive/installed-layout validation; no live CSE deployment claimed |
+
+## Runtime certification
+
+| PA | Platform | Qualification |
+| --- | --- | --- |
+| 12.10.1.1 | Ubuntu 24.04.5 amd64 | TESTED_LIVE core lifecycle and scoped endpoint trust |
+| 12.9.2.2 | Ubuntu 24.04 amd64 | Scoped live install/registration/initial health only |
+| 12.10.1.1 | Ubuntu 22.04 amd64 | NOT TESTED |
+| Other 17 pinned releases | Ubuntu 24.04 / 22.04 | AVAILABLE_UNQUALIFIED |
+
+## Enterprise extensions
+
+| Branch | Qualification |
+| --- | --- |
+| Bundled Java truststore / explicit endpoint trust | TESTED_LIVE for supplied CA:FALSE certificate; rollback and no-change behavior scoped to existing evidence |
+| True custom CA | NOT_TESTED_WITH_CURRENT_CERTIFICATE |
+| SSH/SFTP | DEFERRED_NO_TEST_MATERIAL |
+| SSL client certificate | DEFERRED_NO_PRIVATE_KEY_OR_MTLS_ENDPOINT |
+| Proxy | DEFERRED_NO_PROXY_TEST_ENVIRONMENT |
+
+## Governance
+
+| Gate | Status |
+| --- | --- |
+| Independent PA artifact provenance / production promotion | PENDING; local digest and QA approval are insufficient |
+| Production sizing | NOT VALIDATED; explicit 2-vCPU functional QA exception only |
+| Organizational security approval | PENDING; focused code review and scan are not sign-off |
+| Release signing / trusted distribution / dependency supply chain | PENDING; archive/file hashes implemented |
+| External AI orchestrator handoff | PENDING; handoff contract and bootstrap provided |
+| Ubuntu 22.04 regression | PENDING |
+| Exact historical old/new Harmony ID comparison | UNVERIFIED; previous ID missing |
+| Harmony-side record deletion | NOT AUTOMATED / PENDING |
+
+Support-management recommendation: CURRENT_TESTED 12.10, PREVIOUS_TESTED 12.9 with its limited scope, ARCHIVED_AVAILABLE 12.8 through 11.47. This is a release-management policy, not a compatibility promise. Availability never implies supported installability. See the [version matrix](version-qualification-matrix.md) and [security review](security-review.md).
+
+## Phase 3A gates
+
+| Gate | Status | Evidence boundary |
+| --- | --- | --- |
+| GATE-10 Ubuntu 22.04 regression | PENDING | No new Ubuntu 22.04 guest installation or live runtime contract |
+| GATE-13 External AI Orchestrator → JBPA Handoff | PENDING | Caller contract and mock tests provided; separate project has not dispatched or consumed a live result |
+
+The immutable rc1 archive verifies locally. Neither caller helpers nor local release verification certify guest delivery, VM identity/RBAC, live CSE execution or production sizing. See Phase 3A summary (source repository).
+
+RC2 bootstrap/caller readiness: READY_FOR_LIVE_TEST. GATE-10 and GATE-13 remain PENDING; Ubuntu 22.04 stays NOT_TESTED and PA remains QA_TEST_ONLY.
+
+Phase 3A.2A's Azure adapter is reclassified DEVELOPMENT_TEST_HARNESS / NON_PRODUCTION; infrastructure provisioning is OUTSIDE JBPA SCOPE. Phase 3B supplies the canonical external handoff and LOCAL/mock caller tests. GATE-10 and GATE-13 remain PENDING LIVE TEST on a pre-provisioned Ubuntu 22.04 amd64 host. No Azure deployment specification is required.
+
+Phase 3B recorded standalone REINSTALL and comprehensive host preflight gaps. RC3 implements both with mock/local verification. Existing native lifecycle and enterprise evidence remains scoped to its earlier live tuple. Enterprise and Harmony deletion deferrals remain unchanged. See Phase 3C summary (source repository).
+
+## Phase 3C runtime completeness
+
+Standalone REINSTALL: IMPLEMENTED / MOCK-TESTED in RC3. Shared host readiness: IMPLEMENTED / MOCK/LOCAL TESTED. RC3 closes the documented runtime implementation gaps; Phase 3B history remains preserved. Live Ubuntu 22.04 and separately controlled external handoff are still required for GATE-10/GATE-13. No infrastructure provisioning capability is added.

@@ -1,0 +1,9 @@
+# RC6 customer launcher QA check — 2026-09-28
+
+RC6 archive SHA-256 `227f0437c8b65af57e804ca9cd9c7fc6b1eafe6dcb4edbda044896c342d4e858` was checked on the designated Ubuntu 24.04 amd64 QA VM before extraction. The VM already had PA 12.10.1.1 from the successful RC5 local-file interactive installation, so this check did not reinstall or re-register PA.
+
+The packaged `sudo ./bin/jbpa-customer versions` automatically installed the pinned Python dependencies into its release venv and listed all 19 catalogue versions. `setup` found the existing protected Harmony files without displaying or replacing their values; it reported PA 12.10.1.1 installed, connection check true and core services healthy. `upgrade --version latest --yes` returned `ALREADY_CURRENT`, `package changed: False`, with a private result at `/var/lib/jbpa/results/customer-upgrade-20260928T133811Z-b09db459.json`. `install --version latest --non-interactive` refused the occupied host before installation. A TTY menu invocation selected status and exited successfully.
+
+Local verification: 416 unit tests, Ruff, formatting, YAML/schema/link checks, bounded credential scan and release archive verification passed. The launcher has not yet completed a fresh install through its menu, and a package-changing upgrade remains unqualified live. RC6 remains a controlled QA candidate; there is no production approval.
+
+Later the same day, the existing QA PA was removed cleanly to attempt a fresh RC6 menu install. Menu setup passed preflight with the documented two-CPU QA warning. The installer downloaded the PA package but its exact-version confirmation was hidden because the launcher captured JBPA's stderr. The run was cancelled with Ctrl-C before confirmation or package mutation; independent package and product-root checks remained absent. This defect is fixed in RC7, a separate archive.

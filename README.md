@@ -1,8 +1,8 @@
 # Jitterbit Private Agent Automation
 
-For engineers integrating a separately built infrastructure AI or Claude Code project, start with the [Claude Code / external AI operating kit](docs/integrations/claude-code/README.md). It supplies the boundary, `/jbpa` skill, exact RC3 commands, handoff schemas, examples and operator runbooks. JBPA begins only after the VM is provisioned.
+For a customer installing on a fresh VM, start with the [interactive and non-interactive installation runbook](docs/customer-start-here.md). RC9 bundles `sudo ./bin/jbpa-install` to prepare the host, accept one JSON credential file or guided input, select and install a version, and verify the result. The [detailed customer runbook](docs/customer-install-runbook.md) remains available for review and recovery. For engineers integrating a separately built infrastructure AI or Claude Code project, see the [Claude Code / external AI operating kit](docs/integrations/claude-code/README.md); its handoff commands still target the historical RC3 release. JBPA begins only after the VM is provisioned.
 
-JBPA is a native Linux Private Agent lifecycle framework with version-aware artifact inspection, Managed Identity / Key Vault registration, health profiles, graceful local uninstall and enterprise truststore configuration. The canonical framework version is in `src/jbpa/__init__.py`. This release candidate is for controlled qualification; it is not production approved.
+JBPA is a native Linux Private Agent lifecycle framework with version-aware artifact inspection, Azure Managed Identity / Key Vault or protected local-file registration, health profiles, graceful local uninstall and enterprise truststore configuration. The canonical framework version is in `src/jbpa/__init__.py`. This release candidate is for controlled qualification; it is not production approved. The local-file credential path passed a live interactive PA 12.10.1.1 installation on Ubuntu 24.04 on 2026-09-28; see the [customer runbook report](docs/customer-runbook-live-2026-09-28.md).
 
 ## Current qualification
 
@@ -75,7 +75,7 @@ BASIC requires a clean host and leaves the installed agent. FULL_LIFECYCLE addit
 ```bash
 scripts/validate.sh
 scripts/build-release.sh
-scripts/verify-release.sh dist/jbpa-1.0.0-rc3.tar.gz
+scripts/verify-release.sh dist/jbpa-1.0.0-rc7.tar.gz
 ```
 
 Build runs source validation, tests, lint, formatting, schemas, catalogue/contracts, and a bounded credential scan. It emits a clean framework directory, manifest, file hashes, archive and archive digest. Verify with an independently supplied expected archive digest for deployment; the colocated sidecar alone is not independent provenance.
@@ -97,3 +97,19 @@ The historical `azure/provisioning` and `bin/jbpa-azure` remain NON_PRODUCTION /
 ## RC3 runtime completeness
 
 RC3 adds first-class `jbpa reinstall --config PATH --version VERSION --non-interactive` and shared structured readiness through `jbpa validate --config PATH`. See [preflight](docs/preflight-contract.md), [reinstall](docs/runbooks/reinstall.md) and [Phase 3C](docs/phase-3c-summary.md). Runtime implementation is mock/local tested; live Ubuntu 22.04 and external handoff gates remain pending. RC2 is immutable historical evidence.
+
+## RC4 local-file credentials
+
+RC4 adds a non-Azure `local-file` secret provider. Each config reference names one root-owned, mode `0600` file in a root-only directory, and the runtime validates those files before using their values. Use the [local-file example](config/examples/local-file-qa.example.yaml) and [customer VM quickstart](docs/customer-quickstart.md). RC3 remains immutable historical evidence.
+
+## RC5 customer lifecycle
+
+RC5 adds `jbpa versions`, guided `install --interactive`, and a guarded in-place `upgrade` command. Interactive install pins the exact artifact before operator confirmation; upgrade preserves the agent installation and registration. See the [customer VM quickstart](docs/customer-quickstart.md). RC4 remains immutable historical evidence.
+
+## RC6 guided customer launcher
+
+RC6 packages `bin/jbpa-customer`, a standard-library launcher that prepares its Python runtime, prompts for protected Harmony files, lists catalogue versions, runs preflight and delegates install/upgrade/status to JBPA. See [the short path](docs/customer-start-here.md). This launcher does not expand enterprise SSH, SSL or proxy support. RC5 remains the live-tested local-file installation baseline; RC6 still requires its own live qualification.
+
+## RC7 visible interactive confirmation
+
+RC7 keeps JBPA's exact package confirmation visible when invoked through the customer launcher. RC6 hid the prompt while waiting for input; its fresh install test was cancelled before package mutation. RC7 subsequently passed a clean-host interactive local-file PA 12.10.1.1 install on Ubuntu 24.04 QA, with Harmony registration and healthy connectivity; see the [live report](docs/customer-launcher-rc7-live-2026-09-28.md). See [the short path](docs/customer-start-here.md) for customer steps.

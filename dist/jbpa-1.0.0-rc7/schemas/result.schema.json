@@ -1,0 +1,519 @@
+{
+  "type": "object",
+  "properties": {
+    "schemaVersion": {
+      "const": 1
+    },
+    "frameworkVersion": {
+      "type": "string",
+      "minLength": 1,
+      "maxLength": 256,
+      "pattern": "^[^\\x00-\\x1f\\x7f]+$"
+    },
+    "runId": {
+      "type": "string",
+      "minLength": 1,
+      "maxLength": 256,
+      "pattern": "^[^\\x00-\\x1f\\x7f]+$"
+    },
+    "timestamp": {
+      "type": "string",
+      "format": "date-time"
+    },
+    "command": {
+      "enum": [
+        "install",
+        "validate",
+        "diagnostics"
+      ]
+    },
+    "status": {
+      "enum": [
+        "VALIDATED",
+        "PLANNED",
+        "BLOCKED",
+        "FAILED",
+        "DIAGNOSTICS",
+        "NOT_IMPLEMENTED"
+      ]
+    },
+    "state": {
+      "enum": [
+        "INITIALIZED",
+        "CONFIG_LOADED",
+        "CONFIG_VALIDATED",
+        "VERSION_RESOLVED",
+        "PLATFORM_DETECTED",
+        "PREFLIGHT_COMPLETE",
+        "PLANNED",
+        "VALIDATED",
+        "DIAGNOSTICS",
+        "BLOCKED",
+        "FAILED"
+      ]
+    },
+    "stateHistory": {
+      "type": "array",
+      "items": {
+        "enum": [
+          "INITIALIZED",
+          "CONFIG_LOADED",
+          "CONFIG_VALIDATED",
+          "VERSION_RESOLVED",
+          "PLATFORM_DETECTED",
+          "PREFLIGHT_COMPLETE",
+          "PLANNED",
+          "VALIDATED",
+          "DIAGNOSTICS",
+          "BLOCKED",
+          "FAILED"
+        ]
+      }
+    },
+    "configValid": {
+      "anyOf": [
+        {
+          "type": "boolean"
+        },
+        {
+          "type": "null"
+        }
+      ]
+    },
+    "host": {
+      "anyOf": [
+        {
+          "type": "object",
+          "properties": {
+            "os": {
+              "type": "string",
+              "minLength": 1,
+              "maxLength": 256,
+              "pattern": "^[^\\x00-\\x1f\\x7f]+$"
+            },
+            "version": {
+              "anyOf": [
+                {
+                  "type": "string",
+                  "minLength": 1,
+                  "maxLength": 256,
+                  "pattern": "^[^\\x00-\\x1f\\x7f]+$"
+                },
+                {
+                  "type": "null"
+                }
+              ]
+            },
+            "architecture": {
+              "type": "string",
+              "minLength": 1,
+              "maxLength": 256,
+              "pattern": "^[^\\x00-\\x1f\\x7f]+$"
+            },
+            "kernel": {
+              "type": "string",
+              "minLength": 1,
+              "maxLength": 256,
+              "pattern": "^[^\\x00-\\x1f\\x7f]+$"
+            },
+            "system": {
+              "type": "string",
+              "minLength": 1,
+              "maxLength": 256,
+              "pattern": "^[^\\x00-\\x1f\\x7f]+$"
+            },
+            "hostname": {
+              "type": "string",
+              "minLength": 1,
+              "maxLength": 256,
+              "pattern": "^[^\\x00-\\x1f\\x7f]+$"
+            },
+            "packageManager": {
+              "anyOf": [
+                {
+                  "type": "string",
+                  "minLength": 1,
+                  "maxLength": 256,
+                  "pattern": "^[^\\x00-\\x1f\\x7f]+$"
+                },
+                {
+                  "type": "null"
+                }
+              ]
+            },
+            "packageType": {
+              "anyOf": [
+                {
+                  "type": "string",
+                  "minLength": 1,
+                  "maxLength": 256,
+                  "pattern": "^[^\\x00-\\x1f\\x7f]+$"
+                },
+                {
+                  "type": "null"
+                }
+              ]
+            },
+            "cpuCount": {
+              "anyOf": [
+                {
+                  "type": "integer"
+                },
+                {
+                  "type": "null"
+                }
+              ]
+            },
+            "memoryBytes": {
+              "anyOf": [
+                {
+                  "type": "integer"
+                },
+                {
+                  "type": "null"
+                }
+              ]
+            },
+            "diskTotalBytes": {
+              "anyOf": [
+                {
+                  "type": "integer"
+                },
+                {
+                  "type": "null"
+                }
+              ]
+            },
+            "diskAvailableBytes": {
+              "anyOf": [
+                {
+                  "type": "integer"
+                },
+                {
+                  "type": "null"
+                }
+              ]
+            },
+            "codename": {
+              "type": [
+                "string",
+                "null"
+              ]
+            }
+          },
+          "required": [
+            "os",
+            "version",
+            "architecture",
+            "kernel",
+            "system",
+            "hostname",
+            "packageManager",
+            "packageType",
+            "cpuCount",
+            "memoryBytes",
+            "diskTotalBytes",
+            "diskAvailableBytes"
+          ],
+          "additionalProperties": false
+        },
+        {
+          "type": "null"
+        }
+      ]
+    },
+    "agent": {
+      "type": "object",
+      "properties": {
+        "requestedVersion": {
+          "anyOf": [
+            {
+              "type": "string",
+              "minLength": 1,
+              "maxLength": 256,
+              "pattern": "^[^\\x00-\\x1f\\x7f]+$"
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "resolvedVersion": {
+          "anyOf": [
+            {
+              "type": "string",
+              "minLength": 1,
+              "maxLength": 256,
+              "pattern": "^[^\\x00-\\x1f\\x7f]+$"
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "installedVersion": {
+          "type": "null"
+        }
+      },
+      "required": [
+        "requestedVersion",
+        "resolvedVersion",
+        "installedVersion"
+      ],
+      "additionalProperties": false
+    },
+    "readiness": {
+      "anyOf": [
+        {
+          "type": "object",
+          "properties": {
+            "known": {
+              "type": "boolean"
+            },
+            "supportedForTarget": {
+              "type": "boolean"
+            },
+            "downloadConfigured": {
+              "type": "boolean"
+            },
+            "integrityConfigured": {
+              "type": "boolean"
+            },
+            "approved": {
+              "type": "boolean"
+            },
+            "installable": {
+              "type": "boolean"
+            }
+          },
+          "required": [
+            "known",
+            "supportedForTarget",
+            "downloadConfigured",
+            "integrityConfigured",
+            "approved",
+            "installable"
+          ],
+          "additionalProperties": false
+        },
+        {
+          "type": "null"
+        }
+      ]
+    },
+    "platformStatus": {
+      "enum": [
+        "SUPPORTED",
+        "UNSUPPORTED",
+        "UNKNOWN",
+        "NOT_CONFIGURED"
+      ]
+    },
+    "checks": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "string",
+            "pattern": "^[A-Za-z0-9][A-Za-z0-9._-]{0,127}$"
+          },
+          "name": {
+            "type": "string",
+            "minLength": 1,
+            "maxLength": 256,
+            "pattern": "^[^\\x00-\\x1f\\x7f]+$"
+          },
+          "status": {
+            "enum": [
+              "PASS",
+              "WARN",
+              "FAIL",
+              "SKIPPED",
+              "BLOCKED"
+            ]
+          },
+          "severity": {
+            "enum": [
+              "critical",
+              "warning",
+              "info"
+            ]
+          },
+          "message": {
+            "type": "string",
+            "minLength": 1,
+            "maxLength": 256,
+            "pattern": "^[^\\x00-\\x1f\\x7f]+$"
+          },
+          "dependency": {
+            "anyOf": [
+              {
+                "type": "string",
+                "pattern": "^[A-Za-z0-9][A-Za-z0-9._-]{0,127}$"
+              },
+              {
+                "type": "null"
+              }
+            ]
+          }
+        },
+        "required": [
+          "id",
+          "name",
+          "status",
+          "severity",
+          "message",
+          "dependency"
+        ],
+        "additionalProperties": false
+      }
+    },
+    "plan": {
+      "type": "array",
+      "items": {
+        "type": "string",
+        "minLength": 1,
+        "maxLength": 256,
+        "pattern": "^[^\\x00-\\x1f\\x7f]+$"
+      }
+    },
+    "dependencies": {
+      "type": "array",
+      "items": {
+        "enum": [
+          "DEP-001",
+          "DEP-002",
+          "DEP-003",
+          "DEP-004"
+        ]
+      }
+    },
+    "error": {
+      "anyOf": [
+        {
+          "type": "object",
+          "properties": {
+            "name": {
+              "type": "string",
+              "minLength": 1,
+              "maxLength": 256,
+              "pattern": "^[^\\x00-\\x1f\\x7f]+$"
+            },
+            "exitCode": {
+              "type": "integer",
+              "minimum": 0,
+              "maximum": 255
+            },
+            "message": {
+              "type": "string",
+              "minLength": 1,
+              "maxLength": 256,
+              "pattern": "^[^\\x00-\\x1f\\x7f]+$"
+            },
+            "phase": {
+              "type": "string",
+              "minLength": 1,
+              "maxLength": 256,
+              "pattern": "^[^\\x00-\\x1f\\x7f]+$"
+            },
+            "retryable": {
+              "type": "boolean"
+            }
+          },
+          "required": [
+            "name",
+            "exitCode",
+            "message",
+            "phase",
+            "retryable"
+          ],
+          "additionalProperties": false
+        },
+        {
+          "type": "null"
+        }
+      ]
+    },
+    "changed": {
+      "const": false
+    },
+    "serviceRunning": {
+      "type": "null"
+    },
+    "harmonyRegistered": {
+      "type": "null"
+    },
+    "versionSource": {
+      "anyOf": [
+        {
+          "enum": [
+            "cli",
+            "environment",
+            "config"
+          ]
+        },
+        {
+          "type": "null"
+        }
+      ]
+    }
+  },
+  "required": [
+    "schemaVersion",
+    "frameworkVersion",
+    "runId",
+    "timestamp",
+    "command",
+    "status",
+    "state",
+    "stateHistory",
+    "configValid",
+    "host",
+    "agent",
+    "readiness",
+    "platformStatus",
+    "checks",
+    "plan",
+    "dependencies",
+    "error",
+    "changed",
+    "serviceRunning",
+    "harmonyRegistered",
+    "versionSource"
+  ],
+  "additionalProperties": false,
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "allOf": [
+    {
+      "if": {
+        "properties": {
+          "status": {
+            "enum": [
+              "VALIDATED",
+              "DIAGNOSTICS",
+              "PLANNED"
+            ]
+          }
+        }
+      },
+      "then": {
+        "properties": {
+          "error": {
+            "type": "null"
+          },
+          "configValid": {
+            "const": true
+          }
+        }
+      },
+      "else": {
+        "properties": {
+          "error": {
+            "type": "object"
+          }
+        }
+      }
+    }
+  ]
+}

@@ -1,0 +1,1032 @@
+{
+  "$defs": {
+    "keyVaultReference": {
+      "type": "object",
+      "properties": {
+        "provider": {
+          "const": "azure-key-vault"
+        },
+        "reference": {
+          "type": "string",
+          "pattern": "^[A-Za-z0-9-]{1,127}$"
+        },
+        "version": {
+          "type": "string",
+          "pattern": "^[A-Fa-f0-9]{1,127}$"
+        }
+      },
+      "required": [
+        "provider",
+        "reference"
+      ],
+      "additionalProperties": false
+    },
+    "localFileReference": {
+      "type": "object",
+      "properties": {
+        "provider": {
+          "const": "local-file"
+        },
+        "reference": {
+          "type": "string",
+          "pattern": "^[A-Za-z0-9][A-Za-z0-9._-]{0,127}$"
+        }
+      },
+      "required": [
+        "provider",
+        "reference"
+      ],
+      "additionalProperties": false
+    },
+    "secretReference": {
+      "oneOf": [
+        {
+          "$ref": "#/$defs/keyVaultReference"
+        },
+        {
+          "$ref": "#/$defs/localFileReference"
+        }
+      ]
+    }
+  },
+  "type": "object",
+  "properties": {
+    "schema_version": {
+      "const": 1
+    },
+    "agent": {
+      "type": "object",
+      "properties": {
+        "version": {
+          "type": "string",
+          "pattern": "^(?:[0-9]+(?:\\.[0-9]+){1,3}|recommended|latest-tested|latest-available-pinned|latest)$"
+        },
+        "package_kind": {
+          "enum": [
+            "deb",
+            "rpm",
+            "tar"
+          ]
+        },
+        "expected_os": {
+          "type": "object",
+          "properties": {
+            "id": {
+              "type": "string",
+              "pattern": "^[A-Za-z0-9][A-Za-z0-9._-]{0,127}$"
+            },
+            "version": {
+              "type": "string",
+              "minLength": 1,
+              "maxLength": 256,
+              "pattern": "^[^\\x00-\\x1f\\x7f]+$"
+            },
+            "architecture": {
+              "enum": [
+                "x86_64",
+                "aarch64"
+              ]
+            }
+          },
+          "required": [
+            "id",
+            "version",
+            "architecture"
+          ],
+          "additionalProperties": false
+        },
+        "name": {
+          "anyOf": [
+            {
+              "type": "string",
+              "pattern": "^[A-Za-z0-9][A-Za-z0-9._-]{0,127}$"
+            },
+            {
+              "type": "null"
+            }
+          ]
+        }
+      },
+      "required": [
+        "version",
+        "package_kind",
+        "expected_os",
+        "name"
+      ],
+      "additionalProperties": false
+    },
+    "harmony": {
+      "type": "object",
+      "properties": {
+        "cloud_url": {
+          "anyOf": [
+            {
+              "type": "string",
+              "format": "uri",
+              "pattern": "^https://[^/@?#\\s]+(?:/[^?#\\s]*)?$"
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "organization": {
+          "anyOf": [
+            {
+              "type": "string",
+              "minLength": 1,
+              "maxLength": 256,
+              "pattern": "^[^\\x00-\\x1f\\x7f]+$"
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "environment": {
+          "anyOf": [
+            {
+              "type": "string",
+              "minLength": 1,
+              "maxLength": 256,
+              "pattern": "^[^\\x00-\\x1f\\x7f]+$"
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "agent_group_id": {
+          "anyOf": [
+            {
+              "type": "integer",
+              "minimum": 1
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "agent_group_name": {
+          "anyOf": [
+            {
+              "type": "string",
+              "minLength": 1,
+              "maxLength": 256,
+              "pattern": "^[^\\x00-\\x1f\\x7f]+$"
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "registration": {
+          "type": "object",
+          "properties": {
+            "strategy": {
+              "anyOf": [
+                {
+                  "enum": [
+                    "register-json-token",
+                    "credentials-file"
+                  ]
+                },
+                {
+                  "type": "null"
+                }
+              ]
+            },
+            "token_secret_ref": {
+              "anyOf": [
+                {
+                  "$ref": "#/$defs/secretReference"
+                },
+                {
+                  "type": "null"
+                }
+              ]
+            },
+            "username_secret_ref": {
+              "anyOf": [
+                {
+                  "$ref": "#/$defs/secretReference"
+                },
+                {
+                  "type": "null"
+                }
+              ]
+            },
+            "password_secret_ref": {
+              "anyOf": [
+                {
+                  "$ref": "#/$defs/secretReference"
+                },
+                {
+                  "type": "null"
+                }
+              ]
+            },
+            "deregister_on_drainstop": {
+              "const": false
+            }
+          },
+          "required": [
+            "strategy",
+            "token_secret_ref",
+            "username_secret_ref",
+            "password_secret_ref",
+            "deregister_on_drainstop"
+          ],
+          "additionalProperties": false,
+          "allOf": [
+            {
+              "if": {
+                "properties": {
+                  "strategy": {
+                    "const": "register-json-token"
+                  }
+                }
+              },
+              "then": {
+                "properties": {
+                  "token_secret_ref": {
+                    "$ref": "#/$defs/secretReference"
+                  },
+                  "username_secret_ref": {
+                    "type": "null"
+                  },
+                  "password_secret_ref": {
+                    "type": "null"
+                  }
+                }
+              }
+            },
+            {
+              "if": {
+                "properties": {
+                  "strategy": {
+                    "const": "credentials-file"
+                  }
+                }
+              },
+              "then": {
+                "properties": {
+                  "token_secret_ref": {
+                    "type": "null"
+                  },
+                  "username_secret_ref": {
+                    "$ref": "#/$defs/secretReference"
+                  },
+                  "password_secret_ref": {
+                    "$ref": "#/$defs/secretReference"
+                  }
+                }
+              }
+            }
+          ]
+        }
+      },
+      "required": [
+        "cloud_url",
+        "organization",
+        "environment",
+        "agent_group_id",
+        "agent_group_name",
+        "registration"
+      ],
+      "additionalProperties": false
+    },
+    "secrets": {
+      "type": "object",
+      "properties": {
+        "provider": {
+          "enum": [
+            "azure-key-vault",
+            "local-file"
+          ]
+        },
+        "vault_uri": {
+          "anyOf": [
+            {
+              "type": "string",
+              "format": "uri",
+              "pattern": "^https://[^/@?#\\s]+(?:/[^?#\\s]*)?$"
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "managed_identity_client_id": {
+          "anyOf": [
+            {
+              "type": "string",
+              "format": "uuid"
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "registration_field_refs": {
+          "type": "object",
+          "properties": {
+            "cloud_url": {
+              "$ref": "#/$defs/secretReference"
+            },
+            "agent_group_id": {
+              "$ref": "#/$defs/secretReference"
+            },
+            "agent_name_prefix": {
+              "$ref": "#/$defs/secretReference"
+            },
+            "deregister_on_drainstop": {
+              "$ref": "#/$defs/secretReference"
+            },
+            "retry_count": {
+              "$ref": "#/$defs/secretReference"
+            },
+            "retry_interval_seconds": {
+              "$ref": "#/$defs/secretReference"
+            }
+          },
+          "additionalProperties": false
+        },
+        "directory": {
+          "anyOf": [
+            {
+              "type": "string",
+              "minLength": 1,
+              "maxLength": 4096
+            },
+            {
+              "type": "null"
+            }
+          ]
+        }
+      },
+      "required": [
+        "provider",
+        "vault_uri",
+        "managed_identity_client_id"
+      ],
+      "additionalProperties": false,
+      "allOf": [
+        {
+          "if": {
+            "properties": {
+              "provider": {
+                "const": "local-file"
+              }
+            }
+          },
+          "then": {
+            "required": [
+              "directory"
+            ],
+            "properties": {
+              "directory": {
+                "type": "string"
+              },
+              "vault_uri": {
+                "type": "null"
+              },
+              "managed_identity_client_id": {
+                "type": "null"
+              }
+            }
+          }
+        },
+        {
+          "if": {
+            "properties": {
+              "provider": {
+                "const": "azure-key-vault"
+              }
+            }
+          },
+          "then": {
+            "properties": {
+              "directory": {
+                "type": "null"
+              }
+            }
+          }
+        }
+      ]
+    },
+    "network": {
+      "type": "object",
+      "properties": {
+        "endpoint_profile": {
+          "anyOf": [
+            {
+              "type": "string",
+              "pattern": "^[A-Za-z0-9][A-Za-z0-9._-]{0,127}$"
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "download_proxy_profile": {
+          "anyOf": [
+            {
+              "type": "string",
+              "pattern": "^[A-Za-z0-9][A-Za-z0-9._-]{0,127}$"
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "package_proxy_profile": {
+          "anyOf": [
+            {
+              "type": "string",
+              "pattern": "^[A-Za-z0-9][A-Za-z0-9._-]{0,127}$"
+            },
+            {
+              "type": "null"
+            }
+          ]
+        }
+      },
+      "required": [
+        "endpoint_profile",
+        "download_proxy_profile",
+        "package_proxy_profile"
+      ],
+      "additionalProperties": false
+    },
+    "proxy": {
+      "type": "object",
+      "properties": {
+        "enabled": {
+          "type": "boolean"
+        },
+        "host": {
+          "anyOf": [
+            {
+              "type": "string",
+              "pattern": "^[A-Za-z0-9.-]+$"
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "port": {
+          "anyOf": [
+            {
+              "type": "integer",
+              "minimum": 1,
+              "maximum": 65535
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "username_secret_ref": {
+          "anyOf": [
+            {
+              "$ref": "#/$defs/secretReference"
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "password_secret_ref": {
+          "anyOf": [
+            {
+              "$ref": "#/$defs/secretReference"
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "ntlm_domain": {
+          "anyOf": [
+            {
+              "type": "string",
+              "minLength": 1,
+              "maxLength": 256,
+              "pattern": "^[^\\x00-\\x1f\\x7f]+$"
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "exceptions": {
+          "type": "array",
+          "items": {
+            "type": "string",
+            "minLength": 1,
+            "maxLength": 256,
+            "pattern": "^[^\\x00-\\x1f\\x7f]+$"
+          }
+        }
+      },
+      "required": [
+        "enabled",
+        "host",
+        "port",
+        "username_secret_ref",
+        "password_secret_ref",
+        "ntlm_domain",
+        "exceptions"
+      ],
+      "additionalProperties": false,
+      "allOf": [
+        {
+          "if": {
+            "properties": {
+              "enabled": {
+                "const": true
+              }
+            }
+          },
+          "then": {
+            "properties": {
+              "host": {
+                "type": "string"
+              },
+              "port": {
+                "type": "integer"
+              }
+            }
+          }
+        }
+      ]
+    },
+    "ssh": {
+      "type": "object",
+      "properties": {
+        "enabled": {
+          "type": "boolean"
+        },
+        "identities": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "properties": {
+              "id": {
+                "type": "string",
+                "pattern": "^[A-Za-z0-9][A-Za-z0-9._-]{0,127}$"
+              },
+              "private_key_secret_ref": {
+                "$ref": "#/$defs/secretReference"
+              },
+              "public_key_source": {
+                "anyOf": [
+                  {
+                    "type": "object",
+                    "properties": {
+                      "path": {
+                        "type": "string",
+                        "pattern": "^/[^\\x00-\\x1f]+$"
+                      },
+                      "sha256": {
+                        "type": "string",
+                        "pattern": "^[a-fA-F0-9]{64}$"
+                      }
+                    },
+                    "required": [
+                      "path",
+                      "sha256"
+                    ],
+                    "additionalProperties": false
+                  },
+                  {
+                    "type": "null"
+                  }
+                ]
+              },
+              "passphrase_secret_ref": {
+                "anyOf": [
+                  {
+                    "$ref": "#/$defs/secretReference"
+                  },
+                  {
+                    "type": "null"
+                  }
+                ]
+              },
+              "target_directory": {
+                "type": "string",
+                "pattern": "^/[^\\x00-\\x1f]+$"
+              }
+            },
+            "required": [
+              "id",
+              "private_key_secret_ref",
+              "target_directory"
+            ],
+            "additionalProperties": false
+          }
+        }
+      },
+      "required": [
+        "enabled",
+        "identities"
+      ],
+      "additionalProperties": false,
+      "allOf": [
+        {
+          "if": {
+            "properties": {
+              "enabled": {
+                "const": true
+              }
+            }
+          },
+          "then": {
+            "properties": {
+              "identities": {
+                "minItems": 1
+              }
+            }
+          }
+        }
+      ]
+    },
+    "ssl": {
+      "type": "object",
+      "properties": {
+        "enabled": {
+          "type": "boolean"
+        },
+        "identities": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "properties": {
+              "id": {
+                "type": "string",
+                "pattern": "^[A-Za-z0-9][A-Za-z0-9._-]{0,127}$"
+              },
+              "certificate_source": {
+                "type": "object",
+                "properties": {
+                  "path": {
+                    "type": "string",
+                    "pattern": "^/[^\\x00-\\x1f]+$"
+                  },
+                  "sha256": {
+                    "type": "string",
+                    "pattern": "^[a-fA-F0-9]{64}$"
+                  }
+                },
+                "required": [
+                  "path",
+                  "sha256"
+                ],
+                "additionalProperties": false
+              },
+              "private_key_secret_ref": {
+                "$ref": "#/$defs/secretReference"
+              },
+              "passphrase_secret_ref": {
+                "anyOf": [
+                  {
+                    "$ref": "#/$defs/secretReference"
+                  },
+                  {
+                    "type": "null"
+                  }
+                ]
+              },
+              "target_directory": {
+                "type": "string",
+                "pattern": "^/[^\\x00-\\x1f]+$"
+              }
+            },
+            "required": [
+              "id",
+              "certificate_source",
+              "private_key_secret_ref",
+              "target_directory"
+            ],
+            "additionalProperties": false
+          }
+        }
+      },
+      "required": [
+        "enabled",
+        "identities"
+      ],
+      "additionalProperties": false,
+      "allOf": [
+        {
+          "if": {
+            "properties": {
+              "enabled": {
+                "const": true
+              }
+            }
+          },
+          "then": {
+            "properties": {
+              "identities": {
+                "minItems": 1
+              }
+            }
+          }
+        }
+      ]
+    },
+    "java_trust": {
+      "type": "object",
+      "properties": {
+        "enabled": {
+          "type": "boolean"
+        },
+        "certificates": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "properties": {
+              "alias": {
+                "type": "string",
+                "pattern": "^[A-Za-z0-9][A-Za-z0-9._-]{0,127}$"
+              },
+              "certificate_source": {
+                "type": "object",
+                "properties": {
+                  "path": {
+                    "type": "string",
+                    "pattern": "^/[^\\x00-\\x1f]+$"
+                  },
+                  "sha256": {
+                    "type": "string",
+                    "pattern": "^[a-fA-F0-9]{64}$"
+                  }
+                },
+                "required": [
+                  "path",
+                  "sha256"
+                ],
+                "additionalProperties": false
+              }
+            },
+            "required": [
+              "alias",
+              "certificate_source"
+            ],
+            "additionalProperties": false
+          }
+        }
+      },
+      "required": [
+        "enabled",
+        "certificates"
+      ],
+      "additionalProperties": false,
+      "allOf": [
+        {
+          "if": {
+            "properties": {
+              "enabled": {
+                "const": true
+              }
+            }
+          },
+          "then": {
+            "properties": {
+              "certificates": {
+                "minItems": 1
+              }
+            }
+          }
+        }
+      ]
+    },
+    "health": {
+      "type": "object",
+      "properties": {
+        "registration_timeout_seconds": {
+          "type": "integer",
+          "minimum": 1,
+          "maximum": 3600
+        },
+        "poll_interval_seconds": {
+          "type": "integer",
+          "minimum": 1,
+          "maximum": 60
+        },
+        "evidence_profile": {
+          "anyOf": [
+            {
+              "type": "string",
+              "pattern": "^[A-Za-z0-9][A-Za-z0-9._-]{0,127}$"
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "require_cloud_confirmation": {
+          "const": true
+        },
+        "profile": {
+          "enum": [
+            "INITIAL_REGISTRATION",
+            "STEADY_STATE_EXISTING_AGENT",
+            "EXISTING_AGENT_START",
+            "EXISTING_AGENT_RESTART",
+            "POST_CONFIGURATION_RESTART",
+            "POST_ROLLBACK_RESTART"
+          ]
+        },
+        "expected_identity": {
+          "type": [
+            "object",
+            "null"
+          ],
+          "required": [
+            "agent_id",
+            "group_id",
+            "agent_name",
+            "group_name",
+            "package_version"
+          ],
+          "additionalProperties": false,
+          "properties": {
+            "agent_id": {
+              "type": "integer",
+              "minimum": 1
+            },
+            "group_id": {
+              "type": "integer",
+              "minimum": 1
+            },
+            "agent_name": {
+              "type": "string",
+              "minLength": 1,
+              "maxLength": 256
+            },
+            "group_name": {
+              "type": "string",
+              "minLength": 1,
+              "maxLength": 256
+            },
+            "package_version": {
+              "type": "string",
+              "pattern": "^\\d+(?:\\.\\d+){3}$"
+            }
+          }
+        }
+      },
+      "required": [
+        "registration_timeout_seconds",
+        "poll_interval_seconds",
+        "evidence_profile",
+        "require_cloud_confirmation"
+      ],
+      "additionalProperties": false
+    },
+    "output": {
+      "type": "object",
+      "properties": {
+        "result_path": {
+          "anyOf": [
+            {
+              "type": "string",
+              "pattern": "^/[^\\x00-\\x1f]+$"
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "log_path": {
+          "anyOf": [
+            {
+              "type": "string",
+              "pattern": "^/[^\\x00-\\x1f]+$"
+            },
+            {
+              "type": "null"
+            }
+          ]
+        }
+      },
+      "required": [
+        "result_path",
+        "log_path"
+      ],
+      "additionalProperties": false
+    },
+    "logging": {
+      "type": "object",
+      "properties": {
+        "level": {
+          "enum": [
+            "DEBUG",
+            "INFO",
+            "WARN",
+            "ERROR"
+          ]
+        }
+      },
+      "required": [
+        "level"
+      ],
+      "additionalProperties": false
+    },
+    "execution": {
+      "type": "object",
+      "properties": {
+        "dry_run": {
+          "type": "boolean"
+        }
+      },
+      "required": [
+        "dry_run"
+      ],
+      "additionalProperties": false
+    },
+    "artifact_policy": {
+      "type": "object",
+      "required": [
+        "provider",
+        "require_production_approval"
+      ],
+      "additionalProperties": false,
+      "properties": {
+        "provider": {
+          "const": "vendor-catalogue"
+        },
+        "require_production_approval": {
+          "type": "boolean"
+        }
+      }
+    },
+    "uninstall_policy": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "drain_pause_timeout_seconds": {
+          "type": "integer",
+          "minimum": 1,
+          "maximum": 3600
+        },
+        "operation_poll_interval_seconds": {
+          "type": "integer",
+          "minimum": 1,
+          "maximum": 60
+        },
+        "stop_timeout_seconds": {
+          "type": "integer",
+          "minimum": 1,
+          "maximum": 3600
+        },
+        "stop_poll_interval_seconds": {
+          "type": "integer",
+          "minimum": 1,
+          "maximum": 60
+        }
+      }
+    },
+    "qa_policy": {
+      "type": "object",
+      "required": [
+        "cpu_exception",
+        "production_sizing_validated"
+      ],
+      "additionalProperties": false,
+      "properties": {
+        "cpu_exception": {
+          "enum": [
+            "DISABLED",
+            "EXPLICIT_CONTROLLED_TEST_FLAG_REQUIRED"
+          ]
+        },
+        "production_sizing_validated": {
+          "const": false
+        }
+      }
+    }
+  },
+  "required": [
+    "schema_version",
+    "agent",
+    "harmony",
+    "secrets",
+    "network",
+    "proxy",
+    "ssh",
+    "ssl",
+    "java_trust",
+    "health",
+    "output",
+    "logging",
+    "execution"
+  ],
+  "additionalProperties": false,
+  "$schema": "https://json-schema.org/draft/2020-12/schema"
+}
