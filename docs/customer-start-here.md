@@ -6,7 +6,15 @@ Choose **A** for guided input at a terminal. Choose **B** when your administrato
 
 ## 1. Put the release in the VM user's home directory
 
-First, copy **a version of the installer archive and its matching `.sha256` file** to `/home/{user}/` on the VM (for example, `/home/azureuser/`). Your organization may use `scp`, SFTP, a managed file-transfer service, or another approved method. The steps on the VM are the same whichever transfer method you use. Obtain the expected checksum through a trusted release channel.
+First, put **a version of the installer archive and its matching `.sha256` file** in `/home/{user}/` on the VM (for example, `/home/azureuser/`). You can clone the [Jitterbit EMEA installer repository](https://github.com/Jitterbit-EMEA/jitterbit-agent-installer) directly on the VM, or use `scp`, SFTP, a managed file-transfer service, or another approved method. The steps on the VM are the same whichever delivery method you use. Obtain the expected checksum through a trusted release channel.
+
+To download the RC9 files directly on the VM with Git, run:
+
+```bash
+cd "$HOME"
+git clone --depth 1 https://github.com/Jitterbit-EMEA/jitterbit-agent-installer.git
+cp jitterbit-agent-installer/dist/jbpa-1.0.0-rc9.tar.gz* "$HOME/"
+```
 
 If you use `scp`, run this example from the repository root on the computer holding RC9. Replace the VM user and host. The destination is explicitly `/home/${VM_USER}/`:
 
@@ -27,7 +35,7 @@ sudo tar -xzf jbpa-1.0.0-rc9.tar.gz -C /opt/jbpa/releases
 cd /opt/jbpa/releases/jbpa-1.0.0-rc9
 ```
 
-The archive is the documented delivery route; this development repository has no published customer clone URL. Run each command in order and stop if it fails.
+The archive is the documented delivery route. Run each command in order and stop if it fails. The public repository contains this QA candidate; cloning it does not make the installer production approved.
 
 ## A. Guided interactive installation
 

@@ -30,7 +30,7 @@ git clone --branch "$APPROVED_TAG" "$REPOSITORY_URL" jbpa-source
 cp jbpa-source/dist/jbpa-1.0.0-rc5.tar.gz "$HOME/"
 ```
 
-Then continue at step 2. This working project has no configured Git remote or published customer tag, so those placeholders cannot yet be replaced with a verified customer URL. The clone must contain the reviewed archive; a development checkout alone is not a verified release.
+Then continue at step 2. The project is now hosted at [Jitterbit-EMEA/jitterbit-agent-installer](https://github.com/Jitterbit-EMEA/jitterbit-agent-installer), but no immutable customer release tag has been published for this historical RC5 procedure. The clone must contain the reviewed archive; a development checkout alone is not a verified release. For the current RC9 candidate, use the [fresh-VM guide](customer-start-here.md).
 
 ## 2. Verify, extract, and enter the tool directory
 
