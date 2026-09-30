@@ -1,0 +1,12 @@
+{
+  "schemaVersion": 1,
+  "targets": {
+    "qa-vm": {
+      "host": "vm.example.org",
+      "user": "vmuser",
+      "identityFile": "/home/operator/.ssh/qa_vm_key",
+      "knownHostsFile": "/home/operator/.ssh/known_hosts",
+      "credentialsFile": "/run/secrets/jbpa/credentials.json"
+    }
+  }
+}

@@ -1,5 +1,7 @@
 # JBPA for Claude Code and external infrastructure AI
 
+> **Historical RC3 kit.** The current `/jbpa` skill uses the [RC9 Codex / Claude Code remote workflow](../skills/README.md). The commands and release digest below remain RC3 examples and must not be combined with the RC9 skill or customer archive.
+
 If your infrastructure AI has already provisioned a Linux VM, this directory contains everything required to hand that VM to JBPA for Jitterbit Private Agent setup and lifecycle management.
 
 **JBPA DOES NOT CREATE VIRTUAL MACHINES.** It starts at `VM_ALREADY_PROVISIONED`. Successful INSTALL ends at `JITTERBIT_PRIVATE_AGENT_CONFIGURED_AND_HEALTHY`.
@@ -19,7 +21,7 @@ Your tool gives JBPA an existing Linux host, the verified release, `agent.yaml`,
 
 Start with the [one-page quickstart](JBPA-QUICKSTART.md), then the [operator runbook](JBPA-OPERATOR-RUNBOOK.md). The [external handoff contract](JBPA-EXTERNAL-HANDOFF.md) defines inputs, outputs and responsibility boundaries. Use [troubleshooting](JBPA-TROUBLESHOOTING.md) and the [handoff checklist](HANDOFF-CHECKLIST.md) while integrating.
 
-The project [/jbpa skill](../../../.claude/skills/jbpa/SKILL.md) and [boundary rule](../../../.claude/rules/jbpa-boundary.md) are ready to copy into the infrastructure-AI repository; retain its unrelated instructions. The short root [CLAUDE.md](../../../CLAUDE.md) contains only stable project rules. [Example requests and result](examples/) accompany the [schema-valid agent templates](../../../examples/agent.install.example.yaml) and [reinstall template](../../../examples/agent.reinstall.example.yaml). The [security section](JBPA-OPERATOR-RUNBOOK.md#security-and-support-evidence) applies to every workflow.
+For the current skill, use the [RC9 remote workflow](../skills/README.md). The historical [RC3 boundary rule](../../../.claude/rules/jbpa-boundary.md), [example requests and result](examples/), [schema-valid agent templates](../../../examples/agent.install.example.yaml), and [reinstall template](../../../examples/agent.reinstall.example.yaml) remain for teams maintaining RC3 integrations. The [security section](JBPA-OPERATOR-RUNBOOK.md#security-and-support-evidence) applies to every workflow.
 
 ## Claude Code on the engineer's machine
 
