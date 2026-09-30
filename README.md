@@ -75,7 +75,7 @@ BASIC requires a clean host and leaves the installed agent. FULL_LIFECYCLE addit
 ```bash
 scripts/validate.sh
 scripts/build-release.sh
-scripts/verify-release.sh dist/jbpa-1.0.0-rc7.tar.gz
+scripts/verify-release.sh dist/jbpa-1.0.0-rc9.tar.gz
 ```
 
 Build runs source validation, tests, lint, formatting, schemas, catalogue/contracts, and a bounded credential scan. It emits a clean framework directory, manifest, file hashes, archive and archive digest. Verify with an independently supplied expected archive digest for deployment; the colocated sidecar alone is not independent provenance.

@@ -6,6 +6,6 @@ JBPA DOES NOT CREATE VIRTUAL MACHINES. It starts at `VM_ALREADY_PROVISIONED` and
 
 External caller tooling must not duplicate PA install, registration, drain, health, uninstall or reinstall logic, and must not parse Jitterbit logs or TranDb. Use first-class `jbpa reinstall` for REINSTALL. Do not expose secret values or bypass release/artifact hashes.
 
-Current immutable JBPA release: `1.0.0-rc3`; archive SHA-256: `4b06e3715cb5faf3472354934fc12c04b54c7febe25d98f47bf1f038075ad90e`. PA 12.10.1.1 artifact remains QA_TEST_ONLY / LOCALLY_CALCULATED, not production approved. Ubuntu 22.04 live qualification remains pending.
+Current immutable QA candidate: JBPA `1.0.0-rc9`; archive SHA-256: `596cba1ee7c6c4ce2468aa3c1d6955a238a0bd63e4a60c27866c22b2587f9231`. The remote caller supports controlled Ubuntu 24.04 amd64 QA only and has offline tests, but no live SSH qualification. PA 12.10.1.1 remains QA_TEST_ONLY / LOCALLY_CALCULATED, not production approved. Ubuntu 22.04 live qualification remains pending. RC3 materials are historical.
 
-Use `/jbpa <install|reinstall|uninstall|health|diagnostics|validate>` for the operating workflow. Start with the [integration kit](docs/integrations/claude-code/README.md); keep detailed procedures in the skill and runbooks.
+Use `/jbpa` for the current `install`, `upgrade`, `uninstall`, `status`, `health`, and `versions` workflow on an already-provisioned named VM. Start with the [current skill and remote caller guide](docs/integrations/skills/README.md); the [RC3 integration kit](docs/integrations/claude-code/README.md) is retained for historical integrations.

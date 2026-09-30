@@ -1,5 +1,9 @@
 # JBPA release notes
 
+## External AI integration after RC9
+
+Added matching Codex and Claude Code skills plus the `bin/jbpa-remote` caller for controlled Ubuntu 24.04 QA management on an already-provisioned VM. The caller verifies the pinned RC9 archive and, on a later install after local uninstall, verifies and reuses the existing release directory instead of requiring another extraction. These integration files are repository additions outside the immutable RC9 archive. They have offline contract tests but no live SSH qualification; package-changing upgrade and Ubuntu 22.04 remain open.
+
 ## 1.0.0-rc9
 
 Added the bundled `bin/jbpa-install` customer entrypoint. One invocation now prepares the runtime, imports a single private JSON document or prompts for Harmony details, presents/accepts the PA version, runs preflight and installation, and verifies the private result against current package, connection and services. A recognized Harmony capacity failure yields a customer-readable next step and private result path. A synthetic 10-success/11th-failure regression exercises that path without consuming live Harmony slots; see the [capacity test report](customer-capacity-test-2026-09-29.md). RC9 has not been live-installed; the designated QA agent remains healthy.

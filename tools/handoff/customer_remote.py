@@ -13,6 +13,7 @@ import re
 import shlex
 import subprocess
 import sys
+import tarfile
 import uuid
 from pathlib import Path, PurePosixPath
 
@@ -94,6 +95,19 @@ def archive_digest(archive: Path) -> str:
     return digest.hexdigest()
 
 
+def pinned_manifest_digest(archive: Path) -> str:
+    """Read the file manifest only after authenticating the immutable archive."""
+    archive_digest(archive)
+    try:
+        with tarfile.open(archive, "r:gz") as bundle:
+            member = bundle.extractfile(f"{RELEASE}/SHA256SUMS")
+            if member is None:
+                raise RemoteError("RELEASE_MANIFEST_INVALID")
+            return hashlib.sha256(member.read()).hexdigest()
+    except (OSError, tarfile.TarError, KeyError) as exc:
+        raise RemoteError("RELEASE_MANIFEST_INVALID") from exc
+
+
 class SSH:
     def __init__(self, target: dict[str, str]):
         self.address = f"{target['user']}@{target['host']}"
@@ -157,7 +171,11 @@ class SSH:
 
 
 def deliver_release(ssh: SSH, archive: Path) -> None:
-    archive_digest(archive)
+    expected_manifest = pinned_manifest_digest(archive)
+    exists, _ = ssh.run(["sudo", "-n", "test", "-e", str(REMOTE_RELEASE)])
+    if exists == 0:
+        verify_release(ssh, expected_manifest)
+        return
     stage = ssh.require(["mktemp", "-d", "/var/tmp/jbpa-remote-XXXXXX"], "RELEASE_DELIVERY_FAILED")
     stage = stage.strip()
     if not re.fullmatch(r"/var/tmp/jbpa-remote-[A-Za-z0-9]+", stage):
@@ -180,17 +198,27 @@ def deliver_release(ssh: SSH, archive: Path) -> None:
             "RELEASE_DELIVERY_FAILED",
             timeout=180,
         )
-        ssh.require(
-            ["sudo", "-n", "python3", "-c", CHECK_FILES, str(REMOTE_RELEASE)],
-            "RELEASE_MANIFEST_INVALID",
-            timeout=180,
-        )
+        verify_release(ssh, expected_manifest)
     finally:
         for command in (["rm", "-f", str(remote_archive)], ["rmdir", stage]):
             try:
                 ssh.run(command)
             except RemoteError:
                 pass
+
+
+def verify_release(ssh: SSH, expected_manifest: str) -> None:
+    observed = ssh.require(
+        ["sudo", "-n", "sha256sum", str(REMOTE_RELEASE / "SHA256SUMS")],
+        "RELEASE_MANIFEST_INVALID",
+    )
+    if observed.split(maxsplit=1)[0] != expected_manifest:
+        raise RemoteError("RELEASE_MANIFEST_INVALID")
+    ssh.require(
+        ["sudo", "-n", "python3", "-c", CHECK_FILES, str(REMOTE_RELEASE)],
+        "RELEASE_MANIFEST_INVALID",
+        timeout=180,
+    )
 
 
 def validate_result(data: dict, action: str, exit_code: int) -> dict:

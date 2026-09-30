@@ -76,11 +76,52 @@ class CustomerRemoteTests(unittest.TestCase):
 
             def run(self, argv):
                 calls.append(argv)
-                return 0, ""
+                return 1, ""
 
         with self.assertRaisesRegex(remote.RemoteError, "JBPA_RELEASE_HASH_MISMATCH"):
             remote.deliver_release(FakeSSH(), remote.ARCHIVE)
         self.assertFalse(any("tar" in argv for argv in calls))
+
+    def test_install_reuses_verified_release_after_local_uninstall(self):
+        calls = []
+        manifest_digest = remote.pinned_manifest_digest(remote.ARCHIVE)
+
+        class FakeSSH:
+            def run(self, argv):
+                calls.append(argv)
+                return 0, ""
+
+            def require(self, argv, reason, *, timeout=60):
+                calls.append(argv)
+                if argv[:3] == ["sudo", "-n", "sha256sum"]:
+                    return f"{manifest_digest}  {argv[-1]}\n"
+                return ""
+
+            def copy(self, *_):
+                raise AssertionError("a verified release must not be copied again")
+
+        remote.deliver_release(FakeSSH(), remote.ARCHIVE)
+        self.assertTrue(any(remote.CHECK_FILES in argv for argv in calls))
+        self.assertFalse(any("mktemp" in argv for argv in calls))
+
+    def test_existing_release_with_modified_manifest_fails_closed(self):
+        calls = []
+
+        class FakeSSH:
+            def run(self, argv):
+                calls.append(argv)
+                return 0, ""
+
+            def require(self, argv, reason, *, timeout=60):
+                calls.append(argv)
+                return "0" * 64 + "  SHA256SUMS\n"
+
+            def copy(self, *_):
+                raise AssertionError("a present release must not be overwritten")
+
+        with self.assertRaisesRegex(remote.RemoteError, "RELEASE_MANIFEST_INVALID"):
+            remote.deliver_release(FakeSSH(), remote.ARCHIVE)
+        self.assertFalse(any(remote.CHECK_FILES in argv for argv in calls))
 
     def test_install_requires_registration_health_and_matching_result(self):
         data = {
