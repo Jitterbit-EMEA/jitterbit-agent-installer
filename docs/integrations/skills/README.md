@@ -24,6 +24,8 @@ Start Codex or Claude Code in the AI project and invoke `$jbpa` or `/jbpa`. Alte
 
 ## 2. Prepare access and credentials
 
+On a colleague's first invocation, the skill checks a supplied inventory or `$HOME/jbpa-vms.json` and asks for missing target, host, SSH username, private-key path and pinned host-key file. A public hostname/IP or reachable private address is acceptable. It helps verify an unpinned host key against an independently obtained fingerprint, saves a mode-`0600` inventory outside Git, and tests SSH and passwordless sudo before continuing the requested operation. It reuses that inventory on later runs; credentials and QA approvals are not distributed with the skill. This is a conversational setup flow, not an interactive prompt built into `jbpa-remote`.
+
 The orchestrator needs SSH access with a local private key and a **pinned** `known_hosts` file. Verify the host key fingerprint independently before adding it to that file; do not use `StrictHostKeyChecking=no`. The VM login must have passwordless `sudo -n`, Python 3, outbound access to Ubuntu packages, the Jitterbit download endpoint and Harmony, and enough CPU, memory and disk for [preflight](../../pre-provisioned-host-contract.md).
 
 For first install, an administrator or secret manager must stage one private [credentials JSON](../../../config/examples/customer-credentials.example.json) on the VM, for example `/run/secrets/jbpa/credentials.json`, with mode `0600`. The inventory contains only its **path on the VM**. Do not put the token value in a prompt, inventory, Git, or an SSH command. The customer launcher imports and validates the JSON into `/etc/jbpa/credentials.json` on first install.
