@@ -8,9 +8,13 @@ from contextlib import nullcontext
 from pathlib import Path
 from unittest.mock import patch
 
+from test_native_linux import SUCCESS_LOG, FakeBackend, artifact, config
+
 from jbpa import release_cli, upgrade
 from jbpa.config import ROOT
 from jbpa.errors import FrameworkError
+from jbpa.native_linux import CREDENTIALS, NativeLinuxWorkflow
+from jbpa.security import Secret
 
 CONFIG = str(ROOT / "config/examples/local-file-qa.example.yaml")
 HOST = {"os": "ubuntu", "version": "24.04", "architecture": "x86_64"}
@@ -183,6 +187,11 @@ class UpgradeTests(unittest.TestCase):
         self.assertFalse(result["changed"])
 
     def test_upgrade_preserves_identity_and_checks_health(self):
+        runtime = FakeBackend(
+            log=SUCCESS_LOG.replace("Agent synchronization for agent group ID 200 completed", "")
+        )
+        runtime.files.add(CREDENTIALS)
+        runtime.installed_version = "12.10.1.1"
         with tempfile.TemporaryDirectory(dir=ROOT / "tests") as folder:
             credentials = Path(folder) / "credentials.txt"
             credentials.write_text("fixture")
@@ -206,15 +215,15 @@ class UpgradeTests(unittest.TestCase):
             ):
                 code, result = self.execute(
                     package_runner=package_runner,
-                    verify_runner=lambda *_args: {
-                        "status": "COMPLETE",
-                        "serviceRunning": True,
-                        "harmonyRegistered": True,
-                    },
+                    verify_runner=lambda *_args: NativeLinuxWorkflow(runtime).run(
+                        config(), artifact(package_version="12.10.1.1"), Secret(None)
+                    ),
                 )
         self.assertEqual(code, 0)
         self.assertEqual(result["state"], "UPGRADE_COMPLETE")
         self.assertTrue(result["changed"])
+        self.assertFalse(result["runtimeVerification"]["synchronizationRequired"])
+        self.assertFalse(result["runtimeVerification"]["synchronizationObserved"])
 
     def test_backup_restores_changed_configuration_privately(self):
         with tempfile.TemporaryDirectory(dir=ROOT / "tests") as folder:

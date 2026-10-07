@@ -28,6 +28,9 @@
     "harmonyRegistered": {"type": ["boolean", "null"]},
     "logAvailableAfterSeconds": {"type": ["number", "null"], "minimum": 0},
     "registrationDurationSeconds": {"type": ["number", "null"], "minimum": 0},
+    "verificationProfile": {"enum": ["INITIAL_REGISTRATION", "EXISTING_AGENT_RESTART"]},
+    "synchronizationRequired": {"type": "boolean"},
+    "synchronizationObserved": {"type": "boolean"},
     "plan": {"type": "array", "items": {"type": "string"}},
     "error": {"type": ["object", "null"]}
   },

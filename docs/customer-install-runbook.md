@@ -176,6 +176,14 @@ dpkg-query -W jitterbit-agent
 sudo ./bin/jbpa upgrade --config /etc/jbpa/agent.yaml --version latest --non-interactive --controlled-test --result-file /var/lib/jbpa/results/customer-upgrade.json
 ```
 
+Upgrade verification uses existing-agent restart criteria: fresh Harmony authentication,
+login to the configured group, Agent Services connection, request flow and healthy local
+services, followed by a live connection check and confirmation that the agent name,
+group and target version match. A new full synchronization log entry is supporting
+evidence for an existing registration; it is mandatory for a fresh registration.
+The upgrade result includes `runtimeVerification` with the selected profile and
+whether synchronization was required and observed.
+
 Use a new result filename for each attempt. If latest equals the installed build, the result is `ALREADY_CURRENT` and `changed: false`. For a newer same-major approved build, JBPA checks existing health and identity, makes a private configuration backup, drains operations, installs the inspected package, restores changed settings, and verifies identity/health. Downgrades, major-version changes and unknown or unqualified latest builds stop for review. The no-op upgrade passed on the QA VM; a real package-changing upgrade has offline tests but is **not yet live-qualified**. Inspect its result and confirm the agent in Harmony again.
 
 ## 10. Certificates, SFTP, SSL and proxy

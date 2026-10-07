@@ -277,6 +277,62 @@ class NativeLinuxWorkflowTests(unittest.TestCase):
         backend.files.update({CREDENTIALS, REGISTER_JSON})
         self.assert_error("REGISTRATION_STATE_CONFLICT", backend)
 
+    def test_existing_agent_restart_succeeds_without_full_sync(self):
+        log = "\n".join(
+            line
+            for line in SUCCESS_LOG.splitlines()
+            if not any(
+                marker in line
+                for marker in (
+                    "Auto Registration",
+                    "Read agent credentials file",
+                    "Agent synchronization",
+                )
+            )
+        )
+        backend = FakeBackend(log=log)
+        backend.files.add(CREDENTIALS)
+        backend.installed_version = "12.9.2.2"
+        _, result = self.run_success(backend)
+        self.assertEqual(result["verificationProfile"], "EXISTING_AGENT_RESTART")
+        self.assertFalse(result["synchronizationRequired"])
+        self.assertFalse(result["synchronizationObserved"])
+        self.assertEqual(backend.now, 0)
+
+    def test_initial_registration_still_requires_full_sync(self):
+        backend = FakeBackend(
+            log=SUCCESS_LOG.replace("Agent synchronization for agent group ID 200 completed", "")
+        )
+        self.assert_error("SYNCHRONIZATION_FAILED", backend)
+        self.assertTrue(backend.exists(REGISTER_JSON))
+
+    def test_existing_agent_restart_still_requires_fresh_runtime_signals(self):
+        for marker in (
+            "REST API RESPONSE: Status: true",
+            "Agent Logged in: AgentId = 100; AgentGroupId = 200",
+            "connection to agent services has been established",
+            "Connection established, agent logged in, and request flow has commenced",
+        ):
+            with self.subTest(marker=marker):
+                backend = FakeBackend(log=SUCCESS_LOG.replace(marker, ""))
+                backend.files.add(CREDENTIALS)
+                backend.installed_version = "12.9.2.2"
+                self.assert_error(
+                    "AGENT_SERVICES_CONNECTION_FAILED"
+                    if marker == "connection to agent services has been established"
+                    else "REGISTRATION_TIMEOUT",
+                    backend,
+                )
+
+    def test_existing_agent_restart_still_requires_healthy_services(self):
+        backend = FakeBackend(
+            log=SUCCESS_LOG.replace("Agent synchronization for agent group ID 200 completed", "")
+        )
+        backend.files.add(CREDENTIALS)
+        backend.installed_version = "12.9.2.2"
+        backend.status = "Scheduler stopped"
+        self.assert_error("LOCAL_SERVICE_FAILURE", backend)
+
     def test_reinstall_rejects_credentials_created_by_package(self):
         class StaleIdentityBackend(FakeBackend):
             def run(self, argv, env=None):

@@ -288,6 +288,7 @@ def execute(
                 if metadata is None:
                     raise FrameworkError("UPGRADE_STATE_UNSUPPORTED")
                 health = verify_runner(config, metadata)
+                result["runtimeVerification"] = health
                 if (
                     health["status"] != "COMPLETE"
                     or health["serviceRunning"] is not True

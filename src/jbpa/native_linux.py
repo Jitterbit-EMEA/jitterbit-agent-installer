@@ -429,10 +429,11 @@ class NativeLinuxWorkflow:
                     "AGENT_LOGGED_IN",
                     "AGENT_SERVICES_CONNECTED",
                     "REQUEST_FLOW_STARTED",
-                    "AGENT_SYNCHRONIZED",
                 }
                 if not credentials_before:
-                    required.update({"AUTO_REGISTRATION_COMPLETED", "CREDENTIALS_CREATED"})
+                    required.update(
+                        {"AUTO_REGISTRATION_COMPLETED", "CREDENTIALS_CREATED", "AGENT_SYNCHRONIZED"}
+                    )
                 if required <= observed and self.backend.exists(CREDENTIALS):
                     self._local_health()
                     if not credentials_before:
@@ -448,6 +449,11 @@ class NativeLinuxWorkflow:
                         "changed": self.changed,
                         "serviceRunning": True,
                         "harmonyRegistered": True,
+                        "verificationProfile": "EXISTING_AGENT_RESTART"
+                        if credentials_before
+                        else "INITIAL_REGISTRATION",
+                        "synchronizationRequired": not credentials_before,
+                        "synchronizationObserved": "AGENT_SYNCHRONIZED" in observed,
                         "logAvailableAfterSeconds": log_available_after,
                         "registrationDurationSeconds": self.backend.monotonic() - started_at,
                     }
@@ -456,7 +462,11 @@ class NativeLinuxWorkflow:
                 self.fail("CREDENTIALS_NOT_CREATED")
             if "HARMONY_AUTHENTICATED" in observed and "AGENT_SERVICES_CONNECTED" not in observed:
                 self.fail("AGENT_SERVICES_CONNECTION_FAILED")
-            if "AGENT_SERVICES_CONNECTED" in observed and "AGENT_SYNCHRONIZED" not in observed:
+            if (
+                not credentials_before
+                and "AGENT_SERVICES_CONNECTED" in observed
+                and "AGENT_SYNCHRONIZED" not in observed
+            ):
                 self.fail("SYNCHRONIZATION_FAILED")
             self.fail("REGISTRATION_TIMEOUT")
         finally:
