@@ -1,42 +1,74 @@
 ---
 name: jbpa
-description: Install or manage a Jitterbit Private Agent on a named, already-provisioned Ubuntu QA VM through the JBPA SSH caller. Use for PA installation, upgrade, uninstall, health, status, or version listing on a VM.
+description: Set up or manage Jitterbit Private Agents on named, already-provisioned Ubuntu QA VMs. Gather SSH and Harmony settings, clone JBPA, prepare protected credentials, then handle install, upgrade, uninstall, health, status or versions.
 ---
 
-# Jitterbit Private Agent on a provisioned VM
+# Jitterbit Private Agent setup and management
 
-Locate the JBPA checkout containing `bin/jbpa-remote`, often `integrations/jbpa` in the AI project. Use that command for one named VM and one operation at a time. The caller runs on the engineer's or orchestration host; Codex or Claude Code does not need to run on the PA VM. JBPA owns PA package, registration, upgrade, health, and uninstall work. This skill does not provision infrastructure.
+Use this skill for conversational onboarding and subsequent PA lifecycle requests. The engineer's computer runs the SSH caller; the VM runs JBPA. This skill does not provision infrastructure. Handle one named target and operation at a time.
 
-The remote caller currently supports the **RC9 controlled QA workflow on Ubuntu 24.04 amd64**. It is not a production or Ubuntu 22.04 qualification. In the JBPA checkout, read `docs/integrations/skills/README.md` when preparing an inventory or VM, and `docs/customer-start-here.md` for release limitations.
+The pinned remote caller supports RC9 controlled QA on Ubuntu 24.04 amd64. Read `docs/customer-start-here.md` in the checkout for release limitations. Installing the skill does not transfer another engineer's hosts, keys, credentials or QA approvals.
 
-## First-run connection setup
+## First-run setup
 
-Run this conversational setup when the requested target has no usable local inventory. Installing the skill does not transfer another engineer's VM details, keys, credentials or QA approvals.
+A request such as “Set up JBPA on my VM” authorizes preparing the framework and protected credentials. It does not itself authorize installing a PA. If setup accompanies an explicit install request, continue that installation after setup succeeds.
 
-1. Reuse details explicitly supplied in this conversation or a user-selected inventory. Otherwise check `$HOME/jbpa-vms.json`. If several targets exist and the request does not identify one, ask which target to use. Do not infer a target from example files or another engineer's history. If the JBPA checkout cannot be located in the current project, ask for its local path; the skill alone does not include the caller or release archive.
-2. Ask for only the missing fields in one concise message:
+1. Gather missing non-secret information before cloning. Reuse the conversation, a user-selected private inventory, or `$HOME/jbpa-vms.json`. Ask in one concise message for:
+   - Target name, reachable public hostname/IP or private address, SSH username.
+   - Absolute local SSH private-key path and pinned `known_hosts` path.
+   - Harmony cloud URL, numeric agent group ID, and desired agent name prefix.
+   - PA version only if installation or upgrade was requested and no version was given.
 
-   > To connect to your VM, please provide a target name, public hostname/IP (or a private address reachable from this computer), SSH username, absolute local SSH private-key path, and pinned `known_hosts` file path. Provide file paths only, not key contents or passwords.
+   Offer defaults and examples in the initial question, and let the user accept them together or override individual fields:
 
-   For `install`, also ask for the requested PA version if unspecified and the absolute path to the protected credentials JSON **on the VM**. This path is unnecessary if `/etc/jbpa/credentials.json` is already staged and verified by the installer. Do not require registration credentials for status, health, versions or uninstall.
-3. Check that local key and host-key files exist without displaying private-key contents. Expand local `~` paths before storing them. If the colleague has no pinned host key, help obtain the expected fingerprint through their VM administrator or authenticated cloud console. A key collected with `ssh-keyscan` is only a candidate: compare its fingerprint with that independent source before pinning it. Never auto-accept a new or changed host key. If verification is unavailable, explain the missing evidence and pause before connecting.
-4. Save the completed inventory to `$HOME/jbpa-vms.json`, or the user's chosen private location outside Git, with mode `0600`. Follow the checkout's inventory example and schema. Store host, username and file paths only; never store key contents, tokens, passwords or QA approvals. Preserve other targets. Ask which entry to use or update if the chosen name conflicts with a different host or user; do not silently replace it. Tell the colleague the inventory path and target name so they can reuse them.
-5. Test SSH with `BatchMode=yes`, `IdentitiesOnly=yes`, `StrictHostKeyChecking=yes`, the selected identity and pinned host-key files, and a bounded connection timeout. Read the hostname and check `sudo -n true`; do not install or restart anything during connection setup. Quote user-supplied values safely or pass them as subprocess arguments. This SSH probe also works on a fresh VM where JBPA has not been installed. For a failed probe, report whether the issue is reachability, host-key verification, authentication or sudo; ask only for the correction needed.
-6. Continue the already-requested operation after successful setup. If the user requested setup only, stop after reporting connection readiness. Reuse the saved inventory on subsequent invocations and prompt again only for missing, ambiguous or invalid details. A saved target establishes access details, not authorization for a new mutation or an inherited exception.
+   | Setting | Suggested default or example |
+   |---|---|
+   | Target name | `qa-vm` (choose another if already used) |
+   | Host | User's actual hostname/IP; example `203.0.113.10` is illustrative only |
+   | SSH username | `azureuser` for Azure Ubuntu, `ubuntu` for AWS Ubuntu; ask for other images |
+   | SSH key | An existing user-selected key; suggest `~/.ssh/id_ed25519` only if it exists |
+   | Known hosts | `~/.ssh/known_hosts`; verify this target is pinned |
+   | Harmony URL | Offer `https://emea-west.jitterbit.com` for EMEA; request their actual cloud URL for other regions |
+   | Group ID | Required actual ID from Harmony; `12345` is an example, never an automatic default |
+   | Agent prefix | `qa-agent` |
+   | Inventory | `~/jbpa-vms.json` |
+   | Local checkout | `~/.local/share/jbpa/repo` |
 
-## Agent operation
+   Do not silently use an example address, group ID, region or missing key. Ask the user to accept applicable suggestions; already-established values take priority. No token default is allowed.
 
-1. Identify the named target and requested operation: `install`, `upgrade`, `uninstall`, `status`, `health`, or `versions`. Mutations require the user's authorization for that operation. Do not turn a failed install into an automatic reinstall or delete Harmony records.
-2. Obtain a local SSH identity-file path, a pinned `known_hosts` file, the VM's host and user, and for first install an **absolute path on the VM** to a private JSON credentials file. The VM or its secret manager must stage that file. Never ask for a Harmony token value, put one in inventory, or echo a credentials file. The inventory holds paths only.
-3. Use the private inventory prepared above, following `config/examples/remote-inventory.example.json` and `config/schemas/remote-inventory.schema.json` from the JBPA checkout. Check the named target and release before execution. Do not auto-accept an SSH host key.
-4. Run from the JBPA checkout root:
+   Tell the user that the registration token will be entered later in a hidden terminal prompt. Never request private-key contents, registration tokens or passwords in chat. If they already have a protected credentials JSON on the VM, ask for its absolute path instead of asking them to re-enter Harmony settings.
+2. Check local SSH files without displaying private-key contents. Expand `~` to absolute paths. If the host key is not pinned, help obtain the expected fingerprint from an authenticated cloud console or VM administrator. `ssh-keyscan` produces only a candidate; compare it with that independent fingerprint before pinning. Never auto-accept a new or changed host key. Test SSH with BatchMode, IdentitiesOnly and StrictHostKeyChecking enabled, a bounded connection timeout, the chosen key and known-hosts file; read the hostname and check `sudo -n true`.
+3. Find an existing JBPA checkout containing `bin/jbpa-remote`. If absent, clone `https://github.com/Jitterbit-EMEA/jitterbit-agent-installer.git` into the user's chosen directory, defaulting to `$HOME/.local/share/jbpa/repo`. Clone only into an absent directory. Reuse an existing checkout without resetting files or silently pulling over local work. Record its commit and pinned release. Use subprocess arguments or properly quoted values. Read `docs/integrations/skills/README.md` for the SSH inventory schema and setup helper.
+4. Save a mode-`0600` private inventory outside Git, default `$HOME/jbpa-vms.json`, following `config/examples/remote-inventory.example.json` and `config/schemas/remote-inventory.schema.json`. Store named targets with host, user, identityFile and knownHostsFile. Preserve other targets; resolve a conflicting target name before replacing it. Do not store token values, key contents or QA approvals. Include credentialsFile only when a protected source JSON is already staged on the VM.
+5. Prepare JBPA and Harmony credentials. For a new target without staged credentials, run the prepared command for the user. On macOS, execute the helper with `--open-terminal`: it launches the actual setup in Terminal and brings the window forward. The user only enters the token in its hidden prompt. The agent may launch this command from a captured session because the launcher itself never asks for or receives the token. Never supply hidden token input through chat or a tool call. On other systems use an available user-controlled terminal launcher; if unavailable, provide the exact command without `--open-terminal` and explain that terminal launching is unavailable.
 
    ```bash
-   ./bin/jbpa-remote install --inventory /private/path/vms.json --target qa-vm --version 12.10
-   ./bin/jbpa-remote status --inventory /private/path/vms.json --target qa-vm
+   python3 /path/to/jbpa/scripts/onboard-target.py --open-terminal \
+     --inventory /private/path/jbpa-vms.json --target qa-vm \
+     --cloud-url https://emea-west.jitterbit.com --group-id 12345 \
+     --name-prefix customer-pa
    ```
 
-   Use the same command shape for `versions`, `health`, `upgrade --version 12.10`, or `uninstall`. The caller pins and delivers RC9 on first install, then invokes the installed CLI for management. `latest` is mutable; use a governed exact version unless the user explicitly selects latest.
-5. Consume the caller's JSON and exit code. Success needs exit 0 and `status=SUCCESS`; installation additionally requires Harmony registration and running service in the JBPA result. Preserve the private on-VM `resultPath` and report the selected target, operation, resolved version, outcome and any JBPA reason. `status` is diagnostic and does not by itself prove Harmony health; use `health` when expected agent identity is configured.
+   The helper prompts for the token with echo disabled, verifies and delivers the pinned release, installs JBPA's Python dependencies, imports credentials into root-only `/etc/jbpa/credentials.json`, creates `/etc/jbpa/agent.yaml`, cleans temporary credential files and preserves the inventory's other hosts. It installs the framework, not the PA. A non-terminal invocation fails before asking for a token. Existing configuration is never overwritten: inspect and reuse a configured target, or obtain explicit reconfiguration instructions. If the user supplies a staged JSON instead, use the checkout's verified delivery and customer configure/import path with that remote file; never retrieve its contents into chat. Keep credential staging private and clean up only setup-owned files.
+6. `TERMINAL_STARTED` means the window was launched, not that setup succeeded. Confirm the terminal helper returned `status=SUCCESS`, or independently verify setup when the user reports completion: check release integrity, runtime dependencies and protected credential/configuration metadata without printing secrets. Do not call an uncompleted hidden prompt successful. Report the checkout, inventory and target names. For setup-only requests stop at “Ready for install, upgrade and health requests.” Resume an already-authorized PA operation; never invent an initial version or auto-install during setup.
 
-If the caller reports release mismatch, missing result, host-access failure, or a partial install, stop and inspect the host state before any retry. Uninstall is local; Harmony record deletion is a separate administrator action and agent-group capacity can be consumed by fresh registrations.
+The hidden-token step is the user's only secret entry; the skill collects the remaining settings conversationally. No pre-created credentials file is required for this setup route. If an installed copy of the skill predates the setup helper, update the checkout before invoking it, with attention to local work.
+
+## Subsequent operations
+
+Reuse the saved checkout and inventory. Ask which target when ambiguous; prompt only for missing or invalid details. Natural requests include “Install 12.10 on qa-vm”, “Upgrade qa-vm to latest”, and “Check qa-vm health”. The user's requested mutation is its authorization; carry forward explicit approvals in this conversation, but never infer approvals from a saved inventory.
+
+Run from the checkout:
+
+```bash
+./bin/jbpa-remote install --inventory /private/path/jbpa-vms.json --target qa-vm --version 12.10
+./bin/jbpa-remote upgrade --inventory /private/path/jbpa-vms.json --target qa-vm --version latest
+./bin/jbpa-remote status --inventory /private/path/jbpa-vms.json --target qa-vm
+./bin/jbpa-remote health --inventory /private/path/jbpa-vms.json --target qa-vm
+```
+
+Use the same command shape for versions or uninstall. Setup saves imported credentials on the VM; omit credentialsFile after a successful import to avoid trying to import it again. `latest` is mutable: select it only when requested, then record its resolved version and digest. A catalogue entry does not establish production qualification.
+
+For full health, the VM configuration must contain an independently checked expected identity. After initial installation, capture the observed agent ID/name/group/version through diagnostics and sanitized runtime identity evidence, compare the group and name prefix with the supplied Harmony settings, and configure the health expected identity without exposing credentials. Do not claim full health from the status command alone. If expected identity cannot be established, report diagnostic results and the precise evidence gap.
+
+Success requires exit 0 and status=SUCCESS; installation additionally requires registration and running services. Preserve the private on-VM resultPath and report target, operation, resolved version, outcome and any reason. On release mismatch, missing result, host-access failure or partial installation, inspect host state before retrying. Do not turn a failed install into automatic reinstall or delete Harmony records. Uninstall is local; fresh registration can consume another Harmony group slot.

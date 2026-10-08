@@ -24,7 +24,20 @@ Start Codex or Claude Code in the AI project and invoke `$jbpa` or `/jbpa`. Alte
 
 ## 2. Prepare access and credentials
 
-On a colleague's first invocation, the skill checks a supplied inventory or `$HOME/jbpa-vms.json` and asks for missing target, host, SSH username, private-key path and pinned host-key file. A public hostname/IP or reachable private address is acceptable. It helps verify an unpinned host key against an independently obtained fingerprint, saves a mode-`0600` inventory outside Git, and tests SSH and passwordless sudo before continuing the requested operation. It reuses that inventory on later runs; credentials and QA approvals are not distributed with the skill. This is a conversational setup flow, not an interactive prompt built into `jbpa-remote`.
+On first invocation, the skill gathers SSH access and non-secret Harmony settings, clones JBPA when no checkout exists, creates a private named-target inventory, and prepares the framework on the VM. A setup-only request stops before installing a PA. Subsequent install, upgrade and health requests reuse that target.
+
+For example, start with `Use $jbpa to set up my VM for Private Agent management` in Codex, or use `/jbpa` in Claude Code. Supply the target name, reachable host, SSH username, private-key and pinned host-key paths, Harmony cloud URL, agent group ID and agent name prefix. The skill offers suggestions such as target `qa-vm`, Azure username `azureuser` or AWS username `ubuntu`, agent prefix `qa-agent`, inventory `~/jbpa-vms.json` and checkout `~/.local/share/jbpa/repo`. Host and group ID must be real supplied values; region and key suggestions must be confirmed. On macOS the skill runs the prepared launcher command for you:
+
+```bash
+python3 /path/to/jbpa/scripts/onboard-target.py --open-terminal \
+  --inventory "$HOME/jbpa-vms.json" --target qa-vm \
+  --cloud-url https://emea-west.jitterbit.com --group-id 12345 \
+  --name-prefix customer-pa
+```
+
+The launcher opens macOS Terminal and starts setup automatically. Enter only the registration token in its hidden prompt. `TERMINAL_STARTED` reports launch, not setup completion; the terminal process must report `SUCCESS`. On other systems, run the same command without `--open-terminal` in a real terminal if automatic terminal control is unavailable. It verifies and delivers the pinned release, prepares its Python environment, imports a root-only credentials JSON and configures JBPA. It cleans up setup-owned temporary credential files and updates the inventory without recording the token. It does not install or restart a PA. Existing configuration is preserved and reported for inspection rather than overwritten. A failed setup may have prepared the release or configuration already; inspect the host before retrying.
+
+After setup reports success, request `Install 12.10 on qa-vm`, `Upgrade qa-vm to latest`, or `Check qa-vm health`. No pre-staged credentials JSON is required with this onboarding helper. The instructions below also support administrator-staged credentials.
 
 The orchestrator needs SSH access with a local private key and a **pinned** `known_hosts` file. Verify the host key fingerprint independently before adding it to that file; do not use `StrictHostKeyChecking=no`. The VM login must have passwordless `sudo -n`, Python 3, outbound access to Ubuntu packages, the Jitterbit download endpoint and Harmony, and enough CPU, memory and disk for [preflight](../../pre-provisioned-host-contract.md).
 
