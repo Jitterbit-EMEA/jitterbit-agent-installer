@@ -1,0 +1,166 @@
+{
+  "schemaVersion": 1,
+  "status": "PLANNING_NOT_RUNTIME_SCHEMA",
+  "updatedAt": "2026-10-12",
+  "scope": "UPG-001_DEFERRED_UNTIL_BASELINE_VALIDATED",
+  "sharedEnvelopeFields": [
+    "schemaVersion",
+    "kind",
+    "requestId",
+    "data",
+    "page (for listings)",
+    "source/freshness/coverage metadata",
+    "warnings",
+    "error (when applicable)"
+  ],
+  "domains": {
+    "managementJob": [
+      "jobId",
+      "action",
+      "targetId",
+      "state",
+      "profileRevision",
+      "releaseId",
+      "timestamps",
+      "result",
+      "evidenceRef"
+    ],
+    "operationDefinition": [
+      "operationId",
+      "operationName",
+      "projectId/name when available",
+      "environmentId/name when available"
+    ],
+    "operationRun": [
+      "operationRunId",
+      "operationId (nullable if unavailable)",
+      "operationName",
+      "targetId",
+      "canonicalHostId",
+      "agentId",
+      "agentGroupId",
+      "originalStatusCode/name",
+      "normalizedStatus",
+      "submittedAt",
+      "startedAt",
+      "finishedAt (nullable)",
+      "durationMs (nullable)",
+      "elapsedMs (for unfinished runs)",
+      "observedAt",
+      "source/providerVersion"
+    ],
+    "metric": [
+      "metricName",
+      "timestamp",
+      "value",
+      "unit",
+      "metricType (gauge/counter)",
+      "target/agent/component/process identity",
+      "permitted dimensions",
+      "source/quality flags"
+    ],
+    "summary": [
+      "appliedFilters",
+      "timeWindow",
+      "counts/statistics",
+      "sourceCoverage",
+      "freshness"
+    ],
+    "export": [
+      "exportId",
+      "authenticatedDownloadRef",
+      "format",
+      "row/byte caps",
+      "timeWindow",
+      "expiresAt",
+      "coverage"
+    ],
+    "operationAssessment": [
+      "selectedRoot/timeWindow",
+      "outcome and coverage independently",
+      "rootOutcome and descendantOutcome",
+      "stageOutcomes from qualified operation-role map",
+      "executionCounts distinct from businessFileCounts",
+      "statusCounts preserving raw values",
+      "providerCoverage and snapshot semantics",
+      "findings with evidence/correlation confidence",
+      "drillDown refs/cursors",
+      "transferDiagnostic logging and correlation state"
+    ],
+    "estateHealthAssessment": [
+      "assessmentId and durable state",
+      "authorized expected/observed roster and rosterVersion",
+      "group/canonical host/agent identity",
+      "source/schema/policy versions",
+      "sample/history time windows",
+      "per-provider coverage/freshness/errors",
+      "per-node/domain findings",
+      "fleet bottlenecks and peer comparison",
+      "capacity recommendation confidence/required evidence",
+      "separate application vs infrastructure errors",
+      "qualified drill-down/evidence refs"
+    ]
+  },
+  "queryRules": [
+    "Authorization scope on every query",
+    "Bounded limit and opaque cursor",
+    "Host/agent/group/project/environment/operation/status/time filters",
+    "Deterministic snapshot/watermark handling for mutable run records",
+    "Explicit nextCursor/returnedCount/partial/truncated/stale/unavailable",
+    "No raw SQL or unbounded table dump",
+    "Summary and narrow metric selections by default",
+    "IDs are distinct and source-qualified",
+    "Unknown source values/timestamps are not invented"
+  ],
+  "collectionRules": [
+    "Incremental checkpoint/overlap and deduplication",
+    "Capture updates when running executions finish",
+    "Collection can run without AI polling",
+    "Metric units/type/counter resets and aggregation are explicit",
+    "Qualified bounded read-only PA providers",
+    "Retention/rollups/indexes/partitioning/intervals/caps require sizing evidence",
+    "No additional target listening services",
+    "No operational payload secrets in default records"
+  ],
+  "baselineDelivery": {
+    "submission": "POST /v1/jobs -> commit READY -> 202 + jobId",
+    "execution": "Worker claims PostgreSQL backlog and canonical host -> SSH JBPA -> persist outcome",
+    "status": "GET /v1/jobs/{jobId}",
+    "outboxId": false,
+    "jbmqRequired": false
+  },
+  "observedQaProvider": {
+    "observedDate": "2026-10-08",
+    "paVersion": "12.11.3.1",
+    "postgresVersion": "16.13",
+    "scope": "READ_ONLY_QA_DISCOVERY_NOT_PRODUCTION_QUALIFICATION",
+    "assessment": "docs/trandb/reporting-assessment.md",
+    "runTable": "operationlogtab",
+    "definitionTable": "operationstab",
+    "definitionId": "operation_id",
+    "definitionGuid": "operation_guid (log) / guid (definition)",
+    "runId": "operation_instance_guid",
+    "submittedTimeCandidate": "entered_ts",
+    "startedAt": "started_ts",
+    "terminalStatusTimeCandidate": "status_ts; no dedicated finish column in operationlogtab",
+    "finishedAtPolicy": "Unverified/null until terminal timestamp semantics are tested; do not fabricate finish time",
+    "currentGroupSource": "Whitelisted key_values Agent_Group_Id/Name; not historical group evidence",
+    "definitionProjectJoin": "projectoperationstab.item_id -> operationstab.operation_id",
+    "foreignKeysDeclared": 0,
+    "baselineDefinitions": 3,
+    "baselineRunRecords": 2,
+    "baselineObservedStatusCodes": [
+      7
+    ],
+    "validationPending": [
+      "Successful history retention with ignore_history=1",
+      "Running/pending state observations",
+      "Terminal finish-time mapping",
+      "Progress/summary/file metric population and units",
+      "Queue-state/epoch/retention semantics",
+      "Collection overhead and large-data paging"
+    ]
+  },
+  "operationAssessmentContract": "docs/trandb/operation-assessment-contract.json",
+  "estateHealthArchitecture": "docs/estate-health.md"
+}

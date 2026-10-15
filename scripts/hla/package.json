@@ -1,0 +1,7 @@
+{
+  "private": true,
+  "description": "Local HLA document renderer; not a product runtime dependency",
+  "dependencies": {
+    "playwright": "1.62.1"
+  }
+}

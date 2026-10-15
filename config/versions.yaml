@@ -1,5 +1,5 @@
 schema_version: 2
-expected_pinned_count: 19
+expected_pinned_count: 20
 dynamic_sources:
   latest:
     url: https://login.jitterbit.com/jitterbit-cloud-mgmt-console/download/latest/agent/linuxdebian?architecture=x64
@@ -11,6 +11,34 @@ aliases:
   latest-tested: '12.10'
   latest-available-pinned: '12.10'
 versions:
+  '12.11':
+    package_version: 12.11.3.2
+    filename: jitterbit-agent_12.11.3.2_amd64.deb
+    url: https://download.jitterbit.com/12.11yhfhfbgst3hjwjsiss8w9sjs/jitterbit-agent_12.11.3.2_amd64.deb
+    architecture: amd64
+    package_type: deb
+    integrity:
+      sha256: 6e69a441c866ef2610aae603485ac82a05b711ccaca524f56c980458cb4907f0
+      classification: LOCALLY_CALCULATED
+    artifact_status: METADATA_VERIFIED
+    qualification:
+      overall: AVAILABLE_UNQUALIFIED
+      platforms:
+        ubuntu-24.04-amd64: NOT_TESTED
+      scope: []
+    approval: pending
+    artifacts:
+    - os_id: ubuntu
+      os_version: '24.04'
+      architecture: x86_64
+      package_kind: deb
+      package_version: 12.11.3.2
+      url: https://download.jitterbit.com/12.11yhfhfbgst3hjwjsiss8w9sjs/jitterbit-agent_12.11.3.2_amd64.deb
+      sha256: 6e69a441c866ef2610aae603485ac82a05b711ccaca524f56c980458cb4907f0
+      adapter_profile: native-deb-register-json
+      evidence_refs:
+      - LOCAL-PA-1211-INTAKE
+      runtime_validation: not_run
   '12.10':
     package_version: 12.10.1.1
     filename: jitterbit-agent_12.10.1.1_amd64.deb

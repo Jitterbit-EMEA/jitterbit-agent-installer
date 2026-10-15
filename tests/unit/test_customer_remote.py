@@ -190,6 +190,63 @@ class CustomerRemoteTests(unittest.TestCase):
             ],
         )
 
+    def test_upgrade_rejects_legacy_remote_verifier_before_mutation(self):
+        calls = []
+
+        class FakeSSH:
+            def require(self, argv, reason):
+                if argv == ["cat", "/etc/os-release"]:
+                    return 'ID=ubuntu\nVERSION_ID="24.04"\n'
+                if argv == ["uname", "-m"]:
+                    return "x86_64\n"
+                return ""
+
+            def run(self, argv, *, timeout):
+                calls.append(argv)
+                return 0, '{"details": {"capabilities": ["UPGRADE"]}}'
+
+        with self.assertRaisesRegex(remote.RemoteError, "UPGRADE_OBSERVER_RELEASE_REQUIRED"):
+            remote.operate(FakeSSH(), {}, "upgrade", "12.10")
+        self.assertEqual(len(calls), 1)
+        self.assertEqual(calls[0][-1], "version")
+
+    def test_reinstall_uses_fixed_version_and_requires_registration_health(self):
+        calls = []
+
+        class FakeSSH:
+            def require(self, argv, reason):
+                if argv == ["cat", "/etc/os-release"]:
+                    return 'ID=ubuntu\nVERSION_ID="24.04"\n'
+                if argv == ["uname", "-m"]:
+                    return "x86_64\n"
+                return ""
+
+            def run(self, argv, *, timeout):
+                calls.append((argv, timeout))
+                return 0, ""
+
+            def result(self, path):
+                return {
+                    "schemaVersion": "1.0",
+                    "operation": "REINSTALL",
+                    "versions": {"jbpa": "1.0.0-rc9"},
+                    "status": "SUCCESS",
+                    "category": "SUCCESS",
+                    "error": None,
+                    "details": {},
+                    "registration": {"harmonyRegistered": True},
+                    "health": {"serviceRunning": True},
+                }
+
+        result = remote.operate(FakeSSH(), {}, "reinstall", "12.9")
+        self.assertEqual(result["status"], "SUCCESS")
+        self.assertIn("reinstall", calls[0][0])
+        self.assertEqual(calls[0][0][calls[0][0].index("--version") + 1], "12.9")
+        self.assertEqual(calls[0][1], 5400)
+        data = FakeSSH().result(None)
+        data["registration"]["harmonyRegistered"] = False
+        self.assertEqual(remote.validate_result(data, "reinstall", 0)["status"], "FAILED")
+
     def test_install_delegates_to_customer_launcher_and_reads_private_result(self):
         calls = []
 

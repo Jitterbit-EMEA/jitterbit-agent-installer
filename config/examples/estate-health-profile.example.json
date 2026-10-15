@@ -1,0 +1,30 @@
+{
+  "schemaVersion": 1,
+  "expectedTargets": ["customer-pa-01", "customer-pa-02"],
+  "targets": {
+    "customer-pa-01": {
+      "agentGroupId": 12345,
+      "representativePeak": false,
+      "horizontallyScalable": false,
+      "operationSloSeconds": {},
+      "apacheUrl": "http://127.0.0.1:8099/server-status?auto",
+      "jmxUrl": "http://127.0.0.1:9404/metrics"
+    },
+    "customer-pa-02": {
+      "agentGroupId": 12345,
+      "representativePeak": false,
+      "horizontallyScalable": false,
+      "operationSloSeconds": {}
+    }
+  },
+  "policy": {
+    "cpuBusyPercent": 85,
+    "memoryAvailablePercent": 10,
+    "filesystemUsedPercent": 90,
+    "inodeUsedPercent": 90,
+    "longRunningSeconds": 1800,
+    "pendingSeconds": 300,
+    "minimumCapacityWindowSeconds": 300,
+    "sustainedFraction": 0.8
+  }
+}

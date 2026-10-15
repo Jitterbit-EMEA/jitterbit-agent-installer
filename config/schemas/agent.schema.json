@@ -41,7 +41,9 @@
     "localJsonReference": {
       "type": "object",
       "properties": {
-        "provider": {"const": "local-json"},
+        "provider": {
+          "const": "local-json"
+        },
         "reference": {
           "enum": [
             "harmony.registrationToken",
@@ -54,7 +56,10 @@
           ]
         }
       },
-      "required": ["provider", "reference"],
+      "required": [
+        "provider",
+        "reference"
+      ],
       "additionalProperties": false
     },
     "secretReference": {
@@ -389,8 +394,14 @@
         },
         "file": {
           "anyOf": [
-            {"type": "string", "minLength": 1, "maxLength": 4096},
-            {"type": "null"}
+            {
+              "type": "string",
+              "minLength": 1,
+              "maxLength": 4096
+            },
+            {
+              "type": "null"
+            }
           ]
         }
       },
@@ -403,15 +414,29 @@
       "allOf": [
         {
           "if": {
-            "properties": {"provider": {"const": "local-json"}}
+            "properties": {
+              "provider": {
+                "const": "local-json"
+              }
+            }
           },
           "then": {
-            "required": ["file"],
+            "required": [
+              "file"
+            ],
             "properties": {
-              "file": {"type": "string"},
-              "directory": {"type": "null"},
-              "vault_uri": {"type": "null"},
-              "managed_identity_client_id": {"type": "null"}
+              "file": {
+                "type": "string"
+              },
+              "directory": {
+                "type": "null"
+              },
+              "vault_uri": {
+                "type": "null"
+              },
+              "managed_identity_client_id": {
+                "type": "null"
+              }
             }
           }
         },
@@ -1051,6 +1076,66 @@
         },
         "production_sizing_validated": {
           "const": false
+        },
+        "scoped_cpu_exception": {
+          "type": "object",
+          "additionalProperties": false,
+          "required": [
+            "hostname",
+            "logical_version",
+            "package_version",
+            "cpu_count",
+            "authorization"
+          ],
+          "properties": {
+            "hostname": {
+              "type": "string",
+              "pattern": "^[A-Za-z0-9][A-Za-z0-9._-]{0,252}$"
+            },
+            "logical_version": {
+              "enum": [
+                "12.9",
+                "12.11"
+              ]
+            },
+            "package_version": {
+              "enum": [
+                "12.9.2.2",
+                "12.11.3.2"
+              ]
+            },
+            "cpu_count": {
+              "const": 2
+            },
+            "authorization": {
+              "const": "EXPLICIT_USER_APPROVAL"
+            }
+          },
+          "oneOf": [
+            {
+              "properties": {
+                "logical_version": {
+                  "const": "12.9"
+                },
+                "package_version": {
+                  "const": "12.9.2.2"
+                }
+              }
+            },
+            {
+              "properties": {
+                "hostname": {
+                  "const": "JBLAB-PA-AUTOMATION"
+                },
+                "logical_version": {
+                  "const": "12.11"
+                },
+                "package_version": {
+                  "const": "12.11.3.2"
+                }
+              }
+            }
+          ]
         }
       }
     }

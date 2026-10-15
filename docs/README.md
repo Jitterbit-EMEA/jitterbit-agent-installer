@@ -19,3 +19,14 @@ Preserved evidence reports: [Phase 2C](phase-2c-summary.md), [Phase 2D](phase-2d
 - [Phase 3C summary](phase-3c-summary.md)
 - [Structured preflight](preflight-contract.md)
 - [Reinstall runbook](runbooks/reinstall.md)
+
+## Management product and accumulated research
+
+- [Consolidated learning register](lessons-learned.md): retained design decisions, QA findings, recovery, limitations and executable requery paths.
+- [Management product specification](jbpa-management-product.md) and [requirements matrix](jbpa-management-requirements-matrix.md).
+- [TranDb research and capture workflow](trandb/README.md), [knowledge catalogue](trandb/knowledge-catalogue.json) and [deployment recovery investigation](trandb/token-invalidation-investigation-2026-10-09.md).
+
+Estate observability: [expert health architecture and QA toolkit](estate-health.md).
+
+- [Vendor-owned upgrade behavior](vendor-owned-upgrades.md) and [12.11.3.2 live QA validation](upgrade-12.11.3.2-qa-validation.md).
+- [Portable sanitized upgrade evidence](../evidence/pa-12.11.3.2/fixed-upgrade-2026-10-15.json); generated captures and candidates stay local under ignored `output/`.

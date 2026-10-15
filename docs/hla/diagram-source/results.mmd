@@ -1,0 +1,13 @@
+sequenceDiagram
+  autonumber
+  participant C as AI / MCP client
+  participant S as APIM / Studio
+  participant A as Parent API
+  participant D as PostgreSQL
+  C->>S: Get job by ID
+  S->>A: Get permitted job
+  A->>D: Read job + safe result
+  D-->>A: State + outcome
+  A-->>S: Versioned response
+  S-->>C: Job status / result
+  Note over C,D: This is a new tool call.<br/>The original request is already complete.

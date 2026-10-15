@@ -1,0 +1,25 @@
+// Management-host example. No Alloy or new listener is installed on PA hosts.
+// Publish only the latest sanitized health.prom atomically into this directory.
+// Configure collector/exporter read permissions and collection scheduling separately.
+prometheus.exporter.unix "jbpa_assessments" {
+  set_collectors = ["textfile"]
+  textfile {
+    directory = "/var/lib/jbpa/metrics"
+  }
+}
+
+prometheus.scrape "jbpa_assessments" {
+  targets         = prometheus.exporter.unix.jbpa_assessments.targets
+  scrape_interval = "30s"
+  forward_to      = [prometheus.remote_write.jbpa.receiver]
+}
+
+prometheus.remote_write "jbpa" {
+  endpoint {
+    url = sys.env("JBPA_PROMETHEUS_REMOTE_WRITE_URL")
+    basic_auth {
+      username = sys.env("JBPA_PROMETHEUS_USERNAME")
+      password = sys.env("JBPA_PROMETHEUS_TOKEN")
+    }
+  }
+}

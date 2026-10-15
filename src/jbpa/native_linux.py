@@ -88,6 +88,33 @@ class LocalBackend:
         )
         return CommandResult(completed.returncode, completed.stdout, completed.stderr)
 
+    def vendor_application_starting(self):
+        pidfile = Path("/opt/jitterbit/log/tomcat.pid")
+        try:
+            pid = pidfile.read_text().strip()
+            if pid.isdigit() and Path("/proc", pid).exists():
+                return True
+        except OSError:
+            pass
+        for process in Path("/proc").iterdir():
+            if not process.name.isdigit():
+                continue
+            try:
+                args = (process / "cmdline").read_bytes().split(bytes([0]))
+                if (
+                    b"org.apache.catalina.startup.Bootstrap" in args
+                    and b"-Dcatalina.base=/opt/jitterbit/tomcat" in args
+                ):
+                    return True
+            except (FileNotFoundError, ProcessLookupError):
+                continue
+        return False
+
+    def application_readiness(self):
+        from .application_readiness import ApplicationReadinessProbe
+
+        return ApplicationReadinessProbe()()
+
     def exists(self, path):
         return Path(path).exists()
 
@@ -317,6 +344,22 @@ class NativeLinuxWorkflow:
             self.fail("LOCAL_SERVICE_FAILURE")
         self.advance("LOCAL_SERVICES_HEALTHY")
 
+    def _wait_vendor_application(self, config):
+        probe = getattr(self.backend, "application_readiness", None)
+        if probe is None:
+            return
+        starting = getattr(self.backend, "vendor_application_starting", None)
+        if starting is not None and not starting():
+            self.advance("VENDOR_APPLICATION_NOT_STARTED")
+            return  # The existing fresh-registration start path owns this case.
+        deadline = self.backend.monotonic() + config["health"]["registration_timeout_seconds"]
+        while self.backend.monotonic() <= deadline:
+            if probe().get("status") == "READY":
+                self.advance("VENDOR_APPLICATION_READY")
+                return
+            self.backend.sleep(config["health"]["poll_interval_seconds"])
+        self.fail("LOCAL_APPLICATION_UNREADY")
+
     def run(self, config, artifact, token: Secret, staging="/var/tmp/jbpa"):
         """Execute the qualified workflow and return a secret-free structured result."""
         try:
@@ -375,6 +418,9 @@ class NativeLinuxWorkflow:
                     "PACKAGE_INSTALL_FAILED",
                     env={"silent_install": "1", "DEBIAN_FRONTEND": "noninteractive"},
                 )
+                # Fresh registration may require a supported restart later. Never
+                # interrupt the vendor's initial application deployment to do it.
+                self._wait_vendor_application(config)
             if not all(
                 self.backend.exists(path) for path in ("/opt/jitterbit", RESOURCE_DIR, JITTERBIT)
             ):
@@ -402,72 +448,103 @@ class NativeLinuxWorkflow:
             self.advance("AGENT_RESTART_REQUESTED")
             self.advance("WAITING_FOR_AGENT_RUNTIME")
 
-            timeout = config["health"]["registration_timeout_seconds"]
-            interval = config["health"]["poll_interval_seconds"]
-            started_at = self.backend.monotonic()
-            deadline = started_at + timeout
-            observed = set()
-            log_seen = False
-            log_available_after = None
-            while self.backend.monotonic() <= deadline:
-                if self.backend.exists(AGENT_LOG):
-                    if not log_seen:
-                        self.advance("AGENT_LOG_AVAILABLE")
-                        log_seen = True
-                        log_available_after = self.backend.monotonic() - started_at
-                    log = self.backend.read_log_since(AGENT_LOG, log_position)
-                    failure = self._runtime_failure(log)
-                    if failure:
-                        self.fail(failure)
-                    current = self._observe(log, config["harmony"]["agent_group_id"])
-                    for state in SUCCESS_MARKERS:
-                        if state in current and state not in observed:
-                            self.advance(state)
-                    observed.update(current)
-                required = {
-                    "HARMONY_AUTHENTICATED",
-                    "AGENT_LOGGED_IN",
-                    "AGENT_SERVICES_CONNECTED",
-                    "REQUEST_FLOW_STARTED",
-                }
-                if not credentials_before:
-                    required.update(
-                        {"AUTO_REGISTRATION_COMPLETED", "CREDENTIALS_CREATED", "AGENT_SYNCHRONIZED"}
-                    )
-                if required <= observed and self.backend.exists(CREDENTIALS):
-                    self._local_health()
-                    if not credentials_before:
-                        try:
-                            self.backend.remove_registration_input(REGISTER_JSON)
-                        except Exception:
-                            self.fail("CONFIGURATION_FAILED")
-                    self.advance("COMPLETE")
-                    return {
-                        "status": "COMPLETE",
-                        "state": self.state,
-                        "stateHistory": self.history.copy(),
-                        "changed": self.changed,
-                        "serviceRunning": True,
-                        "harmonyRegistered": True,
-                        "verificationProfile": "EXISTING_AGENT_RESTART"
-                        if credentials_before
-                        else "INITIAL_REGISTRATION",
-                        "synchronizationRequired": not credentials_before,
-                        "synchronizationObserved": "AGENT_SYNCHRONIZED" in observed,
-                        "logAvailableAfterSeconds": log_available_after,
-                        "registrationDurationSeconds": self.backend.monotonic() - started_at,
-                    }
-                self.backend.sleep(interval)
-            if not self.backend.exists(CREDENTIALS):
-                self.fail("CREDENTIALS_NOT_CREATED")
-            if "HARMONY_AUTHENTICATED" in observed and "AGENT_SERVICES_CONNECTED" not in observed:
-                self.fail("AGENT_SERVICES_CONNECTION_FAILED")
-            if (
-                not credentials_before
-                and "AGENT_SERVICES_CONNECTED" in observed
-                and "AGENT_SYNCHRONIZED" not in observed
-            ):
-                self.fail("SYNCHRONIZATION_FAILED")
-            self.fail("REGISTRATION_TIMEOUT")
+            return self.monitor_runtime(
+                config, credentials_before=credentials_before, log_position=log_position
+            )
         finally:
             token.clear()
+
+    def monitor_runtime(
+        self,
+        config,
+        *,
+        credentials_before=True,
+        log_position=None,
+        application_probe=None,
+        verification_profile=None,
+    ):
+        """Observe vendor-owned startup without changing files or service state."""
+        self.application_readiness = {"status": "NOT_OBSERVED"}
+        self.advance("WAITING_FOR_AGENT_RUNTIME")
+        timeout = config["health"]["registration_timeout_seconds"]
+        interval = config["health"]["poll_interval_seconds"]
+        started_at = self.backend.monotonic()
+        deadline = started_at + timeout
+        observed = set()
+        log_seen = False
+        log_available_after = None
+        while self.backend.monotonic() <= deadline:
+            if self.backend.exists(AGENT_LOG):
+                if not log_seen:
+                    self.advance("AGENT_LOG_AVAILABLE")
+                    log_seen = True
+                    log_available_after = self.backend.monotonic() - started_at
+                log = self.backend.read_log_since(AGENT_LOG, log_position)
+                failure = self._runtime_failure(log)
+                if failure:
+                    self.fail(failure)
+                current = self._observe(log, config["harmony"]["agent_group_id"])
+                for state in SUCCESS_MARKERS:
+                    if state in current and state not in observed:
+                        self.advance(state)
+                observed.update(current)
+            required = {
+                "HARMONY_AUTHENTICATED",
+                "AGENT_LOGGED_IN",
+                "AGENT_SERVICES_CONNECTED",
+                "REQUEST_FLOW_STARTED",
+            }
+            if not credentials_before:
+                required.update(
+                    {"AUTO_REGISTRATION_COMPLETED", "CREDENTIALS_CREATED", "AGENT_SYNCHRONIZED"}
+                )
+            if required <= observed and self.backend.exists(CREDENTIALS):
+                if application_probe is not None:
+                    application = application_probe()
+                    self.application_readiness = application
+                    if application.get("status") != "READY":
+                        self.backend.sleep(interval)
+                        continue
+                self._local_health()
+                if not credentials_before:
+                    try:
+                        self.backend.remove_registration_input(REGISTER_JSON)
+                    except Exception:
+                        self.fail("CONFIGURATION_FAILED")
+                self.advance("COMPLETE")
+                return {
+                    "status": "COMPLETE",
+                    "state": self.state,
+                    "stateHistory": self.history.copy(),
+                    "changed": self.changed,
+                    "serviceRunning": True,
+                    "harmonyRegistered": True,
+                    "verificationProfile": verification_profile
+                    or ("EXISTING_AGENT_RESTART" if credentials_before else "INITIAL_REGISTRATION"),
+                    **(
+                        {"applicationReadiness": self.application_readiness}
+                        if application_probe is not None
+                        else {}
+                    ),
+                    "synchronizationRequired": not credentials_before,
+                    "synchronizationObserved": "AGENT_SYNCHRONIZED" in observed,
+                    "logAvailableAfterSeconds": log_available_after,
+                    "registrationDurationSeconds": self.backend.monotonic() - started_at,
+                }
+            self.backend.sleep(interval)
+        if not self.backend.exists(CREDENTIALS):
+            self.fail("CREDENTIALS_NOT_CREATED")
+        if "HARMONY_AUTHENTICATED" in observed and "AGENT_SERVICES_CONNECTED" not in observed:
+            self.fail("AGENT_SERVICES_CONNECTION_FAILED")
+        if (
+            not credentials_before
+            and "AGENT_SERVICES_CONNECTED" in observed
+            and "AGENT_SYNCHRONIZED" not in observed
+        ):
+            self.fail("SYNCHRONIZATION_FAILED")
+        if (
+            application_probe is not None
+            and self.application_readiness.get("status") == "NOT_READY"
+        ):
+            self.fail("UPGRADE_APPLICATION_UNREADY")
+        self.fail("REGISTRATION_TIMEOUT")

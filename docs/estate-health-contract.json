@@ -1,0 +1,128 @@
+{
+  "schemaVersion": 1,
+  "status": "QA_TOOLKIT_IMPLEMENTED_HTTP_MCP_NOT_DEPLOYED",
+  "updatedAt": "2026-10-12",
+  "actions": [
+    {
+      "name": "estate_assess_health",
+      "method": "POST",
+      "path": "/v1/estate/health-assessments",
+      "readOnly": true,
+      "responseStatus": 202,
+      "requestFields": {
+        "scope": {
+          "oneOf": [
+            "authorized estate",
+            "agentGroupIds",
+            "targetIds"
+          ],
+          "resolvedBy": "management inventory plus qualified Harmony roster discovery"
+        },
+        "mode": [
+          "snapshot",
+          "deep",
+          "capacity"
+        ],
+        "window": "UTC historical window, policy bounded",
+        "policyId": "Validated server policy revision",
+        "samplingSeconds": {
+          "minimum": 5,
+          "maximum": 300,
+          "default": 30
+        }
+      },
+      "responseFields": [
+        "assessmentId",
+        "state",
+        "acceptedAt",
+        "selectedRosterVersion",
+        "statusUrl"
+      ]
+    },
+    {
+      "name": "estate_get_health_assessment",
+      "method": "GET",
+      "path": "/v1/estate/health-assessments/{assessmentId}",
+      "readOnly": true,
+      "responseFields": [
+        "schemaVersion",
+        "kind",
+        "requestId",
+        "assessmentId",
+        "assessmentState",
+        "healthStatus",
+        "coverage",
+        "roster",
+        "nodes",
+        "groupFindings",
+        "capacityRecommendations",
+        "evidenceRefs",
+        "policyRevision",
+        "freshness",
+        "limitations"
+      ]
+    },
+    {
+      "name": "pa_get_health",
+      "method": "GET",
+      "path": "/v1/targets/{targetId}/health",
+      "readOnly": true,
+      "semantics": "Retained qualified health snapshot with observedAt/age and coverage; no hidden long live scan"
+    }
+  ],
+  "healthStatuses": [
+    "HEALTHY",
+    "DEGRADED",
+    "CRITICAL",
+    "UNKNOWN"
+  ],
+  "coverageStatuses": [
+    "COMPLETE",
+    "PARTIAL",
+    "UNAVAILABLE"
+  ],
+  "assessmentStates": [
+    "QUEUED",
+    "RUNNING",
+    "COMPLETE",
+    "FAILED"
+  ],
+  "providers": [
+    "Linux interval OS/process/PSI/cgroup",
+    "Native service and classified Support Tools",
+    "Fixed read-only TranDb queries",
+    "Configured existing Apache/JMX",
+    "Per-JVM available jstat",
+    "Redacted log indicators",
+    "Qualified Harmony roster (not implemented)",
+    "Historical Prometheus/Mimir query adapter (not implemented)"
+  ],
+  "security": {
+    "scope": "estate:health:read with customer/PAG/target restrictions",
+    "rawSqlAllowed": false,
+    "arbitraryLogPathsAllowed": false,
+    "arbitraryExternalUrlsAllowed": false,
+    "newDefaultPaListeners": false,
+    "remediationAuthorizedByReadRequest": false,
+    "secretsReturned": false,
+    "policyOverridesFromAi": "Not accepted; select authorized validated policy ID"
+  },
+  "capacityRules": {
+    "gate": "Representative peak plus sustained multi-signal pressure, queue/workload/SLO history, full source/roster coverage and qualified routing/parallelism",
+    "shortIdleSnapshots": "INSUFFICIENT_EVIDENCE",
+    "exactSkuAndAdditionalAgentCount": "Null until controlled capacity/load/N-1 model qualified",
+    "businessErrors": "Separate from compute saturation"
+  },
+  "implementationRefs": [
+    "scripts/management/estate-health.py",
+    "scripts/management/collect-estate-node.py",
+    "src/jbpa/estate_health.py",
+    "docs/estate-health.md"
+  ],
+  "grafana": {
+    "implemented": "Local restricted health.prom low-cardinality gauges",
+    "example": "config/examples/estate-health-management.alloy",
+    "shippingPerformed": false,
+    "scheduledPublicationImplemented": false
+  }
+}

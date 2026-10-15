@@ -1,0 +1,16 @@
+sequenceDiagram
+  autonumber
+  participant S as Dispatcher
+  participant Q as JBMQ
+  participant A as Parent API
+  participant D as PostgreSQL
+  S->>Q: Get request reference
+  Q-->>S: Job ID
+  S->>A: Accept execution
+  activate A
+  A->>D: Commit READY
+  D-->>A: READY committed
+  A-->>S: Accepted / existing
+  deactivate A
+  S->>Q: ACK request message
+  Note over S,D: Lost responses reuse the same job ID.<br/>Duplicate delivery does not repeat execution.

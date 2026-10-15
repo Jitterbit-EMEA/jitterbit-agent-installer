@@ -196,6 +196,7 @@ def version(argv):
     if args.action is None:
         return 0, {
             "jbpaVersion": __version__,
+            "upgradeVerification": "VENDOR_INSTALLER_OBSERVATION",
             "aliases": catalogue["aliases"],
             "recommendedPackage": catalogue["versions"][catalogue["aliases"]["recommended"]][
                 "package_version"

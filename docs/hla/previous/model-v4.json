@@ -1,0 +1,645 @@
+{
+  "version": "4.0",
+  "date": "06 October 2026",
+  "pages": [
+    {
+      "title": "Architecture at a glance",
+      "lead": "One customer-operated management platform turns an AI request into a controlled action on a named host.",
+      "diagram": "architecture",
+      "table": {
+        "headers": [
+          "Boundary",
+          "What runs there",
+          "Why it exists"
+        ],
+        "rows": [
+          [
+            "Jitterbit Harmony",
+            "MCP, APIM, Studio and JBMQ",
+            "AI tools, protected integration APIs and queued delivery"
+          ],
+          [
+            "Dedicated management host",
+            "API, worker, PostgreSQL and HTTPS proxy",
+            "Durable jobs and execution independent of the target PA"
+          ],
+          [
+            "Target hosts",
+            "Existing SSH and the JBPA lifecycle commands",
+            "Manage agents without adding a web service or listening port"
+          ]
+        ]
+      },
+      "note": "Reading path: design (1-4), controls (5-7), deployment (8-10), contracts and sources (11-13). All diagrams show the proposed product."
+    },
+    {
+      "title": "One job, four clear stages",
+      "lead": "The installation runs independently after the first tool call returns a job ID.",
+      "diagram": "workflow",
+      "table": {
+        "headers": [
+          "Stage",
+          "Required behavior",
+          "What the user sees"
+        ],
+        "rows": [
+          [
+            "1. Submit",
+            "Commit the job and dispatch outbox in one transaction. Reuse an idempotency key on retry.",
+            "A stable job ID and acceptance state"
+          ],
+          [
+            "2. Queue",
+            "Publish the job reference. Dispatcher asks the parent to accept execution, then acknowledges JBMQ.",
+            "Pending dispatch or ready for execution"
+          ],
+          [
+            "3. Execute",
+            "Worker claims the job and canonical host; runs the fixed JBPA caller over SSH; validates the outcome.",
+            "Running, then success, failure or reconciliation"
+          ],
+          [
+            "4. Retrieve",
+            "A new tool call reads the stored result. It does not consume the queue or resume the original call.",
+            "Outcome correlated to target, action and version"
+          ]
+        ]
+      },
+      "note": "If the AI cannot poll, the user can ask to check the job later. Optional notifications inform the user; automatic chat resumption needs client support."
+    },
+    {
+      "title": "Component responsibilities",
+      "lead": "Each component owns one part of the request, delivery or execution lifecycle.",
+      "table": {
+        "headers": [
+          "Component",
+          "Owns",
+          "Important boundary"
+        ],
+        "rows": [
+          [
+            "MCP server",
+            "Tool names, descriptions and input/output contracts",
+            "Configured in Jitterbit; a second custom MCP server is unnecessary"
+          ],
+          [
+            "APIM + Studio",
+            "Submission, outbox relay, dispatch and status facade",
+            "Short operations call the same parent URL from every management PA"
+          ],
+          [
+            "JBMQ",
+            "References awaiting dispatch and delivery dead-letter handling",
+            "Acknowledgement means durable acceptance, not installation success"
+          ],
+          [
+            "Parent REST API",
+            "Authentication, action/target authorization and job APIs",
+            "No arbitrary host, shell command or secret supplied by the AI"
+          ],
+          [
+            "PostgreSQL",
+            "Jobs, events, outbox, idempotency and host ownership",
+            "The authoritative job/result record; not a temporary cache"
+          ],
+          [
+            "Worker + JBPA",
+            "Claim, execute, retain evidence and reconcile interruptions",
+            "One mutation per canonical host, including aliases"
+          ],
+          [
+            "Inventory",
+            "Named target, host identity and access references",
+            "Mapping revision is bound to the job; no silent host redirection"
+          ]
+        ]
+      },
+      "note": "Harmony selects the PA that runs a Studio operation. The parent inventory selects the target being managed. These are separate identities. [J2]"
+    },
+    {
+      "title": "Technology choices and reusable value",
+      "lead": "Use established open-source components around the existing JBPA code; keep the default deployment bounded.",
+      "table": {
+        "headers": [
+          "Selection",
+          "Why selected",
+          "Value and tradeoff"
+        ],
+        "rows": [
+          [
+            "Python + FastAPI / Pydantic / Uvicorn",
+            "Matches the Python execution code; typed contracts and generated OpenAPI/JSON Schema.",
+            "Shared models and tests across API/worker. Authorization still needs application rules. [T1, T2]"
+          ],
+          [
+            "PostgreSQL + SQLAlchemy / Alembic",
+            "Atomic job/outbox creation, uniqueness, concurrent coordination and versioned migrations.",
+            "Durable shared service with repeatable upgrades; backup and schema operations are required. [T3]"
+          ],
+          [
+            "Separate Python worker + OpenSSH",
+            "Long execution must survive API restarts; targets already expose SSH.",
+            "Reuse the fixed caller and pinned host keys; remote outcome recovery remains engineering work."
+          ],
+          [
+            "Docker Engine + Compose",
+            "Customers requested portable Linux containers and a repeatable single-host package.",
+            "Same images/topology per customer. Compose does not provide host-level HA. [T4]"
+          ],
+          [
+            "NGINX Open Source",
+            "A standard TLS front door independent of application code.",
+            "Keeps API/DB ports private; a qualified customer gateway can replace it."
+          ]
+        ]
+      },
+      "note": "SQLite fits a small local tool, but PostgreSQL is the product baseline. Kubernetes, Redis and Celery add no demonstrated requirement to this initial deployment. Licensing details are on page 12."
+    },
+    {
+      "title": "Durability, state and delivery",
+      "lead": "Persist the business job first; use JBMQ to deliver its identity to execution.",
+      "table": {
+        "headers": [
+          "Concern",
+          "Design rule",
+          "Result"
+        ],
+        "rows": [
+          [
+            "Acceptance",
+            "Create job + outbox atomically before returning. A relay repairs interrupted publication.",
+            "No accepted job depends on one successful queue-send response"
+          ],
+          [
+            "Duplicate requests",
+            "Bind idempotency key to caller and canonical request. Same key/different parameters is a conflict.",
+            "Repeated delivery retrieves the same job instead of repeating a mutation"
+          ],
+          [
+            "Execution states",
+            "Accepted pending dispatch -> READY -> RUNNING -> SUCCEEDED / FAILED. Unknown outcomes enter NEEDS_RECONCILIATION.",
+            "Queue publication cannot regress a running or completed job"
+          ],
+          [
+            "Host ownership",
+            "Lock by canonical host, not alias. Use short DB claims and worker heartbeats.",
+            "No competing mutation; lease expiry alone never permits replay"
+          ],
+          [
+            "Evidence",
+            "Record job/attempt, inventory revision, versions/digest, worker release, timestamps and safe outcome.",
+            "Results remain explainable and retrievable after restart"
+          ],
+          [
+            "Queue policy",
+            "ACK after parent acceptance. Bound delivery retries and quarantine invalid references.",
+            "Installation failure is a stored result, not a delivery dead-letter event"
+          ]
+        ]
+      },
+      "note": "Submission requires the parent API/DB to be available. JBMQ buffers later dispatch outages. Its documented acknowledgement timeout is 30 minutes and maximum TTL is 10 days; jobs/outbox remain authoritative. [J1]"
+    },
+    {
+      "title": "Security, access and host isolation",
+      "lead": "A named target and fixed action cross controlled trust boundaries; credentials stay outside the AI request.",
+      "table": {
+        "headers": [
+          "Connection / asset",
+          "Required control",
+          "Placement"
+        ],
+        "rows": [
+          [
+            "AI -> MCP -> APIM",
+            "Supported client authentication and protected API/tool configuration",
+            "Jitterbit endpoints; tenant compatibility must be validated"
+          ],
+          [
+            "Management PA -> parent",
+            "Private HTTPS; scoped machine identity; issuer/audience/expiry/signature validation",
+            "Proposed HTTPS :443 on dedicated management host"
+          ],
+          [
+            "API / database",
+            "Non-root app process, restricted DB role and internal network",
+            "Proposed :8080 and :5432 are not host-published"
+          ],
+          [
+            "Worker -> target",
+            "Pinned SSH fingerprint, fixed entry point and qualified non-interactive privilege",
+            "Worker-only SSH identity; existing target SSH port"
+          ],
+          [
+            "Secrets / logs / evidence",
+            "Protected secret references, rotation, redacted output and restricted raw evidence",
+            "Separate from images, queue bodies, job results and prompts"
+          ],
+          [
+            "Human identity",
+            "Verify delegated claims; never trust model-generated identity/approval headers",
+            "Shared integration account grants only its configured permissions"
+          ]
+        ]
+      },
+      "note": "No privileged containers or Docker socket mounts. Compose secret mounts are protected files, not encryption or a vault. Customers provide DNS/TLS, secret recovery and network routes."
+    },
+    {
+      "title": "Failure handling and safe recovery",
+      "lead": "Delivery may be retried. An uncertain remote mutation must be reconciled before another action starts.",
+      "table": {
+        "headers": [
+          "Failure",
+          "Required response",
+          "Reason"
+        ],
+        "rows": [
+          [
+            "Queue send / confirmation lost",
+            "Replay pending outbox; retain the same job ID.",
+            "A duplicate reference must not create another execution"
+          ],
+          [
+            "Dispatch accepted / response lost",
+            "Redeliver; return existing accepted state; ACK.",
+            "Acceptance may have committed before transport failed"
+          ],
+          [
+            "SSH disconnect / worker crash",
+            "Retain host ownership; inspect original attempt and remote evidence.",
+            "The target may still be installing or may already have changed"
+          ],
+          [
+            "Result persistence fails",
+            "Preserve protected local/remote evidence and reconcile.",
+            "A successful remote action is not safely rerunnable merely because DB write failed"
+          ],
+          [
+            "Management host / DB restored",
+            "Fence workers; restore compatible state; reconcile active jobs and stale references.",
+            "Recovered state can be older than actual target execution"
+          ],
+          [
+            "Known lifecycle failure",
+            "Store failure and evidence; authorize any new mutation separately.",
+            "No automatic reinstall, Harmony deletion or generic rollback"
+          ]
+        ]
+      },
+      "note": "Required caller improvement: establish a stable remote attempt ID and evidence location before mutation. Exactly-once remote execution is not claimed; safety relies on ownership, host locking and reconciliation."
+    },
+    {
+      "title": "Customer deployment and reuse",
+      "lead": "Ship one versioned package. Each customer supplies configuration rather than maintaining a source-code fork.",
+      "table": {
+        "headers": [
+          "Phase",
+          "Product supplies",
+          "Customer supplies"
+        ],
+        "rows": [
+          [
+            "Prepare",
+            "Host/runtime/config validation and support matrix",
+            "Dedicated Linux host, container runtime, routes and storage"
+          ],
+          [
+            "Configure",
+            "Schemas, sanitized examples and access-policy contract",
+            "Deployment identity, TLS, IdP, secret references and inventory"
+          ],
+          [
+            "Start",
+            "Pinned images, Compose, migration and readiness tooling",
+            "Persistent storage and protected credentials"
+          ],
+          [
+            "Connect Jitterbit",
+            "Tested Studio kit, MCP/APIM mappings and queue instructions",
+            "Tenant/environment, entitlements, endpoints and security profiles"
+          ],
+          [
+            "Onboard targets",
+            "Named-target validator, pinned-key and preflight checks",
+            "Provisioned supported hosts, SSH access and staged Harmony file"
+          ],
+          [
+            "Verify",
+            "Non-mutating smoke workflow and documented acceptance tests",
+            "Authorized disposable target for live lifecycle qualification"
+          ]
+        ]
+      },
+      "note": "Use supported Harmony import/export interfaces. Where automation is unavailable, provide exact manual steps. Target provisioning and Harmony record deletion remain outside JBPA scope."
+    },
+    {
+      "title": "Operate, upgrade and restore",
+      "lead": "The service is a reusable product only when upgrades and recovery are as repeatable as installation.",
+      "table": {
+        "headers": [
+          "Area",
+          "Product requirement",
+          "Operational boundary"
+        ],
+        "rows": [
+          [
+            "Release",
+            "Immutable images, pinned dependencies, SBOM, notices, provenance and compatibility manifest",
+            "Customer secrets never enter released artifacts"
+          ],
+          [
+            "Upgrade",
+            "Pause dispatch, safely drain, back up, migrate once, deploy, verify and reconcile before resuming",
+            "Management upgrades and PA upgrades are separately authorized"
+          ],
+          [
+            "Backup / restore",
+            "Encrypted off-host DB/config/evidence backup and tested restoration",
+            "Agree and measure recovery objectives; no invented RPO/RTO guarantee"
+          ],
+          [
+            "Monitoring",
+            "Outbox/queue age, DLQ, READY backlog, worker heartbeat, reconciliation count, DB/storage and backup age",
+            "Detect the blocked stage rather than treating all failures as installation errors"
+          ],
+          [
+            "Capacity / availability",
+            "Bound worker concurrency and benchmark supported fleet load",
+            "Single-host baseline is recoverable. HA requires redundant hosts, HA DB and proven fencing"
+          ],
+          [
+            "Support",
+            "Version matrix, credential rotation, diagnostics and clear operational ownership",
+            "Product code, customer infrastructure and Harmony administration have different owners"
+          ]
+        ]
+      },
+      "note": "Offer a qualified external PostgreSQL and existing-gateway configuration. Do not promise arbitrary Linux support, generic DB downgrade or safe cancellation of an executing mutation. [T4, T5]"
+    },
+    {
+      "title": "Production acceptance",
+      "lead": "The production label follows end-to-end and recovery evidence, not the choice of database or container runtime.",
+      "table": {
+        "headers": [
+          "Gate",
+          "Evidence required"
+        ],
+        "rows": [
+          [
+            "Deployment",
+            "Fresh supported Linux host; released package; no source edits; verified configuration and migrations"
+          ],
+          [
+            "Access / isolation",
+            "Denied target/action cases; token/key rotation; host-key mismatch; secret/output and network checks"
+          ],
+          [
+            "Delivery / execution",
+            "Duplicate publish/dispatch, ACK loss, same-host aliases, worker/SSH/DB interruption and reconciliation"
+          ],
+          [
+            "Lifecycle",
+            "Exact supported OS/PA tuples; installation, registration, health and approved old/new upgrade edges"
+          ],
+          [
+            "Recovery / operation",
+            "Backup/restore drill, schema compatibility, bounded concurrency and measured operational objectives"
+          ],
+          [
+            "Jitterbit / AI",
+            "Real MCP discovery, APIM response mapping, queue dispatch/ACK and later result retrieval"
+          ]
+        ]
+      },
+      "panels": [
+        [
+          "Current evidence",
+          "Scoped live core lifecycle evidence exists for PA 12.10.1.1 on Ubuntu 24.04.5 amd64."
+        ],
+        [
+          "Still to qualify",
+          "RC9 remote caller, package-changing upgrades, production sizing/artifact promotion and the proposed management stack. [R2-R4]"
+        ]
+      ],
+      "note": "Build order: contracts/persistence -> worker/recovery -> customer deployment -> Jitterbit kit -> live qualification. Close identity integration, retry entitlement, support versions and own-code licensing before release."
+    },
+    {
+      "title": "Appendix A - tool and API contract",
+      "lead": "Business tools share a versioned parent API; delivery-control endpoints are not AI-visible tools.",
+      "table": {
+        "headers": [
+          "Capability",
+          "Inputs",
+          "Contract"
+        ],
+        "rows": [
+          [
+            "Install / upgrade",
+            "Named target, exact qualified version, idempotency key",
+            "POST /v1/jobs"
+          ],
+          [
+            "Uninstall / diagnostics",
+            "Named target, action and idempotency key",
+            "Same async job contract; local removal only"
+          ],
+          [
+            "Get job / list targets",
+            "Job ID, or caller identity",
+            "GET /v1/jobs/{id}; GET /v1/targets"
+          ],
+          [
+            "Relay / dispatch",
+            "Stored outbox/job identity",
+            "GET /v1/dispatch-outbox; POST publication confirmation; POST job dispatch"
+          ],
+          [
+            "Health checks",
+            "Infrastructure context",
+            "/health/live and /health/ready are separate from target health"
+          ]
+        ]
+      },
+      "code": [
+        [
+          "Create / accept",
+          "POST /v1/jobs\nIdempotency-Key: <stable UUID>\n{\"target\":\"qa-pa-03\",\"action\":\"install\",\"version\":\"12.10\"}\n\n202: {\"jobId\":\"<UUID>\",\"state\":\"ACCEPTED_PENDING_DISPATCH\"}"
+        ],
+        [
+          "Retrieve / errors",
+          "GET /v1/jobs/<UUID>\n200: {\"state\":\"SUCCEEDED\",\"target\":\"qa-pa-03\",\n      \"resolvedVersion\":\"12.10.1.1\",\"result\":{\"status\":\"SUCCESS\"}}\n\n400/422 invalid; 401/403 access; 404 unknown; 409 conflict; 503 unavailable"
+        ]
+      ],
+      "note": "Examples are proposed contracts, not observed output. Diagnostic status does not prove identity-aware Harmony health. Only validated action-specific evidence establishes success."
+    },
+    {
+      "title": "Appendix B - open-source and product boundaries",
+      "lead": "Permissive upstream components support reuse; they do not automatically license JBPA code, branding or Jitterbit products.",
+      "table": {
+        "headers": [
+          "Component",
+          "Upstream position",
+          "Reuse obligation / boundary"
+        ],
+        "rows": [
+          [
+            "Python",
+            "PSF license [L1]",
+            "Retain runtime and bundled dependency notices"
+          ],
+          [
+            "FastAPI / Pydantic",
+            "MIT [L2, L3]",
+            "Retain required copyright/license notices"
+          ],
+          [
+            "Uvicorn",
+            "BSD 3-Clause [L4]",
+            "Retain notices and endorsement restrictions"
+          ],
+          [
+            "PostgreSQL",
+            "PostgreSQL License [L5]",
+            "Permissive reuse; backup/support remains an operating responsibility"
+          ],
+          [
+            "SQLAlchemy / Alembic",
+            "MIT [L6, L7]",
+            "Reuse access/migration tooling with notices"
+          ],
+          [
+            "NGINX / OpenSSH",
+            "BSD-like / multiple permissive notices [L8, L12]",
+            "Check the exact shipped packages; no blanket dependency-license assumption"
+          ],
+          [
+            "Moby / Compose",
+            "Apache 2.0 [L9, L10]",
+            "Preserve required notices; Docker Desktop has separate terms [L11]"
+          ]
+        ]
+      },
+      "note": "No repository LICENSE file was identified in the current JBPA checkout. Choose ownership/licensing explicitly before publishing our code. Verify exact versions, base images and dependencies in the SBOM. Jitterbit entitlements and brand/artifact rights remain separate."
+    },
+    {
+      "title": "Appendix C - sources and evidence",
+      "lead": "The brief describes the proposed architecture. Repository evidence and upstream references support its boundaries.",
+      "references": [
+        [
+          "J1",
+          "Jitterbit MQ service",
+          "https://docs.jitterbit.com/message-queue-service/"
+        ],
+        [
+          "J2",
+          "Jitterbit agent routing",
+          "https://docs.jitterbit.com/agent/"
+        ],
+        [
+          "J3",
+          "APIM Custom APIs",
+          "https://docs.jitterbit.com/api-manager/api-manager-reference/api-configuration/custom-api/"
+        ],
+        [
+          "J4",
+          "JBMQ failure/retry guidance",
+          "https://docs.jitterbit.com/getting-started/troubleshooting/"
+        ],
+        [
+          "T1",
+          "FastAPI contracts",
+          "https://fastapi.tiangolo.com/"
+        ],
+        [
+          "T2",
+          "Pydantic validation",
+          "https://docs.pydantic.dev/latest/"
+        ],
+        [
+          "T3",
+          "PostgreSQL coordination",
+          "https://www.postgresql.org/docs/current/explicit-locking.html"
+        ],
+        [
+          "T4",
+          "Compose production deployment",
+          "https://docs.docker.com/compose/how-tos/production/"
+        ],
+        [
+          "T5",
+          "PostgreSQL backups",
+          "https://www.postgresql.org/docs/current/backup.html"
+        ],
+        [
+          "L1",
+          "Python license",
+          "https://docs.python.org/3/license.html"
+        ],
+        [
+          "L2",
+          "FastAPI MIT license",
+          "https://github.com/fastapi/fastapi"
+        ],
+        [
+          "L3",
+          "Pydantic license",
+          "https://github.com/pydantic/pydantic"
+        ],
+        [
+          "L4",
+          "Uvicorn BSD license",
+          "https://github.com/Kludex/uvicorn/blob/main/LICENSE.md"
+        ],
+        [
+          "L5",
+          "PostgreSQL License",
+          "https://www.postgresql.org/about/licence/"
+        ],
+        [
+          "L6",
+          "SQLAlchemy MIT license",
+          "https://github.com/sqlalchemy/sqlalchemy/blob/main/LICENSE"
+        ],
+        [
+          "L7",
+          "Alembic MIT license",
+          "https://github.com/sqlalchemy/alembic/blob/main/LICENSE"
+        ],
+        [
+          "L8",
+          "NGINX Open Source license",
+          "https://github.com/nginx/nginx"
+        ],
+        [
+          "L9",
+          "Moby Apache license",
+          "https://github.com/moby/moby/blob/master/LICENSE"
+        ],
+        [
+          "L10",
+          "Compose Apache license",
+          "https://github.com/docker/compose/blob/main/LICENSE"
+        ],
+        [
+          "L11",
+          "Docker Desktop distinction",
+          "https://docs.docker.com/subscription-billing/desktop-license/"
+        ],
+        [
+          "L12",
+          "OpenSSH license notices",
+          "https://github.com/openssh/openssh-portable/blob/master/LICENCE"
+        ]
+      ],
+      "panels": [
+        [
+          "Repository sources",
+          "R1: product specification. R2: production-readiness.md. R3: integrations/skills/README.md. R4: customer-start-here.md. R5: tools/handoff/customer_remote.py."
+        ],
+        [
+          "Document source",
+          "One layout, one content model and two canonical diagrams. White canvas, Jitterbit logo, deep teal/orange and restrained panels follow the RATP, GSMA and Opportunity Intelligence builders."
+        ]
+      ]
+    }
+  ]
+}

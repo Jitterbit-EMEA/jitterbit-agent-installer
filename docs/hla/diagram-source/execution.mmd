@@ -1,0 +1,16 @@
+sequenceDiagram
+  autonumber
+  participant W as Worker
+  participant D as PostgreSQL
+  participant T as Target host
+  W->>D: Claim job + host
+  D-->>W: Job + ownership
+  W->>D: Record attempt
+  W->>T: SSH fixed JBPA action
+  activate T
+  Note over W,T: SSH execution may take minutes.<br/>No API call waits for completion.
+  T-->>W: Structured outcome and evidence
+  deactivate T
+  W->>D: Store result + event
+  W->>D: Release ownership
+  Note over W,T: Transport loss requires reconciliation.<br/>Keep host ownership until resolved.

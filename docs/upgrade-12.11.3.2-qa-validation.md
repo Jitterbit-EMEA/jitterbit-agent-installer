@@ -1,0 +1,33 @@
+# Exact 12.11.3.2 QA upgrade preparation — 14 October 2026
+
+Historical preparation: JBLAB-PA-AUTOMATION, Ubuntu 24.04 amd64, 14 October. The preparation below predates execution; see the 15 October outcome at the end.
+
+The official mutable download endpoint returned jitterbit-agent 12.11.3.2 (660,403,102 bytes). SHA-256: `6e69a441c866ef2610aae603485ac82a05b711ccaca524f56c980458cb4907f0`. The exact download URL and digest are now pinned in the catalogue. Approval remains pending and qualification AVAILABLE_UNQUALIFIED; controlled-test plus explicit allow-unqualified are required. This does not establish production or successful upgrade qualification. Existing recommended/latest-tested aliases are unchanged.
+
+The current fixed-candidate live baseline reports installed 12.9.2.2, connection true, core services healthy, protected native credentials present and zero active operations. Axis readiness is READY: 302 expected files, zero missing/content mismatches, valid conversion WSDL HTTP 200. These are baseline component checks, not a business-operation execution test.
+
+Read-only target-version resource validation using the updated catalogue fails only the CPU resource prerequisite: observed two vCPUs, minimum four. Memory, capacity, free space, package manager, existing registered installation and time checks pass. Dry-run secret/endpoint checks are unconfirmed. The prior 12.9 exception does not apply to 12.11.3.2. A separately requested host/package-specific QA exception is pending; no CPU policy has been changed and no installer/restart has run.
+
+Candidate v5 contains the same vendor-owned upgrade observer plus the pinned catalogue target. Archive SHA-256: `45b4310ad861933662bce2bd10f6953d120d7e6ac86750f93dd0c42423d4b2d0`. All 496 unit tests pass. The candidate is not yet delivered or run on the target.
+
+Evidence is under `output/trandb/upgrade-12.11.3.2-*-2026-10-14.json`. Package and full intake metadata remain protected on the VM at `/var/lib/jbpa/intake/upgrade-12.11.3.2-20261014/`.
+
+After authorization and passing live preflight: retain baseline/backup, drain, invoke the normal vendor dpkg installer once, observe fresh registration/request-flow and Axis completion without verification restart or deployment modifications. Verify retained identity/group, exact package version, core services, complete Axis/WSDL and synchronized operation definitions. Report component readiness separately from a customer-run connector/business canary. Any failed or unknown result stops for reconciliation; no automatic repair or retry.
+
+## Authorized execution — 15 October 2026
+
+The user explicitly authorized the two-vCPU QA exception for this host and exact 12.11.3.2 package. The policy and JSON Schema bind the new scope to JBLAB-PA-AUTOMATION, 12.11/12.11.3.2, two CPUs and explicit-user-approval classification. Controlled-test mode and Ubuntu 24.04 amd64 remain mandatory. A 12.9 approval cannot satisfy the 12.11 exception, another host/package cannot use it, and production mode cannot use it. All 497 unit tests pass; lint and release integrity checks pass.
+
+Verified candidate v6: `/opt/jbpa/qa-candidates/upgrade-observer-20261015-v6/jbpa-1.0.0-rc9`, SHA-256 `3703b3344266bd47c44b4a03df13e53b1623e2a2b36dc16d4266def6a82dedc6`. The historical release remains unchanged. Exact QA profile: `/etc/jbpa/qa-upgrade-12.11.3.2-20261015.yaml`, root-only. Live preflight passes with the CPU warning, including protected secret-provider readiness and DNS/TLS checks. The bounded pre-upgrade reporting snapshot passes all 25 queries with zero active operations.
+
+The upgrade invoked the normal vendor installer once. Dpkg began the upgrade at 11:50:53 UTC, configured the new package at 11:51:32 and recorded installed at 11:52:05. JBPA returned exit zero, SUCCESS / UPGRADE_COMPLETE after fresh authentication, login, connected agent services, request flow, heartbeat, local services and complete Axis/WSDL checks. The observer performed no verification restart, Axis extraction, deployment-file repair or configuration restoration. `configurationChangesObserved` is empty. The package digest matched the preparation.
+
+Post-upgrade Axis: 302 expected files, zero missing/mismatched, valid conversion WSDL HTTP 200. ConnectorEngine and ConnectorFrameworkEngine WSDLs are valid HTTP 200 with TestConnection/testConnection and invocation operations published. A GET to the OAuth invalidation route returns HTTP 405 with Allow PUT, proving route availability only; token invalidation was not called. Optional WADL discovery returned 404 and is not used as a readiness condition.
+
+All 25 post-upgrade reporting queries pass without truncation. Agent 667590, name and PAG 679240 are retained; VersionNumber is 12.11.3.2. All 15 operation definitions exactly match the baseline. Existing deployment records are synchronized with zero recorded deployment errors. Incoming queue, active/pending runs and log-sync backlog are empty. Retained synchronized definitions are not evidence of a new post-upgrade cloud deployment; no business operation, Gmail/Slack/SFTP transaction or token-invalidation canary has been run. These establish platform/operation component readiness, not end-to-end business success.
+
+Backup: `/var/lib/jbpa/backups/upgrade-d47f0b2fbc274041a7d7655795040412`. Private on-host result: `/var/lib/jbpa/results/upgrade-12.11.3.2-20261015.json`. Local evidence uses the `2026-10-15` suffix. The catalogue retains AVAILABLE_UNQUALIFIED/pending until broader qualification is completed; this single QA result does not confer production approval.
+
+Independent final health returned exit zero, SUCCESS / HEALTHY: expected identity, core services, Harmony authentication, connectivity, heartbeat and request flow pass. The supplementary AgentSupportTools service-status parser remains unavailable (zero parsed rows); native service status and process/application checks supply core-service evidence. Fresh full group synchronization is not required by the upgrade observer; preserved synchronized definitions are verified separately. No new deployment or business canary is claimed. JBPA expected-health version metadata in the general and new QA profiles was refreshed after independent agent/group/version checks; root-only backups are retained at `/var/lib/jbpa/backups/health-identity-20261015-01afb630`. Vendor configuration was not changed by this metadata update.
+
+Portable Git-tracked evidence: [sanitized verification summary](../evidence/pa-12.11.3.2/fixed-upgrade-2026-10-15.json). Paths under `output/` refer to local ignored captures, not files distributed in Git.

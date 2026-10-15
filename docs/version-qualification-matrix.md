@@ -1,10 +1,11 @@
 # Version qualification matrix
 
-Catalogue version 2: exactly one dynamic latest source and 19 pinned logical releases. Artifact metadata and runtime qualification are distinct. Availability is not compatibility or production approval.
+Catalogue version 2: exactly one dynamic latest source and 20 pinned logical releases. Artifact metadata and runtime qualification are distinct. Availability is not compatibility or production approval.
 
 | Logical | Package | URL type | Metadata | SHA-256 | Ubuntu 24.04 | Ubuntu 22.04 | Core install | Registration | Lifecycle | Truststore | Overall |
 | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- |
 | latest | Resolved per request | DYNAMIC_MUTABLE | Explicit inspection only | Pin per run | Inherit exact resolved tuple | NOT_TESTED | Guarded | Guarded | No implicit test | No implicit test | Inherit catalogue or AVAILABLE_UNQUALIFIED |
+| 12.11 | 12.11.3.2 | PINNED | METADATA_VERIFIED | 6e69a441c866ef2610aae603485ac82a05b711ccaca524f56c980458cb4907f0 | Single QA upgrade observed; formal qualification pending | NOT_TESTED | Fresh install NOT_TESTED | Existing identity retained in QA upgrade | Scoped upgrade observed | NOT_TESTED | AVAILABLE_UNQUALIFIED |
 | 12.10 | 12.10.1.1 | PINNED | VERIFIED | 604bec9889c49167328b93d032bb9d8580f758eb70c3d1dd42dfda23db974ee8 | TESTED_LIVE (scoped) | NOT_TESTED | TESTED_LIVE | TESTED_LIVE | TESTED_LIVE | ENDPOINT_TRUST_TESTED_LIVE | TESTED_LIVE |
 | 12.9 | 12.9.2.2 | PINNED | OBSERVED_LIVE | NOT_VERIFIED | TESTED_LIVE (scoped) | NOT_TESTED | TESTED_LIVE | TESTED_LIVE | NOT_TESTED | NOT_TESTED | TESTED_LIVE |
 | 12.8 | 12.8.1.6 | PINNED | NOT_INTAKEN | NOT_VERIFIED | NOT_TESTED | NOT_TESTED | NOT_TESTED | NOT_TESTED | NOT_TESTED | NOT_TESTED | AVAILABLE_UNQUALIFIED |
@@ -28,3 +29,5 @@ Catalogue version 2: exactly one dynamic latest source and 19 pinned logical rel
 PA 12.10 digest is LOCALLY_CALCULATED and APPROVED_FOR_TEST_ONLY. PA 12.9 evidence covers installation/registration/initial health, not later drain/uninstall/reinstall/enterprise behavior. Ubuntu 24.04 qualification refers to the actual 24.04.5 VM for PA 12.10. No historical bulk intake or live test was performed in Phase 2G. True CUSTOM_CA is NOT_TESTED_WITH_CURRENT_CERTIFICATE (CA:FALSE).
 
 Governed aliases: recommended = latest-tested = latest-available-pinned = 12.10. Updates require review; neither intake nor regression promotes them. The exact user-supplied URLs are retained in [the catalogue](../config/versions.yaml). Runtime contracts exist only for [12.10.1.1](../contracts/12.10.1.1.yaml) and [12.9.2.2](../contracts/12.9.2.2.yaml).
+
+15 October 2026: [12.9.2.2 to 12.11.3.2 QA upgrade](upgrade-12.11.3.2-qa-validation.md) passed using the vendor-owned observer on the specifically authorized two-vCPU host. This does not qualify fresh 12.11 installation, other platforms, business operations, production sizing or production deployment. Catalogue approval/qualification and recommended aliases remain unchanged.

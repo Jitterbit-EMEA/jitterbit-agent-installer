@@ -1,0 +1,552 @@
+{
+  "schemaVersion": 1,
+  "recordedAt": "2026-10-14",
+  "baseline": {
+    "status": "PROPOSED_NOT_VALIDATED",
+    "scope": "Current JBPA management product baseline and HLA; no observability upgrade prerequisite",
+    "retain": [
+      "Lifecycle actions and basic health/status/version",
+      "Synchronous getVersions API/MCP release discovery, separate from installed-version health/status",
+      "Target inventory and permissions",
+      "Durable jobs and result retrieval",
+      "Database-backed job execution, canonical-host ownership and reconciliation",
+      "Existing active-operation drain checks",
+      "MCP-guided onboarding, protected file/profile capture and idempotent target preparation",
+      "Multiple-host iteration, dynamic staged-file selection and authorized group/profile context switching"
+    ],
+    "validationGate": [
+      "Clean customer deployment",
+      "MCP authentication, discovery and calls through APIM/Studio",
+      "getVersions discovery, catalogue/target filtering, policy qualification and error behavior",
+      "Durable job submission/worker claim and result retrieval",
+      "Qualified lifecycle execution on the named target",
+      "Idempotency and alias-safe host serialization",
+      "Interrupted-execution evidence/reconciliation",
+      "Backup/restore and release compatibility",
+      "Customer completes setup and target preparation without manual file edits; safe repetition/resumption and truthful credential/registration verification",
+      "MCP-driven guide/options/configuration/upload/validation/execution works without a local AI installer; four-host file/group mappings and original lifecycle invariants hold",
+      "Per-connector readiness and application-result validation, with explicit supported recovery and actual deployment verification",
+      "Vendor-owned startup with no observer restart; Axis readiness failure prevents success; 12.9 reinstall and subsequent upgrade require live qualification"
+    ],
+    "apiTools": [
+      {
+        "name": "getVersions",
+        "method": "GET",
+        "parentRoute": "/v1/versions",
+        "apimRoute": "/v1/versions",
+        "status": "PROPOSED_BASELINE",
+        "execution": "SYNCHRONOUS_READ_ONLY",
+        "optionalQuery": {
+          "target": "Permitted target ID",
+          "action": [
+            "install",
+            "upgrade"
+          ]
+        },
+        "source": "Existing governed JBPA catalogue and support/qualification matrix",
+        "responseFields": [
+          "catalogueRevision",
+          "observedAt",
+          "logicalVersion",
+          "packageVersion",
+          "platforms",
+          "qualification",
+          "artifactApproval",
+          "sha256",
+          "recommendation",
+          "eligibility",
+          "blockingReasons",
+          "targetContextSource",
+          "targetContextFreshness"
+        ],
+        "constraints": [
+          "No arbitrary URLs or target addresses",
+          "No queue/job for catalogue reads",
+          "No protected download URLs or credentials returned",
+          "Unavailable target context is unverified, not eligible",
+          "Submission revalidates qualified approved artifact identity"
+        ]
+      },
+      {
+        "name": "beginSetup",
+        "method": "POST",
+        "parentRoute": "/v1/setup-sessions",
+        "status": "PROPOSED_BASELINE",
+        "execution": "SHORT_SETUP_SESSION_CREATION",
+        "secretInputs": "Private authenticated setup flow or installer hidden prompt; MCP receives references only",
+        "constraints": [
+          "No manual customer JSON/YAML/Compose editing",
+          "No PA install/restart/re-registration during preparation",
+          "No credential values in AI-visible arguments or returned status",
+          "Do not claim registration verified from syntax/connectivity checks",
+          "Repeat/resume preserves existing configuration unless replacement explicitly requested"
+        ],
+        "bootstrapDependency": false,
+        "availability": "MCP-driven onboarding after minimal management bootstrap"
+      },
+      {
+        "name": "validateSetup",
+        "method": "POST",
+        "parentRoute": "/v1/setup-sessions/{id}/validate",
+        "status": "PROPOSED_BASELINE",
+        "execution": "BOUNDED_CHECKS_WITH_RECORDED_STATUS",
+        "secretInputs": "Private authenticated setup flow or installer hidden prompt; MCP receives references only",
+        "constraints": [
+          "No manual customer JSON/YAML/Compose editing",
+          "No PA install/restart/re-registration during preparation",
+          "No credential values in AI-visible arguments or returned status",
+          "Do not claim registration verified from syntax/connectivity checks",
+          "Repeat/resume preserves existing configuration unless replacement explicitly requested"
+        ],
+        "bootstrapDependency": false,
+        "availability": "MCP-driven onboarding after minimal management bootstrap"
+      },
+      {
+        "name": "prepareTarget",
+        "method": "POST",
+        "parentRoute": "/v1/targets/{id}/prepare",
+        "status": "PROPOSED_BASELINE",
+        "execution": "DURABLE_PREPARATION_JOB",
+        "secretInputs": "Private authenticated setup flow or installer hidden prompt; MCP receives references only",
+        "constraints": [
+          "No manual customer JSON/YAML/Compose editing",
+          "No PA install/restart/re-registration during preparation",
+          "No credential values in AI-visible arguments or returned status",
+          "Do not claim registration verified from syntax/connectivity checks",
+          "Repeat/resume preserves existing configuration unless replacement explicitly requested"
+        ],
+        "bootstrapDependency": false,
+        "availability": "MCP-driven onboarding after minimal management bootstrap"
+      },
+      {
+        "name": "getSetupStatus",
+        "method": "GET",
+        "parentRoute": "/v1/setup-sessions/{id}",
+        "status": "PROPOSED_BASELINE",
+        "execution": "SYNCHRONOUS_READ_ONLY",
+        "secretInputs": "Private authenticated setup flow or installer hidden prompt; MCP receives references only",
+        "constraints": [
+          "No manual customer JSON/YAML/Compose editing",
+          "No PA install/restart/re-registration during preparation",
+          "No credential values in AI-visible arguments or returned status",
+          "Do not claim registration verified from syntax/connectivity checks",
+          "Repeat/resume preserves existing configuration unless replacement explicitly requested"
+        ],
+        "bootstrapDependency": false,
+        "availability": "MCP-driven onboarding after minimal management bootstrap"
+      },
+      {
+        "name": "getSetupGuide",
+        "method": "POST",
+        "parentRoute": "/v1/setup-sessions",
+        "status": "PROPOSED_BASELINE",
+        "execution": "START_OR_RESUME_GUIDED_SESSION",
+        "secretInputs": "Protected upload/form or secret reference; AI sees opaque IDs",
+        "availability": "MCP-driven onboarding after minimal management bootstrap"
+      },
+      {
+        "name": "getSetupOptions",
+        "method": "GET",
+        "parentRoute": "/v1/setup-sessions/{id}/options",
+        "status": "PROPOSED_BASELINE",
+        "execution": "SYNCHRONOUS_READ_ONLY",
+        "secretInputs": "Protected upload/form or secret reference; AI sees opaque IDs",
+        "availability": "MCP-driven onboarding after minimal management bootstrap"
+      },
+      {
+        "name": "saveSetup",
+        "method": "PUT",
+        "parentRoute": "/v1/setup-sessions/{id}/configuration",
+        "status": "PROPOSED_BASELINE",
+        "execution": "VALIDATE_AND_PERSIST_PLAN",
+        "secretInputs": "Protected upload/form or secret reference; AI sees opaque IDs",
+        "availability": "MCP-driven onboarding after minimal management bootstrap"
+      },
+      {
+        "name": "executeSetup",
+        "method": "POST",
+        "parentRoute": "/v1/setup-sessions/{id}/execute",
+        "status": "PROPOSED_BASELINE",
+        "execution": "DURABLE_PER_HOST_JOBS",
+        "secretInputs": "Protected upload/form or secret reference; AI sees opaque IDs",
+        "availability": "MCP-driven onboarding after minimal management bootstrap"
+      }
+    ],
+    "customerExperience": "Minimal management bootstrap followed by MCP-driven Markdown-guided configuration, typed file selection/transfer, backend validation and durable remote PA installation",
+    "onboardingImplemented": false,
+    "bootstrapRequiresMcp": false,
+    "bootstrapRequiresAiClient": false,
+    "installerContract": {
+      "status": "PROPOSED_NOT_IMPLEMENTED",
+      "host": "Dedicated management VM",
+      "inputDirectory": "setup-input (private, excluded from Git)",
+      "requiredFiles": [
+        "Selected supported private key from setup-input/ssh/ or its allowed profile subdirectories",
+        "Selected independently verified known_hosts record for every target"
+      ],
+      "conditionalFiles": [
+        "tls/server.crt",
+        "tls/server.key",
+        "tls/chain.pem",
+        "Qualified enterprise profile files"
+      ],
+      "promptedValues": [
+        "Target name and private IP/hostname",
+        "SSH username",
+        "Harmony region/cloud URL",
+        "Agent Registration token (hidden)",
+        "Agent group ID",
+        "Agent name prefix",
+        "Qualified release selection"
+      ],
+      "generatedFiles": [
+        "Protected registration profile",
+        "Target inventory",
+        "Management deployment configuration",
+        "Target-specific credentials.json"
+      ],
+      "sequence": [
+        "Customer runs local installer on the bare management VM; resolve all required runtime parameters, deploy stack and verify readiness",
+        "Configure Jitterbit project/APIM/MCP against the running management API and verify connectivity",
+        "Return setup guide/schema through MCP",
+        "Discover or upload files through Jitterbit and collect per-host/group selections",
+        "Persist and validate structured plan",
+        "Execute approved durable remote installation and retrieve evidence"
+      ],
+      "constraints": [
+        "No management SSH private key transferred to target",
+        "No implicit reinstall or credential replacement on rerun",
+        "No extra target listening services",
+        "No undocumented token validation or Harmony provisioning claims",
+        "Persist and reconcile interrupted execution before replay",
+        "No local AI shell/TTY installer adapter required for customer onboarding"
+      ],
+      "multiHost": {
+        "hostCount": "Prompt or confirm imported count",
+        "selection": "Discover all supported staged files and select explicit file/profile IDs per host",
+        "reuse": "Explicit apply-to-all default with per-host overrides",
+        "state": "Resumable setup and per-host outcomes"
+      },
+      "entryPoints": [
+        "Minimal management deployment/bootstrap",
+        "Primary MCP-guided target onboarding",
+        "Existing local JBPA CLI retained as separate QA/lifecycle foundation"
+      ],
+      "groupProfiles": {
+        "multipleProfiles": true,
+        "switchContext": "Changes authorized discovery/future selections only",
+        "submittedJobs": "Pin accepted group/profile revision",
+        "installedAgentMove": "Separate qualified and authorized lifecycle action"
+      },
+      "markdownGuide": "Instructions only; versioned and aligned with backend schema",
+      "fileTransfer": "Authenticated Jitterbit APIM/Studio upload operation to protected management storage; client/uploader or private upload UI transfers bytes; AI receives IDs",
+      "initialManagementVmState": "NO_MANAGEMENT_SERVICES_OR_APIS",
+      "managementParameterGroups": [
+        "Deployment/platform identity",
+        "HTTPS endpoint and TLS/gateway",
+        "API identity and role/action policy",
+        "Database credentials and connection",
+        "Persistent storage/evidence/secret locations",
+        "Pinned release and artifact policy",
+        "Worker concurrency/timeouts/recovery",
+        "Network/internal ports",
+        "Readiness and connection outputs"
+      ]
+    },
+    "onboardingInterface": "Jitterbit MCP; no AI-assisted local installer",
+    "fileTransferApi": {
+      "method": "POST",
+      "route": "/v1/setup-sessions/{id}/files",
+      "via": "Jitterbit APIM/Studio",
+      "status": "PROPOSED_NOT_VALIDATED",
+      "acceptance": [
+        "Multipart default-schema compatibility",
+        "Byte preservation/integrity",
+        "Authentication/role/size/path restrictions",
+        "Sensitive payload logging exclusions",
+        "AI client upload capability or private upload UI"
+      ],
+      "executionPayload": "File/profile references only; no file bytes"
+    },
+    "delivery": {
+      "mode": "POSTGRESQL_DURABLE_JOB_BACKLOG",
+      "acceptanceState": "READY",
+      "jbmqRequired": false,
+      "outboxRequired": false,
+      "dispatchApiRequired": false
+    },
+    "connectorReadinessLearning": {
+      "requirementIds": [
+        "RDY-001",
+        "RDY-002",
+        "RDY-003",
+        "RDY-004"
+      ],
+      "status": "PROPOSED_NOT_IMPLEMENTED",
+      "evidence": "docs/trandb/token-invalidation-investigation-2026-10-09.md",
+      "qaRecovery": "Customer updated connectors and tested Gmail; deployment succeeded on 2026-10-12",
+      "qualificationBoundary": "One QA case; not proof of general automatic remediation or production sizing"
+    }
+  },
+  "upgrades": [
+    {
+      "id": "UPG-001",
+      "name": "PA and host observability",
+      "status": "DEFERRED_UNTIL_BASELINE_VALIDATED",
+      "implementationAuthorized": false,
+      "rolloutAuthorized": false,
+      "tools": [
+        {
+          "name": "pa_get_overview",
+          "purpose": "Agent identity, version, health, capabilities and timestamp",
+          "status": "PROPOSED_DEFERRED"
+        },
+        {
+          "name": "pa_list_operations",
+          "purpose": "Locally deployed definitions with qualified IDs/project/environment fields",
+          "status": "PROPOSED_DEFERRED"
+        },
+        {
+          "name": "pa_list_operation_runs",
+          "purpose": "Paginated, time-bounded execution records; pending/running/terminal filters",
+          "status": "PROPOSED_DEFERRED"
+        },
+        {
+          "name": "pa_get_operation_run",
+          "purpose": "One execution with original status, timestamps and permitted diagnostics",
+          "status": "PROPOSED_DEFERRED"
+        },
+        {
+          "name": "pa_get_operation_summary",
+          "purpose": "Status counts, oldest pending and longest running executions",
+          "status": "PROPOSED_DEFERRED"
+        },
+        {
+          "name": "pa_get_services",
+          "purpose": "PA component service health",
+          "status": "PROPOSED_DEFERRED"
+        },
+        {
+          "name": "pa_get_database_health",
+          "purpose": "Local TranDb/PostgreSQL connections, size, waits and bounded statistics",
+          "status": "PROPOSED_DEFERRED"
+        },
+        {
+          "name": "pa_get_runtime_metrics",
+          "purpose": "Jitterbit capacity, request backlog, thread pools and log synchronization",
+          "status": "PROPOSED_DEFERRED"
+        },
+        {
+          "name": "pa_get_connectivity",
+          "purpose": "Bounded checks of approved Harmony/local service endpoints",
+          "status": "PROPOSED_DEFERRED"
+        },
+        {
+          "name": "pa_get_logs",
+          "purpose": "Bounded, filtered and redacted component/operation log excerpts",
+          "status": "PROPOSED_DEFERRED"
+        },
+        {
+          "name": "host_get_metrics",
+          "purpose": "Host CPU, memory, swap, disk, inode, I/O, network and uptime observations",
+          "status": "PROPOSED_DEFERRED"
+        },
+        {
+          "name": "host_get_process_metrics",
+          "purpose": "Resource observations for permitted PA and supporting processes",
+          "status": "PROPOSED_DEFERRED"
+        },
+        {
+          "name": "pa_get_component_metrics",
+          "purpose": "Capability-qualified JVM, Tomcat, Apache, PostgreSQL and PgBouncer metrics",
+          "status": "PROPOSED_DEFERRED"
+        },
+        {
+          "name": "pa_get_capabilities",
+          "purpose": "Installed release/provider/instrumentation support and unavailable reasons",
+          "status": "PROPOSED_DEFERRED"
+        },
+        {
+          "name": "pa_get_metric_history",
+          "purpose": "Time-bounded retained snapshots/aggregations from management-side collection",
+          "status": "PROPOSED_DEFERRED"
+        },
+        {
+          "name": "pa_assess_operations",
+          "purpose": "Read-only composite operation/stage/descendant assessment with findings, coverage and drill-down references",
+          "status": "PROPOSED_DEFERRED"
+        },
+        {
+          "name": "pa_get_transfer_diagnostics",
+          "purpose": "Bounded redacted curl/SFTP diagnostics with logging state and exact/inferred/unmatched correlation",
+          "status": "PROPOSED_DEFERRED"
+        },
+        {
+          "name": "estate_assess_health",
+          "purpose": "Durable scoped fleet read assessment with per-agent findings, coverage and capacity evidence",
+          "status": "QA_TOOLKIT_EXISTS_RUNTIME_API_DEFERRED"
+        },
+        {
+          "name": "estate_get_health_assessment",
+          "purpose": "Retrieve retained fleet read assessment and drill-down references",
+          "status": "QA_TOOLKIT_EXISTS_RUNTIME_API_DEFERRED"
+        },
+        {
+          "name": "pa_get_health",
+          "purpose": "Qualified last health snapshot and freshness",
+          "status": "QA_TOOLKIT_EXISTS_RUNTIME_API_DEFERRED"
+        }
+      ],
+      "constraints": [
+        "No new persistent PA-host services or listening ports",
+        "Existing SSH transport; management-side API and collectors",
+        "Qualified bounded read-only queries and fixed diagnostic commands",
+        "No arbitrary SQL or arbitrary shell tool",
+        "Separate deployed definitions, execution records and management jobs",
+        "Terminal does not imply successful; retain original status",
+        "Capability-qualified deep JVM/Tomcat metrics; unavailable is explicit",
+        "Freshness, source, coverage and collection errors accompany observations",
+        "Retention, pagination and sampling limits are configurable",
+        "Diagnostic observations do not automatically authorize lifecycle mutations"
+      ],
+      "upgradeAcceptance": [
+        "Provider qualification against each supported PA/OS schema and tool release",
+        "Read-only behavior, access scope and secret/log redaction",
+        "Collection overhead, bounded fleet concurrency and timeout handling",
+        "Stale/missing/partial telemetry and unavailable instrumentation handling",
+        "Metrics/history retention, migrations and backup behavior",
+        "Regression of every baseline lifecycle/recovery invariant",
+        "Staged customer rollout with explicit release approval"
+      ],
+      "largeDataContract": "docs/jbpa-management-data-contract.json",
+      "requiredExecutionFields": [
+        "operationRunId",
+        "operationId (nullable if unavailable)",
+        "operationName",
+        "targetId",
+        "canonicalHostId",
+        "agentId",
+        "agentGroupId",
+        "originalStatusCode/name",
+        "normalizedStatus",
+        "submittedAt",
+        "startedAt",
+        "finishedAt (nullable)",
+        "durationMs (nullable)",
+        "elapsedMs (for unfinished runs)",
+        "observedAt",
+        "source/providerVersion"
+      ],
+      "volumeRequirements": [
+        "Authorization scope on every query",
+        "Bounded limit and opaque cursor",
+        "Host/agent/group/project/environment/operation/status/time filters",
+        "Deterministic snapshot/watermark handling for mutable run records",
+        "Explicit nextCursor/returnedCount/partial/truncated/stale/unavailable",
+        "No raw SQL or unbounded table dump",
+        "Summary and narrow metric selections by default",
+        "IDs are distinct and source-qualified",
+        "Unknown source values/timestamps are not invented",
+        "Incremental checkpoint/overlap and deduplication",
+        "Capture updates when running executions finish",
+        "Collection can run without AI polling",
+        "Metric units/type/counter resets and aggregation are explicit",
+        "Qualified bounded read-only PA providers",
+        "Retention/rollups/indexes/partitioning/intervals/caps require sizing evidence",
+        "No additional target listening services",
+        "No operational payload secrets in default records"
+      ],
+      "assessmentContract": "docs/trandb/operation-assessment-contract.json",
+      "assessmentArchitecture": "docs/trandb/operation-assessment-api.md",
+      "estateHealthWorkstream": {
+        "customerRequestedImplementation": "2026-10-12",
+        "authorizedScope": "Build and validate read-only fleet health QA toolkit and architecture; no new host services/exporters/ports deployed",
+        "implemented": [
+          "SSH Linux sampling",
+          "Fixed TranDb health queries",
+          "Classified native service/connectivity checks",
+          "Optional existing Apache/JMX and per-JVM jstat",
+          "Fleet evidence/coverage evaluator",
+          "Capacity screening rules",
+          "Local Prometheus gauge output"
+        ],
+        "remaining": [
+          "Harmony roster reconciliation",
+          "HTTP/MCP handlers and async job integration",
+          "Historical TSDB adapter and scheduled publication",
+          "Production/fleet/load qualification"
+        ],
+        "documentation": "docs/estate-health.md",
+        "qaEvidence": "output/estate-health/qa-2026-10-12"
+      }
+    },
+    {
+      "id": "UPG-002",
+      "name": "Native MCP Tasks interoperability",
+      "status": "DEFERRED_COMPATIBILITY_CANDIDATE",
+      "implementationAuthorized": false,
+      "rolloutAuthorized": false,
+      "dependsOn": [
+        "BASELINE_VALIDATED",
+        "JITTERBIT_AND_SELECTED_CLIENT_TASKS_SUPPORT_VERIFIED"
+      ],
+      "constraints": [
+        "Keep durable parent jobs and get-job fallback",
+        "No autonomous client polling assumption",
+        "Tasks cancellation does not prove remote mutation termination"
+      ]
+    }
+  ],
+  "documentationReview": {
+    "status": "REVIEWED",
+    "draftSourcesAreNotTenantQualification": true,
+    "credentialsStored": false,
+    "references": [
+      "https://draft-extra-e.d7hgs5iasur3d.amplifyapp.com/mcp/mcp-user-interface/mcp-service-tokens/",
+      "https://draft-extra-e.d7hgs5iasur3d.amplifyapp.com/integration-studio/design/connectors/mcp-client/",
+      "https://modelcontextprotocol.io/specification/2026-07-28",
+      "https://modelcontextprotocol.io/specification/2026-07-28/changelog",
+      "https://modelcontextprotocol.io/extensions/tasks/overview",
+      "https://www.jitterbit.com/product/mcp/"
+    ]
+  },
+  "requirementsMatrix": {
+    "canonical": "docs/jbpa-management-requirements.json",
+    "readable": "docs/jbpa-management-requirements-matrix.md",
+    "generator": "scripts/management/render-requirements-matrix.py",
+    "count": 120
+  },
+  "finalImplementationPhase": {
+    "id": "SEC-SKL",
+    "title": "Skill access and production security",
+    "status": "DEFERRED_UNTIL_EXPLICIT_IMPLEMENTATION_REQUEST",
+    "focus": "JBPA skill through Codex/Claude; not an MCP solution redesign",
+    "sequence": "Last, after selected functional baseline/upgrade work",
+    "startGate": "Explicit user request to implement this security phase",
+    "productionGate": "Controls implemented, negative authorization tests passed and customer security sign-off before production access",
+    "runtimeChanged": false,
+    "architecture": "docs/skill-security-architecture.md",
+    "requirements": [
+      "SEC-SKL-001",
+      "SEC-SKL-002",
+      "SEC-SKL-003",
+      "SEC-SKL-004",
+      "SEC-SKL-005",
+      "SEC-SKL-006",
+      "SEC-SKL-007",
+      "SEC-SKL-008",
+      "SEC-SKL-009",
+      "SEC-SKL-010",
+      "SEC-SKL-011",
+      "SEC-SKL-012",
+      "SEC-SKL-013",
+      "SEC-SKL-014"
+    ],
+    "requiredPolicy": [
+      "Production monitoring read-only",
+      "Independent approval for install, upgrade, uninstall and deregistration",
+      "No production credentials or privileged shell access in AI execution environment",
+      "Separate monitoring/change identities and fixed target enforcement"
+    ]
+  }
+}

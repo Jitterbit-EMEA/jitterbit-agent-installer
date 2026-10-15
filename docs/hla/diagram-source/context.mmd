@@ -1,0 +1,6 @@
+flowchart LR
+  C[AI client<br/>MCP tools] -->|MCP| H[Jitterbit Harmony<br/>MCP / APIM<br/>Studio / JBMQ]
+  H -->|Private HTTPS| G[Management product<br/>API / worker<br/>PostgreSQL / TLS]
+  G -->|SSH| T[Target VMs<br/>JBPA lifecycle<br/>Existing SSH]
+  classDef jitterbit fill:#073847,color:#ffffff,stroke:#FF6529,stroke-width:2px
+  class H jitterbit

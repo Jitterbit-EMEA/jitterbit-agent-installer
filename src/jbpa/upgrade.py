@@ -10,6 +10,7 @@ import uuid
 from pathlib import Path
 
 from . import artifacts, host_readiness
+from .application_readiness import ApplicationReadinessProbe
 from .azure_identity import AzureKeyVaultSecretProvider, ManagedIdentity
 from .bootstrap import SafeParser, _resolve_registration_fields
 from .catalogue import load_catalogues
@@ -21,7 +22,6 @@ from .local_secrets import LocalFileSecretProvider
 from .native_linux import CREDENTIALS, LocalBackend, NativeLinuxWorkflow
 from .pending_operations import OperationQueryError, TranDbOperationProvider
 from .restart_health import SupportToolsProbe
-from .security import Secret
 from .uninstall import UTILS, LocalUninstallBackend
 
 ROOT = Path("/opt/jitterbit")
@@ -80,27 +80,6 @@ def _backup(destination):
     return saved
 
 
-def _restore_changed(saved):
-    restored = []
-    for source, backup, uid, gid, mode in saved:
-        if source.is_symlink() or (source.exists() and not source.is_file()):
-            raise FrameworkError("UPGRADE_CONFIGURATION_FAILED")
-        if source.exists() and source.read_bytes() == backup.read_bytes():
-            continue
-        source.parent.mkdir(parents=True, exist_ok=True)
-        staging = source.with_name(source.name + ".jbpa-restore-" + uuid.uuid4().hex)
-        fd = os.open(staging, os.O_WRONLY | os.O_CREAT | os.O_EXCL | os.O_NOFOLLOW, 0o600)
-        with os.fdopen(fd, "wb") as output, backup.open("rb") as original:
-            shutil.copyfileobj(original, output)
-            os.fchown(output.fileno(), uid, gid)
-            os.fchmod(output.fileno(), mode)
-            output.flush()
-            os.fsync(output.fileno())
-        os.replace(staging, source)
-        restored.append(str(source.relative_to(ROOT)))
-    return restored
-
-
 def _drain(backend, operations, policy, sleeper, monotonic):
     try:
         count = operations.active_count()
@@ -150,6 +129,8 @@ def execute(
     package_runner=None,
     verify_runner=None,
     readiness_probe=None,
+    runtime_backend=None,
+    application_probe=None,
     lock_factory=HostLock,
     sleeper=time.sleep,
     monotonic=time.monotonic,
@@ -169,11 +150,8 @@ def execute(
     identity = identity or SupportToolsProbe()
     operations = operations or TranDbOperationProvider()
     package_runner = package_runner or subprocess.run
-    verify_runner = verify_runner or (
-        lambda resolved, metadata: NativeLinuxWorkflow(LocalBackend()).run(
-            resolved, metadata, Secret(None)
-        )
-    )
+    runtime_backend = runtime_backend or LocalBackend()
+    application_probe = application_probe or ApplicationReadinessProbe()
     result = {
         "operation": "UPGRADE",
         "status": "FAILED",
@@ -244,6 +222,11 @@ def execute(
                 return 0, result
             if os.geteuid() != 0 or not args.non_interactive:
                 raise FrameworkError("PREFLIGHT_FAILED")
+            secrets = _provider(config)
+            try:
+                _resolve_registration_fields(config, secrets)
+            finally:
+                secrets.clear()
             with lock_factory():
                 if backend.package_status() != f"install ok installed|{installed}":
                     raise FrameworkError("UPGRADE_STATE_UNSUPPORTED")
@@ -253,6 +236,9 @@ def execute(
                 result["state"] = "BACKUP_COMPLETE"
                 _drain(backend, operations, config["uninstall_policy"], sleeper, monotonic)
                 result["state"] = "OPERATIONS_DRAINED"
+                log_position = runtime_backend.log_position(
+                    "/opt/jitterbit/log/jitterbit-agent.log"
+                )
                 completed = package_runner(
                     ["dpkg", "--install", str(package)],
                     env={**os.environ, "silent_install": "1", "DEBIAN_FRONTEND": "noninteractive"},
@@ -270,12 +256,12 @@ def execute(
                 result["state"] = "PACKAGE_UPGRADED"
                 if not Path(CREDENTIALS).is_file():
                     raise FrameworkError("UPGRADE_REGISTRATION_LOST")
-                result["restoredConfigurationFiles"] = _restore_changed(saved)
-                secrets = _provider(config)
-                try:
-                    _resolve_registration_fields(config, secrets)
-                finally:
-                    secrets.clear()
+                # Vendor post-install scripts own restoration and startup. Observe only.
+                result["configurationChangesObserved"] = [
+                    str(source.relative_to(ROOT))
+                    for source, backup, *_ in saved
+                    if not source.is_file() or source.read_bytes() != backup.read_bytes()
+                ]
                 metadata = next(
                     (
                         artifact
@@ -287,7 +273,23 @@ def execute(
                 )
                 if metadata is None:
                     raise FrameworkError("UPGRADE_STATE_UNSUPPORTED")
-                health = verify_runner(config, metadata)
+                if verify_runner is not None:
+                    health = verify_runner(config, metadata)
+                else:
+                    monitor = NativeLinuxWorkflow(runtime_backend)
+                    try:
+                        health = monitor.monitor_runtime(
+                            config,
+                            credentials_before=True,
+                            log_position=log_position,
+                            application_probe=application_probe,
+                            verification_profile="VENDOR_UPGRADE_OBSERVATION",
+                        )
+                    except FrameworkError as exc:
+                        result["runtimeVerification"] = getattr(exc, "runtime_result", None)
+                        result["applicationReadiness"] = monitor.application_readiness
+                        raise
+
                 result["runtimeVerification"] = health
                 if (
                     health["status"] != "COMPLETE"

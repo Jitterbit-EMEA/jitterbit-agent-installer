@@ -1,0 +1,319 @@
+{
+  "schemaVersion": 1,
+  "status": "PROPOSED_UPG_001_NOT_DEPLOYED",
+  "updatedAt": "2026-10-12",
+  "mcpTool": {
+    "name": "pa_assess_operations",
+    "description": "Assess a selected PA root execution or bounded UTC time window, combining operation states, child errors and requested redacted diagnostics. Read-only; returns coverage and evidence limits. Use pa_list_operation_runs first if the requested run is ambiguous.",
+    "inputSchema": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "targetId",
+        "scope"
+      ],
+      "properties": {
+        "targetId": {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 128
+        },
+        "scope": {
+          "type": "object",
+          "additionalProperties": false,
+          "properties": {
+            "rootRunId": {
+              "type": "string",
+              "format": "uuid"
+            },
+            "timeWindow": {
+              "type": "object",
+              "additionalProperties": false,
+              "required": [
+                "from",
+                "to"
+              ],
+              "properties": {
+                "from": {
+                  "type": "string",
+                  "format": "date-time"
+                },
+                "to": {
+                  "type": "string",
+                  "format": "date-time"
+                }
+              }
+            },
+            "environmentId": {
+              "type": "integer",
+              "minimum": 1
+            },
+            "projectId": {
+              "type": "string"
+            },
+            "providers": {
+              "type": "array",
+              "uniqueItems": true,
+              "minItems": 1,
+              "items": {
+                "enum": [
+                  "operations",
+                  "messages",
+                  "lineage",
+                  "fileCounters",
+                  "transferDiagnostics",
+                  "services"
+                ]
+              }
+            },
+            "expectedFileCount": {
+              "type": "integer",
+              "minimum": 0
+            },
+            "runLimit": {
+              "type": "integer",
+              "minimum": 1,
+              "maximum": 2000,
+              "default": 500
+            },
+            "diagnosticLimit": {
+              "type": "integer",
+              "minimum": 1,
+              "maximum": 500,
+              "default": 100
+            }
+          },
+          "oneOf": [
+            {
+              "required": [
+                "rootRunId"
+              ],
+              "not": {
+                "required": [
+                  "timeWindow"
+                ]
+              }
+            },
+            {
+              "required": [
+                "timeWindow"
+              ],
+              "not": {
+                "required": [
+                  "rootRunId"
+                ]
+              }
+            }
+          ]
+        }
+      }
+    },
+    "annotations": {
+      "readOnlyHint": true,
+      "destructiveHint": false,
+      "idempotentHint": true
+    }
+  },
+  "managementApi": {
+    "method": "POST",
+    "path": "/v1/targets/{targetId}/operation-assessments",
+    "requestBodySchema": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "rootRunId": {
+          "type": "string",
+          "format": "uuid"
+        },
+        "timeWindow": {
+          "type": "object",
+          "additionalProperties": false,
+          "required": [
+            "from",
+            "to"
+          ],
+          "properties": {
+            "from": {
+              "type": "string",
+              "format": "date-time"
+            },
+            "to": {
+              "type": "string",
+              "format": "date-time"
+            }
+          }
+        },
+        "environmentId": {
+          "type": "integer",
+          "minimum": 1
+        },
+        "projectId": {
+          "type": "string"
+        },
+        "providers": {
+          "type": "array",
+          "uniqueItems": true,
+          "minItems": 1,
+          "items": {
+            "enum": [
+              "operations",
+              "messages",
+              "lineage",
+              "fileCounters",
+              "transferDiagnostics",
+              "services"
+            ]
+          }
+        },
+        "expectedFileCount": {
+          "type": "integer",
+          "minimum": 0
+        },
+        "runLimit": {
+          "type": "integer",
+          "minimum": 1,
+          "maximum": 2000,
+          "default": 500
+        },
+        "diagnosticLimit": {
+          "type": "integer",
+          "minimum": 1,
+          "maximum": 500,
+          "default": 100
+        }
+      },
+      "oneOf": [
+        {
+          "required": [
+            "rootRunId"
+          ],
+          "not": {
+            "required": [
+              "timeWindow"
+            ]
+          }
+        },
+        {
+          "required": [
+            "timeWindow"
+          ],
+          "not": {
+            "required": [
+              "rootRunId"
+            ]
+          }
+        }
+      ]
+    },
+    "authorization": [
+      "operations:read",
+      "diagnostics:read when requesting diagnostic providers"
+    ],
+    "targetIdBinding": "MCP targetId becomes path parameter, remaining scope is body; path/body discrepancy must never redirect target",
+    "protocolBehavior": {
+      "200": "Assessment available; inspect outcome and coverage, not just HTTP",
+      "400": "Invalid scope, excessive window or unsupported filters",
+      "401": "Unauthenticated",
+      "403": "Caller lacks target/environment/provider permission",
+      "404": "Unknown authorized target or selected run not found in inspected scope",
+      "503": "All required providers unavailable; structured coverage/error"
+    }
+  },
+  "response": {
+    "sharedEnvelope": [
+      "schemaVersion",
+      "kind",
+      "requestId",
+      "data",
+      "warnings",
+      "error when applicable"
+    ],
+    "kind": "operationAssessment",
+    "dataFields": [
+      "assessmentId",
+      "targetId",
+      "canonicalHostId",
+      "agentId",
+      "agentGroupId",
+      "environmentIds",
+      "appliedScope",
+      "outcome",
+      "coverage",
+      "stageOutcomes",
+      "rootOutcome",
+      "descendantOutcome",
+      "statusCounts",
+      "executionCount",
+      "businessFileCount with source/grain or null",
+      "findings",
+      "providerCoverage",
+      "evidenceRefs",
+      "nextActions",
+      "drillDown"
+    ],
+    "findingFields": [
+      "code",
+      "severity",
+      "observedOrInferred",
+      "message",
+      "operationRunIds",
+      "evidenceRefs",
+      "correlationConfidence",
+      "recommendedAction"
+    ],
+    "providerCoverageFields": [
+      "provider",
+      "status",
+      "observedAt",
+      "window",
+      "sourceVersion",
+      "returnedCount",
+      "truncated",
+      "nextCursor",
+      "error",
+      "snapshotId when available"
+    ],
+    "outcomeEnum": [
+      "HEALTHY",
+      "DEGRADED",
+      "FAILED",
+      "IN_PROGRESS",
+      "UNKNOWN"
+    ],
+    "coverageEnum": [
+      "COMPLETE",
+      "PARTIAL",
+      "UNAVAILABLE"
+    ]
+  },
+  "architecture": {
+    "publication": "AI client -> Jitterbit MCP -> protected APIM -> Studio -> management assessment coordinator",
+    "providers": "Fixed qualified read-only TranDb and bounded redacted log providers over existing SSH; optional host/services",
+    "canonicalFieldsPreserved": true,
+    "rawSqlAccepted": false,
+    "arbitraryLogPathsAccepted": false,
+    "paListeningServiceAdded": false,
+    "queueRequired": false
+  },
+  "defaults": {
+    "overallBudgetSeconds": 15,
+    "statementTimeoutSeconds": 5,
+    "lockTimeoutSeconds": 1,
+    "maxInteractiveWindowHours": 24,
+    "responseByteCap": 262144,
+    "qualification": "Proposed limits require PA/fleet benchmarks"
+  },
+  "qualification": {
+    "current": "Existing QA collectors and offline summary only",
+    "missing": [
+      "HTTP handlers/auth policy",
+      "MCP/APIM/Studio mappings",
+      "Live aggregation and source deadlines",
+      "Cursor/snapshot consistency",
+      "Production diagnostic redaction and storage policy",
+      "Qualified stage-role map",
+      "Cross-agent correlation",
+      "Provider load and retention qualification"
+    ]
+  }
+}

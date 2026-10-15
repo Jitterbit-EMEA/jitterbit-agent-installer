@@ -70,6 +70,18 @@ ERRORS = {
             "UPGRADE_HEALTH_UNCONFIRMED", 60, "Upgraded agent health was not confirmed", "HEALTH"
         ),
         ErrorSpec(
+            "LOCAL_APPLICATION_UNREADY",
+            60,
+            "Vendor-installed application deployment is not ready",
+            "HEALTH",
+        ),
+        ErrorSpec(
+            "UPGRADE_APPLICATION_UNREADY",
+            60,
+            "Vendor-installed application deployment is not ready",
+            "HEALTH",
+        ),
+        ErrorSpec(
             "UPGRADE_IDENTITY_UNCONFIRMED",
             60,
             "Upgraded agent identity was not confirmed",

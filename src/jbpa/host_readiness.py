@@ -14,6 +14,7 @@ from .errors import FrameworkError
 from .json_secrets import JsonFileSecretProvider
 from .local_secrets import LocalFileSecretProvider
 from .platform import detect
+from .qa_policy import cpu_exception
 from .uninstall import LocalUninstallBackend
 
 GIB = 1024**3
@@ -322,13 +323,8 @@ def run(
             if value >= limit
             else "FAIL"
         )
-        exception = (
-            name == "cpu"
-            and controlled_test
-            and logical == "12.10"
-            and host["os"] == "ubuntu"
-            and host["version"] == "24.04"
-            and value == 2
+        exception = name == "cpu" and cpu_exception(
+            config, host, logical, entry["package_version"], controlled_test
         )
         add(
             name,

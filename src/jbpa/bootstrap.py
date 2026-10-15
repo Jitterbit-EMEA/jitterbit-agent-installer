@@ -18,6 +18,7 @@ from .json_secrets import JsonFileSecretProvider
 from .local_secrets import LocalFileSecretProvider
 from .native_linux import CREDENTIALS, REGISTER_JSON, LocalBackend, NativeLinuxWorkflow
 from .platform import detect
+from .qa_policy import cpu_exception
 from .results import write_result
 from .security import Secret
 
@@ -162,12 +163,8 @@ def execute(
         if any(value is None for value in (cpu, memory, disk)):
             result["resourcePolicy"] = "UNKNOWN"
             raise FrameworkError("PREFLIGHT_FAILED")
-        cpu_test_exception = (
-            arguments.controlled_test
-            and version == "12.10"
-            and host["os"] == "ubuntu"
-            and host["version"] == "24.04"
-            and cpu == 2
+        cpu_test_exception = cpu_exception(
+            config, host, version, entry["package_version"], arguments.controlled_test
         )
         if memory < requirements["memory_bytes"] or disk < requirements["disk_total_bytes"]:
             result["resourcePolicy"] = "BELOW_MINIMUM"

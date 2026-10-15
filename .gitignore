@@ -21,3 +21,9 @@ results/
 tmp/
 *.swp
 .DS_Store
+
+# Private customer installer inputs
+/setup-input/
+
+# Generated reports, live captures and local QA release candidates
+/output/

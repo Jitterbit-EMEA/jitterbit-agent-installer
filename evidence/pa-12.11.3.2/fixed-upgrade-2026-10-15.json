@@ -1,0 +1,182 @@
+{
+  "schemaVersion": 1,
+  "observedDate": "2026-10-15",
+  "target": "JBLAB-PA-AUTOMATION",
+  "fromVersion": "12.9.2.2",
+  "toVersion": "12.11.3.2",
+  "result": "UPGRADE_COMPLETE",
+  "exitCode": 0,
+  "candidateSha256": "3703b3344266bd47c44b4a03df13e53b1623e2a2b36dc16d4266def6a82dedc6",
+  "packageSha256": "6e69a441c866ef2610aae603485ac82a05b711ccaca524f56c980458cb4907f0",
+  "qaException": {
+    "hostname": "JBLAB-PA-AUTOMATION",
+    "packageVersion": "12.11.3.2",
+    "cpuCount": 2,
+    "authorization": "EXPLICIT_USER_APPROVAL",
+    "productionApproval": false
+  },
+  "vendorInstaller": {
+    "dpkgUpgradeStartedUtc": "2026-10-15T11:50:53Z",
+    "dpkgInstalledUtc": "2026-10-15T11:52:05Z",
+    "observerProfile": "VENDOR_UPGRADE_OBSERVATION",
+    "verifierRestart": false,
+    "manualAxisRepair": false,
+    "configurationChangesObserved": []
+  },
+  "runtimeVerification": {
+    "applicationReadiness": {
+      "contentMismatches": 0,
+      "conversionServicePublished": true,
+      "expectedFiles": 302,
+      "httpStatus": 200,
+      "missingFiles": 0,
+      "readOnly": true,
+      "reason": null,
+      "status": "READY"
+    },
+    "changed": false,
+    "harmonyRegistered": true,
+    "logAvailableAfterSeconds": 7.718801498413086e-05,
+    "registrationDurationSeconds": 65.39065965800546,
+    "serviceRunning": true,
+    "state": "COMPLETE",
+    "stateHistory": [
+      "WAITING_FOR_AGENT_RUNTIME",
+      "AGENT_LOG_AVAILABLE",
+      "CREDENTIALS_CREATED",
+      "HARMONY_AUTHENTICATED",
+      "AGENT_LOGGED_IN",
+      "AGENT_SERVICES_CONNECTED",
+      "REQUEST_FLOW_STARTED",
+      "HEARTBEAT_STARTED",
+      "LOCAL_SERVICES_HEALTHY",
+      "COMPLETE"
+    ],
+    "status": "COMPLETE",
+    "synchronizationObserved": false,
+    "synchronizationRequired": false,
+    "verificationProfile": "VENDOR_UPGRADE_OBSERVATION"
+  },
+  "finalHealth": {
+    "agentIdentityConfirmed": true,
+    "agentServicesConnected": true,
+    "autoRegistrationCompleted": true,
+    "connectionCheck": true,
+    "credentialsPresent": true,
+    "freshSynchronizationObserved": false,
+    "harmonyAuthenticated": true,
+    "heartbeatObserved": true,
+    "historicalSynchronizationObserved": true,
+    "localCoreServices": true,
+    "logSinceUtc": null,
+    "profile": "STEADY_STATE_EXISTING_AGENT",
+    "requestFlowStarted": true,
+    "rollbackFileVerified": null,
+    "runtimeLogEvidenceScope": "SUPPORTING_HISTORY",
+    "serviceStatus": {
+      "classification": "SERVICE_STATUS_UNAVAILABLE",
+      "launcherExitCode": 0,
+      "rowsReturned": 0,
+      "sanitizedHeader": "Command | Pid | Start time | %CPU | %MEM | Full command",
+      "status": "UNAVAILABLE"
+    },
+    "serviceStatusMandatory": false,
+    "status": "HEALTHY",
+    "synchronizationRequired": false,
+    "synchronizationState": "NOT_REQUIRED_STEADY_STATE"
+  },
+  "agentIdRetained": 667590,
+  "agentGroupIdRetained": 679240,
+  "operationReadiness": {
+    "definitionsRetained": 15,
+    "definitionsExactlyMatchBaseline": true,
+    "reportingQueriesPassed": 25,
+    "failedQueries": [],
+    "truncatedReports": [],
+    "activeRuns": 0,
+    "incomingQueue": [],
+    "logSyncBacklog": [],
+    "deploymentErrorCount": 0,
+    "newCloudDeploymentTested": false,
+    "businessOperationCanaryTested": false
+  },
+  "endpointChecks": {
+    "/axis/soap-services/ConnectorEngine?wsdl": {
+      "httpStatus": 200,
+      "bytes": 14516,
+      "wsdlDefinitions": true,
+      "operationNames": [
+        "ExecuteApiEntityCall",
+        "ExecuteConnectorFile",
+        "ExecuteConnectorFunction",
+        "GetConnectorObjectList",
+        "GetConnectorSchemaFiles",
+        "TestConnection"
+      ]
+    },
+    "/axis/soap-services/ConnectorFrameworkEngine?wsdl": {
+      "httpStatus": 200,
+      "bytes": 41930,
+      "wsdlDefinitions": true,
+      "operationNames": [
+        "addConnectionToPool",
+        "getActivityList",
+        "getActivitySchema",
+        "getApplicationDomains",
+        "getConnectionFromPool",
+        "getObjectDetails",
+        "getObjectList",
+        "getObjectMetadata",
+        "getObjectSchema",
+        "getProviderList",
+        "invokeSynchronous",
+        "refreshSchemasFromServer",
+        "removeAllConnections",
+        "removeConnectionFromPool",
+        "setPoolSize",
+        "testConnection",
+        "testQuery"
+      ]
+    },
+    "/axis/v1/token/3lo/invalidate": {
+      "httpStatus": 405,
+      "allow": "PUT"
+    },
+    "/axis/v1/application.wadl": {
+      "httpStatus": 404,
+      "allow": null
+    }
+  },
+  "nativeServiceStatus": {
+    "exit": 0,
+    "nativeStatus": "JitterbitProcessEngine is running with PID 608167\nJitterbitScheduler is running with PID 608322\nJitterbitFileCleanup is running with PID 608644\nJitterbitVerboseLogShipper is running with PID 608503\nAll services are running\n"
+  },
+  "unitTestsPassed": 497,
+  "qualification": "Named-host QA upgrade only; catalogue AVAILABLE_UNQUALIFIED/pending; production not approved",
+  "captureDigests": [
+    {
+      "localIgnoredPath": "output/trandb/upgrade-12.11.3.2-result-2026-10-15.json",
+      "sha256": "9baeafc3132e864e78563dd6b9d1a6eb64317588bd1a92a116544e3f6d081818"
+    },
+    {
+      "localIgnoredPath": "output/trandb/upgrade-12.11.3.2-final-health-2026-10-15.json",
+      "sha256": "734cb89981b5d325945e76d59a47ea7f2b30467ac39af864b5c664abbb53e6c5"
+    },
+    {
+      "localIgnoredPath": "output/trandb/pre-upgrade-12.11.3.2-reporting-2026-10-15.json",
+      "sha256": "90467c835da98f1b03cbc575c137995265d041a0b8787ab02ea5f87e8f2d0276"
+    },
+    {
+      "localIgnoredPath": "output/trandb/post-upgrade-12.11.3.2-reporting-2026-10-15.json",
+      "sha256": "0ae65ffe13175afd026faceadf6901f928c524d9eaac4195b99149aa8385172c"
+    },
+    {
+      "localIgnoredPath": "output/trandb/upgrade-12.11.3.2-endpoints-2026-10-15.json",
+      "sha256": "600ccc0902624ed03dac1c1ae7da7e866b74ae8824c21db57dc85693c145b05b"
+    },
+    {
+      "localIgnoredPath": "output/trandb/upgrade-12.11.3.2-service-status-2026-10-15.json",
+      "sha256": "aacfc31a85e69d330ba524f45f7adef5ba78beba337944c3f00d5e531c606534"
+    }
+  ]
+}

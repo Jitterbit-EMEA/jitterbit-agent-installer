@@ -240,7 +240,7 @@ def validate_result(data: dict, action: str, exit_code: int) -> dict:
         and data["category"] == "SUCCESS"
         and data.get("error") is None
     )
-    if action == "install":
+    if action in {"install", "reinstall"}:
         registration = data.get("registration")
         health = data.get("health")
         success = (
@@ -258,8 +258,8 @@ def validate_result(data: dict, action: str, exit_code: int) -> dict:
         "runId": data.get("runId"),
         "jbpaVersion": data["versions"]["jbpa"],
         "resolvedPA": data["versions"].get("resolvedPA"),
-        "registration": data.get("registration") if action == "install" else None,
-        "health": data.get("health") if action in {"install", "health"} else None,
+        "registration": data.get("registration") if action in {"install", "reinstall"} else None,
+        "health": data.get("health") if action in {"install", "reinstall", "health"} else None,
         "details": data["details"] if action in {"status", "versions"} else None,
     }
 
@@ -302,8 +302,26 @@ def operate(ssh: SSH, target: dict[str, str], action: str, version: str | None) 
         elif action == "health":
             command += ["health", "--config", "/etc/jbpa/agent.yaml"]
         elif action == "upgrade":
+            # Refuse legacy verifier releases that restart vendor-owned startup.
+            code, raw = ssh.run(["sudo", "-n", binary, "version"], timeout=30)
+            try:
+                capability = json.loads(raw).get("details", {}).get("upgradeVerification")
+            except (ValueError, AttributeError):
+                capability = None
+            if code or capability != "VENDOR_INSTALLER_OBSERVATION":
+                raise RemoteError("UPGRADE_OBSERVER_RELEASE_REQUIRED")
             command += [
                 "upgrade",
+                "--config",
+                "/etc/jbpa/agent.yaml",
+                "--version",
+                version,
+                "--non-interactive",
+                "--controlled-test",
+            ]
+        elif action == "reinstall":
+            command += [
+                "reinstall",
                 "--config",
                 "/etc/jbpa/agent.yaml",
                 "--version",
@@ -314,7 +332,14 @@ def operate(ssh: SSH, target: dict[str, str], action: str, version: str | None) 
         elif action == "uninstall":
             command += ["uninstall", "--config", "/etc/jbpa/agent.yaml", "--complete"]
         command += ["--result-file", str(result_path)]
-        code, _ = ssh.run(command, timeout=1800 if action in {"upgrade", "uninstall"} else 180)
+        code, _ = ssh.run(
+            command,
+            timeout=5400
+            if action == "reinstall"
+            else 1800
+            if action in {"upgrade", "uninstall"}
+            else 180,
+        )
         data = ssh.result(result_path)
     summary = validate_result(data, action, code)
     summary["resultPath"] = str(result_path)
@@ -326,18 +351,19 @@ def main(argv: list[str] | None = None) -> int:
         description="Controlled RC9 SSH lifecycle on one pre-provisioned QA VM"
     )
     parser.add_argument(
-        "action", choices=["install", "upgrade", "uninstall", "status", "health", "versions"]
+        "action",
+        choices=["install", "upgrade", "reinstall", "uninstall", "status", "health", "versions"],
     )
     parser.add_argument("--inventory", type=Path, required=True)
     parser.add_argument("--target", required=True)
     parser.add_argument("--version")
     args = parser.parse_args(argv)
     try:
-        if args.action in {"install", "upgrade"} and not args.version:
+        if args.action in {"install", "upgrade", "reinstall"} and not args.version:
             raise RemoteError("VERSION_REQUIRED")
         if args.version and not re.fullmatch(r"(?:latest|[0-9]+(?:\.[0-9]+){1,3})", args.version):
             raise RemoteError("VERSION_INVALID")
-        if args.action not in {"install", "upgrade"} and args.version:
+        if args.action not in {"install", "upgrade", "reinstall"} and args.version:
             raise RemoteError("VERSION_UNEXPECTED")
         target = load_target(args.inventory, args.target)
         result = operate(SSH(target), target, args.action, args.version)

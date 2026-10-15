@@ -1,0 +1,1071 @@
+{
+  "catalogueVersion": 1,
+  "asOf": "2026-10-12",
+  "scope": "Read-only research on JBLAB-PA-AUTOMATION; not a qualified production API",
+  "evidence": {
+    "schema": "output/trandb/baseline-2026-10-08.json",
+    "dictionary": "output/trandb/reportability-matrix-2026-10-08.json",
+    "assessment": "docs/trandb/reporting-assessment.md",
+    "lineage": "output/trandb/parent-child-links-2026-10-08.json",
+    "repeatableBaseline": "output/trandb/workloads/pre-production-2026-10-08"
+  },
+  "connection": {
+    "provider": "jbpa.pending_operations.TranDbOperationProvider",
+    "config": "/opt/jitterbit/jitterbit.conf [DbInfo]",
+    "runtime": "/etc/sysconfig/jitterbit PG_HOME",
+    "observedPort": 6432,
+    "endpoint": "PgBouncer",
+    "credentialHandling": "Read locally; never export credential values",
+    "transaction": "BEGIN READ ONLY; SET LOCAL timeouts; ROLLBACK",
+    "statementTimeoutMs": 5000,
+    "lockTimeoutMs": 1000,
+    "unsupported": "PGOPTIONS startup parameters through configured pooler"
+  },
+  "observedPlatform": {
+    "paVersion": "12.11.3.1",
+    "postgresVersion": "16.13",
+    "jbpaVersion": "1.0.0-rc9",
+    "productionQualification": "AVAILABLE_UNQUALIFIED"
+  },
+  "schemaBaseline": {
+    "tables": 130,
+    "views": 19,
+    "columns": 1373,
+    "declaredForeignKeys": 0,
+    "primaryUniqueConstraints": 131,
+    "indexes": 335,
+    "routines": 16,
+    "populatedTables": 29,
+    "emptyTables": 101
+  },
+  "identity": {
+    "operationDefinition": "operationstab.operation_id and guid; qualify by host/customer/environment",
+    "execution": "operationlogtab.operation_instance_guid",
+    "localCursor": "operationlogtab.operation_log_id; local database scope only",
+    "historicalNames": "Use log-side names; definitions may be renamed",
+    "currentAgentGroup": "Whitelisted key_values is current identity, not proof of historical group"
+  },
+  "relationships": [
+    {
+      "name": "runtimeParent",
+      "join": "child.parent_operation_instance_guid = parent.operation_instance_guid",
+      "table": "operationlogtab",
+      "evidenceLevel": "Observed one parent-child execution pair",
+      "query": "child_runs"
+    },
+    {
+      "name": "runtimeRoot",
+      "field": "operationlogtab.root_operation_instance_guid",
+      "evidenceLevel": "Observed child references top-level parent; deeper nesting untested"
+    },
+    {
+      "name": "configuredChains",
+      "table": "operationstab",
+      "fields": [
+        "success_operation_id",
+        "failure_operation_id",
+        "soap_fault_operation_id"
+      ],
+      "evidenceLevel": "Schema verified; baseline values null; distinct from script-invoked runtime lineage"
+    },
+    {
+      "name": "operationProject",
+      "join": "projectoperationstab.item_id = operationstab.operation_id; projectoperationstab.project_id = projectstab.project_id",
+      "evidenceLevel": "Observed three matched definitions",
+      "query": "operation_definitions"
+    },
+    {
+      "name": "runSupportingRecords",
+      "join": "operation_instance_guid",
+      "tables": [
+        "operationinstancetab",
+        "operationmessagetab",
+        "operationsummarytab",
+        "operationprogresstab",
+        "operationfilestatustab"
+      ],
+      "evidenceLevel": "Instances/messages observed; summary/progress/file schemas initially empty",
+      "cardinality": "Potentially many supporting rows per run; aggregate separately before joining"
+    }
+  ],
+  "statusMapping": {
+    "0": "Submitted",
+    "1": "Pending",
+    "2": "Cancelled",
+    "3": "Running",
+    "4": "Success",
+    "5": "SuccessWithInfo",
+    "6": "SuccessWithWarning",
+    "7": "Error",
+    "8": "CancelRequested",
+    "9": "SuccessWithChildError",
+    "10": "Received",
+    "11": "SOAPFault"
+  },
+  "statusEvidence": "Mapping from existing JBPA provider; only code 7 observed in initial workload; future codes require capture validation",
+  "activeStatusCodes": [
+    0,
+    1,
+    3,
+    8,
+    10
+  ],
+  "timing": {
+    "submittedAt": "entered_ts",
+    "startedAt": "started_ts",
+    "lastStatusAt": "status_ts",
+    "finishedAt": "No dedicated column; remain null/unqualified",
+    "queueDelayMs": "(started_ts-entered_ts)*1000 seconds",
+    "statusTransitionElapsedMs": "(status_ts-started_ts)*1000 seconds; not qualified as execution duration",
+    "timezone": "Etc/UTC observed"
+  },
+  "unresolved": [
+    "Successful history retention with ignore_history=1; no record does not prove no execution",
+    "Terminal status_ts versus true finish-time semantics",
+    "total_transformation_time units and counter aggregation semantics",
+    "Progress percentages, estimated finish time and lifecycle persistence",
+    "File category codes and record/byte counter semantics",
+    "Log-sync is_synced numeric meanings; support-tool and earlier DB counts differed",
+    "Scheduling/deployment raw timestamp units and queue flags",
+    "Grandchildren, parallel/asynchronous calls and cross-agent lineage",
+    "Retention, restarts and incremental collection of updated older runs"
+  ],
+  "excludedValues": [
+    "credentials",
+    "raw properties",
+    "scripts",
+    "source/target payloads",
+    "full messages",
+    "certificates",
+    "sessions",
+    "security values",
+    "file paths"
+  ],
+  "queryCatalogue": [
+    {
+      "id": "operation_definitions",
+      "sql": "SELECT o.operation_id,o.guid operation_guid,o.operation_name,o.operation_type_id,o.environment_id,o.timeoutseconds,o.ignore_history,o.targeted_state,o.actual_state,o.target_agent_id,o.success_operation_id,o.failure_operation_id,o.soap_fault_operation_id,p.project_id,p.projectname,e.environmentname,e.agentgroup_id FROM operationstab o LEFT JOIN projectoperationstab po ON po.item_id=o.operation_id LEFT JOIN projectstab p ON p.project_id=po.project_id LEFT JOIN environmentstab e ON e.id=o.environment_id ORDER BY o.operation_id LIMIT 100",
+      "evidence": "Executed live if successful in snapshot query audit; do not infer semantic validation from SQL success"
+    },
+    {
+      "id": "operation_runs",
+      "sql": "SELECT operation_log_id,operation_instance_guid,root_operation_instance_guid,parent_operation_instance_guid,operation_id,operation_guid,operation_name,project_guid,project_name,environment_id,environment_name,agent_id,agent_name,organization_id,status,entered_ts,started_ts,status_ts,extract(epoch FROM (started_ts-entered_ts))*1000 queue_delay_ms,extract(epoch FROM (status_ts-started_ts))*1000 status_transition_elapsed_ms FROM operationlogtab ORDER BY entered_ts DESC,operation_log_id DESC LIMIT 100",
+      "evidence": "Executed live if successful in snapshot query audit; do not infer semantic validation from SQL success"
+    },
+    {
+      "id": "run_status_counts",
+      "sql": "SELECT status,count(*) runs FROM operationlogtab GROUP BY status ORDER BY status",
+      "evidence": "Executed live if successful in snapshot query audit; do not infer semantic validation from SQL success"
+    },
+    {
+      "id": "run_grain_checks",
+      "sql": "SELECT count(*) rows,count(DISTINCT operation_log_id) distinct_log_ids,count(DISTINCT operation_instance_guid) distinct_run_guids,count(*) FILTER (WHERE operation_instance_guid IS NULL OR operation_instance_guid='') missing_run_guid,count(*) FILTER (WHERE started_ts<entered_ts) start_before_entry,count(*) FILTER (WHERE status_ts<started_ts) status_before_start,count(*) FILTER (WHERE entered_ts IS NULL) missing_entered,count(*) FILTER (WHERE started_ts IS NULL) missing_started,count(*) FILTER (WHERE status_ts IS NULL) missing_status_time FROM operationlogtab",
+      "evidence": "Executed live if successful in snapshot query audit; do not infer semantic validation from SQL success"
+    },
+    {
+      "id": "logical_relationship_checks",
+      "sql": "SELECT (SELECT count(*) FROM operationlogtab l LEFT JOIN operationstab o ON o.operation_id=l.operation_id WHERE o.operation_id IS NULL) log_missing_definition,(SELECT count(*) FROM operationlogtab l LEFT JOIN operationinstancetab i ON i.operation_instance_guid=l.operation_instance_guid WHERE i.operation_instance_id IS NULL) log_missing_instance,(SELECT count(*) FROM operationlogtab l WHERE l.parent_operation_instance_guid IS NOT NULL AND l.parent_operation_instance_guid<>'' AND NOT EXISTS (SELECT 1 FROM operationlogtab p WHERE p.operation_instance_guid=l.parent_operation_instance_guid)) missing_parent_run,(SELECT count(*) FROM operationmessagetab m WHERE NOT EXISTS (SELECT 1 FROM operationlogtab l WHERE l.operation_instance_guid=m.operation_instance_guid)) messages_missing_run,(SELECT count(*) FROM projectoperationstab po WHERE NOT EXISTS (SELECT 1 FROM projectstab p WHERE p.project_id=po.project_id)) project_map_missing_project",
+      "evidence": "Executed live if successful in snapshot query audit; do not infer semantic validation from SQL success"
+    },
+    {
+      "id": "child_runs",
+      "sql": "SELECT p.operation_instance_guid parent_run,p.operation_name parent_name,c.operation_instance_guid child_run,c.operation_name child_name,c.status child_status FROM operationlogtab c JOIN operationlogtab p ON p.operation_instance_guid=c.parent_operation_instance_guid ORDER BY c.entered_ts DESC,c.operation_log_id DESC LIMIT 100",
+      "evidence": "Executed live if successful in snapshot query audit; do not infer semantic validation from SQL success"
+    },
+    {
+      "id": "operation_message_metadata",
+      "sql": "SELECT operation_message_id,operation_instance_guid,entered_ts,field_name,char_length(message) message_characters FROM operationmessagetab ORDER BY entered_ts DESC,operation_message_id DESC LIMIT 100",
+      "evidence": "Executed live if successful in snapshot query audit; do not infer semantic validation from SQL success"
+    },
+    {
+      "id": "log_message_metadata",
+      "sql": "SELECT operation_log_id,operation_name,char_length(message) message_characters,debug_mode_enabled,debug_file_present,projectexplicitagentversion FROM operationlogtab ORDER BY operation_log_id DESC LIMIT 100",
+      "evidence": "Executed live if successful in snapshot query audit; do not infer semantic validation from SQL success"
+    },
+    {
+      "id": "operation_property_keys",
+      "sql": "SELECT keyname,count(*) entries,min(char_length(keyvalue)) min_value_length,max(char_length(keyvalue)) max_value_length FROM operationpropertiestab GROUP BY keyname ORDER BY keyname",
+      "evidence": "Executed live if successful in snapshot query audit; do not infer semantic validation from SQL success"
+    },
+    {
+      "id": "log_sync_backlog",
+      "sql": "SELECT table_id,is_synced,priority,count(*) items FROM logsynctab GROUP BY table_id,is_synced,priority ORDER BY table_id,is_synced,priority",
+      "evidence": "Executed live if successful in snapshot query audit; do not infer semantic validation from SQL success"
+    },
+    {
+      "id": "deployment_summary",
+      "sql": "SELECT environment_id,agentgroup_id,entitytypeid,isdeleted,syncflag,errorcount,count(*) records,min(deploytimestamp) first_raw_timestamp,max(deploytimestamp) last_raw_timestamp FROM deploylogtab GROUP BY environment_id,agentgroup_id,entitytypeid,isdeleted,syncflag,errorcount ORDER BY entitytypeid",
+      "evidence": "Executed live if successful in snapshot query audit; do not infer semantic validation from SQL success"
+    },
+    {
+      "id": "key_names_only",
+      "sql": "SELECT key_name,key_type,count(*) entries FROM key_values GROUP BY key_name,key_type ORDER BY key_name",
+      "evidence": "Executed live if successful in snapshot query audit; do not infer semantic validation from SQL success"
+    },
+    {
+      "id": "view_column_inventory",
+      "sql": "SELECT table_name view_name,column_name field,data_type FROM information_schema.columns WHERE table_schema='public' AND table_name IN (SELECT table_name FROM information_schema.views WHERE table_schema='public') ORDER BY table_name,ordinal_position",
+      "evidence": "Executed live if successful in snapshot query audit; do not infer semantic validation from SQL success"
+    },
+    {
+      "id": "read_only_capability",
+      "sql": "SELECT current_setting('transaction_read_only') transaction_read_only,has_database_privilege(current_database(),'CONNECT') can_connect,has_schema_privilege('public','USAGE') can_use_schema",
+      "evidence": "Executed live if successful in snapshot query audit; do not infer semantic validation from SQL success"
+    },
+    {
+      "id": "catalog_join_cardinality",
+      "sql": "SELECT count(*) joined_rows,count(DISTINCT o.operation_id) distinct_operations FROM operationstab o LEFT JOIN projectoperationstab po ON po.item_id=o.operation_id LEFT JOIN projectstab p ON p.project_id=po.project_id",
+      "evidence": "Executed live if successful in snapshot query audit; do not infer semantic validation from SQL success"
+    },
+    {
+      "id": "agent_identity_whitelist",
+      "sql": "SELECT key_name,key_value FROM key_values WHERE key_name IN ('Agent_Group_Id','Agent_Group_Name','Agent_Id','Agent_Name','VersionNumber','Agent_Group_Size') ORDER BY key_name",
+      "evidence": "Executed live if successful in snapshot query audit; do not infer semantic validation from SQL success"
+    },
+    {
+      "id": "safe_numeric_operation_configuration",
+      "sql": "SELECT operation_id,keyname,keyvalue FROM operationpropertiestab WHERE keyname IN ('AlwaysRunSuccessOperation','chunk_size','max_number_of_threads','target_chunk_size','validate_source_text_file') AND keyvalue ~ '^[0-9]+$' ORDER BY operation_id,keyname",
+      "evidence": "Executed live if successful in snapshot query audit; do not infer semantic validation from SQL success"
+    },
+    {
+      "id": "pending_by_definition",
+      "sql": "SELECT o.operation_id,o.operation_name,count(l.operation_log_id) FILTER (WHERE l.status IN (0,1,3,8,10)) active_runs,count(l.operation_log_id) retained_runs FROM operationstab o LEFT JOIN operationlogtab l ON l.operation_id=o.operation_id GROUP BY o.operation_id,o.operation_name ORDER BY o.operation_id",
+      "evidence": "Executed live if successful in snapshot query audit; do not infer semantic validation from SQL success"
+    },
+    {
+      "id": "view_sizes",
+      "sql": "SELECT n.nspname schema,c.relname name,pg_get_viewdef(c.oid,true) definition FROM pg_class c JOIN pg_namespace n ON n.oid=c.relnamespace WHERE c.relkind='v' AND n.nspname='public' ORDER BY c.relname",
+      "evidence": "Executed live if successful in snapshot query audit; do not infer semantic validation from SQL success"
+    },
+    {
+      "id": "db_connections_by_application",
+      "sql": "SELECT application_name,state,count(*) connections FROM pg_stat_activity WHERE datname=current_database() GROUP BY application_name,state ORDER BY application_name,state",
+      "evidence": "Executed live if successful in snapshot query audit; do not infer semantic validation from SQL success"
+    },
+    {
+      "id": "incoming_queue_summary",
+      "sql": "SELECT isexecuting,msgpriority,numthreads,operationid,count(*) requests FROM incomingmsgtab GROUP BY isexecuting,msgpriority,numthreads,operationid ORDER BY operationid LIMIT 100",
+      "evidence": "Executed live if successful in snapshot query audit; do not infer semantic validation from SQL success"
+    },
+    {
+      "id": "transformation_summaries",
+      "sql": "SELECT operation_summary_id,operation_instance_guid,entered_ts,source_files,target_files,source_size,target_size,source_records,target_records,total_transformation_time FROM operationsummarytab ORDER BY entered_ts DESC,operation_summary_id DESC LIMIT 100",
+      "evidence": "Executed live if successful in snapshot query audit; do not infer semantic validation from SQL success"
+    },
+    {
+      "id": "run_progress",
+      "sql": "SELECT operation_progress_id,operation_instance_guid,source_file_index,number_of_source_files,percentage_done,estimated_end_time FROM operationprogresstab ORDER BY operation_progress_id DESC LIMIT 100",
+      "evidence": "Executed live if successful in snapshot query audit; do not infer semantic validation from SQL success"
+    },
+    {
+      "id": "file_result_counters",
+      "sql": "SELECT operation_file_status_id,operation_id,operation_instance_guid,records,filecategory,filesize,filets FROM operationfilestatustab ORDER BY operation_file_status_id DESC LIMIT 100",
+      "evidence": "Executed live if successful in snapshot query audit; do not infer semantic validation from SQL success"
+    },
+    {
+      "id": "instance_links",
+      "sql": "SELECT operation_instance_id,operation_instance_guid,entered_ts,operation_id,parent_operation_instance_guid FROM operationinstancetab ORDER BY operation_instance_id DESC LIMIT 100",
+      "evidence": "Executed live if successful in snapshot query audit; do not infer semantic validation from SQL success"
+    }
+  ],
+  "requery": {
+    "capture": "scripts/management/trandb-workload.py capture",
+    "compare": "scripts/management/trandb-workload.py compare",
+    "reportingOnly": "scripts/management/capture-trandb.py --mode reporting",
+    "profileOnly": "scripts/management/capture-trandb.py --mode profile",
+    "boundedRowsDefault": 500,
+    "boundedRowsMaximum": 2000,
+    "evidenceLimits": "Recent bounded rows plus whole-table aggregates; no lossless collector or continuous monitoring is claimed"
+  },
+  "latestValidatedCapture": {
+    "bundle": "output/trandb/workloads/pre-production-2026-10-08",
+    "observedAtUtc": "2026-10-08T17:35:37.301528+00:00",
+    "profileQueriesSuccessful": 161,
+    "reportingQueriesSuccessful": 25,
+    "unavailableQueries": [],
+    "observedRowCounts": {
+      "operation_runs": 2,
+      "operation_definitions": 3,
+      "child_runs": 1,
+      "transformation_summaries": 0,
+      "run_progress": 0,
+      "file_result_counters": 0
+    }
+  },
+  "workloadObservations": [
+    {
+      "project": "Customer | Jeld Wen - File Persona",
+      "observedAtUtc": "2026-10-08T17:39:28.213505+00:00",
+      "evidenceBundle": "output/trandb/workloads/during-project-2026-10-08-01",
+      "findingsFile": "output/trandb/workloads/comparison-during-project-2026-10-08-01/learned-observations.json",
+      "queryCounts": {
+        "profile": 165,
+        "reporting": 25
+      },
+      "observedStatusCodes": [
+        4,
+        5,
+        7
+      ],
+      "maximumObservedProjectDepth": 4,
+      "completeExecutionLedgerValidated": false
+    },
+    {
+      "observedAtUtc": "2026-10-08T17:43:42.973251+00:00",
+      "customerReportedState": "Still running",
+      "evidenceBundle": "output/trandb/workloads/during-project-2026-10-08-02",
+      "findingsFile": "output/trandb/workloads/comparison-during-project-2026-10-08-02/learned-observations.json",
+      "queryCounts": {
+        "profile": 163,
+        "reporting": 25
+      },
+      "learning": "No new retained runs and no active/queue rows in this local snapshot do not establish overall completion; active Harmony execution correlation is unresolved."
+    },
+    {
+      "evidenceBundle": "output/trandb/workloads/after-project-2026-10-08-01",
+      "comparison": "output/trandb/workloads/comparison-after-project-2026-10-08-01",
+      "queryCounts": {
+        "profile": 163,
+        "reporting": 25
+      },
+      "capturedRetainedRuns": 54,
+      "activeOperationCount": 0,
+      "customerReportedState": "Seems finished; deployment token-invalidation error reported"
+    },
+    {
+      "date": "2026-10-12",
+      "phase": "CUSTOMER_REPORTED_RUNNING",
+      "capture": "output/trandb/mixed-logs-running-2026-10-12.json",
+      "observedAtUtc": "2026-10-12T09:54:30.528296+00:00",
+      "baseline": "output/trandb/workloads/mixed-logs-before-2026-10-12-02",
+      "observations": {
+        "operationRuns": 79,
+        "fileRetrievalSuccesses": 13,
+        "validationErrors": 12,
+        "slackWarningRuns": 12,
+        "gmailSuccessRuns": 12,
+        "activeRunRows": 4,
+        "rootRunGuid": "f62599d0-8bff-466a-81d2-1cb6b9bb305d"
+      },
+      "sftpEvidence": [
+        "output/trandb/sftp-running-2026-10-12.json",
+        "output/trandb/sftp-file-details-2026-10-12.json",
+        "output/trandb/sftp-transfer-locations-2026-10-12.json"
+      ],
+      "limits": [
+        "Snapshot counts changed as execution progressed",
+        "No explicit SFTP diagnostic records found in inspected log tails or matching DB messages",
+        "File-operation success alone does not prove transfer protocol or remote server details",
+        "No transfer debug logging enabled or configuration changed"
+      ]
+    },
+    {
+      "date": "2026-10-12",
+      "phase": "RERUN_RESULTS_CAPTURED",
+      "capture": "output/trandb/mixed-logs-rerun-2026-10-12.json",
+      "rootRunGuid": "6f1cf181-1712-4021-924b-03d41d755ad7",
+      "observations": {
+        "runs": 122,
+        "fileRetrievalSuccesses": 20,
+        "validationErrors": 20,
+        "gmailSuccesses": 20,
+        "slackWarningOutcomes": 20,
+        "controllerStatus": 5
+      },
+      "validationEvidence": "output/trandb/rerun-validation-details-2026-10-12.json",
+      "sampledValidationFinding": "Invalid operationType on physical line 1: [] or [\"QCXE\"] observed; validator permits UPSERT/DELETE and reports header detected false",
+      "interpretation": "All sampled latest-run validation executions failed despite successful file retrieval; header/column selection may need investigation, not proven from these messages alone"
+    }
+  ],
+  "diagnosticFindings": [
+    {
+      "observedDate": "2026-10-08",
+      "code": "AGENT_TOKEN_INVALIDATION_ERROR",
+      "confirmedUnderlyingStatus": 404,
+      "confirmedRequestOrigin": "http://127.0.0.1:46912",
+      "component": "Local Tomcat invalidation HTTP request",
+      "agentId": 665400,
+      "agentGroupId": 678370,
+      "paVersion": "12.11.3.1",
+      "coreServicesHealthy": true,
+      "connectionCheck": true,
+      "activeOperationCount": 0,
+      "clockSynchronized": true,
+      "causalInterpretation": "Incomplete Axis expansion was repaired and local readiness verified, but customer reports unchanged deployment error. Underlying end-to-end cause remains unresolved.",
+      "evidence": [
+        "output/trandb/deployment-error-details-2026-10-08.json",
+        "output/trandb/deployment-error-endpoint-origins-2026-10-08.json",
+        "output/trandb/deployment-error-tomcat-2026-10-08.json"
+      ],
+      "repeatableLogClassifier": "scripts/management/inspect-agent-deployment.py",
+      "mutationsPerformed": true,
+      "failedTomcatContext": "/axis",
+      "invalidationContext": "/axis",
+      "packagedAxisLibraryCount": 256,
+      "expandedAxisLibraryCount": 161,
+      "missingExpandedLibraries": 95,
+      "unexpectedExpandedLibraries": 0,
+      "confirmedMissingClasses": [
+        "org.springframework.web.context.ContextLoaderListener",
+        "org.jitterbit.integration.server.conf.ApplicationServletContextListener",
+        "org.jitterbit.server.connector.ConnectorContextServletListener",
+        "org.jitterbit.integration.server.conf.ServerConfig"
+      ],
+      "healthLearning": "Core processes and port reachability can pass while a required application context has failed; readiness must check application startup/routes.",
+      "additionalEvidence": [
+        "output/trandb/deployment-error-startup-details-2026-10-08.json",
+        "output/trandb/deployment-error-context-check-2026-10-08.json",
+        "output/trandb/deployment-error-library-diff-2026-10-08.json"
+      ],
+      "axisWarIntegrity": {
+        "crcPassed": true,
+        "evidence": "output/trandb/deployment-error-war-integrity-2026-10-08.json",
+        "independentVendorProvenanceVerified": false
+      },
+      "repair": {
+        "approvedByUser": true,
+        "state": "REPAIRED_PENDING_DEPLOYMENT_RETRY",
+        "startedAtUtc": "2026-10-08T18:01:13.443673+00:00",
+        "finishedAtUtc": "2026-10-08T18:02:42.416323+00:00",
+        "axisLibrariesExpected": 256,
+        "axisLibrariesExpanded": 256,
+        "missingLibraries": 0,
+        "libraryContentMismatches": 0,
+        "axisHttpStatus": 200,
+        "freshAxisDeploymentFinishedAtUtc": "2026-10-08T18:02:12.313000+00:00",
+        "coreServicesHealthy": true,
+        "harmonyConnectionCheck": true,
+        "agentIdentityUnchanged": true,
+        "protectedConfigurationUnchanged": true,
+        "backupPath": "/var/lib/jbpa/backups/axis-20261008T180113Z-6a8be28b",
+        "evidence": [
+          "output/trandb/axis-repair-completed-2026-10-08.json",
+          "output/trandb/axis-repair-status-2026-10-08.json",
+          "output/trandb/axis-repair-startup-2026-10-08.json"
+        ],
+        "remainingValidation": "Customer deployment retry must confirm token invalidation and synchronization success",
+        "preflightCorrection": "Optional /etc/jbpa/credentials.json is absent on this configured host. Preserve absent/present state plus existing Resources/credentials.txt and configuration; do not recreate credentials automatically.",
+        "customerDeploymentRetry": "Same AGENT_TOKEN_INVALIDATION_ERROR reported after repair"
+      },
+      "requestedNextAction": "User explicitly requested complete uninstall and fresh 12.10 installation"
+    },
+    {
+      "date": "2026-10-09",
+      "status": "UNRESOLVED",
+      "paVersion": "12.10.1.1",
+      "agentId": 665430,
+      "agentGroupId": 678370,
+      "organizationId": 410469,
+      "environmentId": 570050,
+      "projectGuid": "1a470bd8-5bb7-489b-92d8-400e867d5ab7",
+      "projectName": "Customer | Jeld Wen - File Persona",
+      "currentGroupMembershipObservedInHarmony": [
+        {
+          "agentId": 665430,
+          "status": "Running",
+          "version": "12.10.1.1"
+        }
+      ],
+      "oldAgent665400ListedInGroup": false,
+      "localInvalidationRequests": [
+        {
+          "timestamp": "09/Oct/2026:08:54:41 +0000",
+          "method": "PUT",
+          "context": "axis",
+          "tokenPath": true,
+          "status": 200
+        },
+        {
+          "timestamp": "09/Oct/2026:08:58:40 +0000",
+          "method": "PUT",
+          "context": "axis",
+          "tokenPath": true,
+          "status": 200
+        },
+        {
+          "timestamp": "09/Oct/2026:09:00:09 +0000",
+          "method": "PUT",
+          "context": "axis",
+          "tokenPath": true,
+          "status": 200
+        },
+        {
+          "timestamp": "09/Oct/2026:09:01:48 +0000",
+          "method": "PUT",
+          "context": "axis",
+          "tokenPath": true,
+          "status": 200
+        }
+      ],
+      "studioError": {
+        "displayTimeSAST": "2026-10-09 11:01:48.232",
+        "displayTimeUTC": "2026-10-09 09:01:48.232",
+        "message": "Failed to deploy - HttpErrorResponse: There was an error in token invalidation for agent [AGENT_TOKEN_INVALIDATION_ERROR]"
+      },
+      "confirmed": [
+        "Current agent receives invalidation requests",
+        "All four captured local PUT invalidation requests return HTTP 200",
+        "Previous local HTTP 404 exceptions are absent in the new agent log",
+        "Harmony group view currently lists only 665430 as Running"
+      ],
+      "notEstablished": [
+        "HTTP response body and logical invalidation success",
+        "WebSocket response/acknowledgement payload sent back to Harmony",
+        "Cloud-side reason for the aggregate invalidation failure"
+      ],
+      "interpretation": "Failure remains in end-to-end invalidation response/acknowledgement handling; do not attribute it to old records or call transport HTTP 200 logical success.",
+      "mutationsToday": false,
+      "evidence": [
+        "output/trandb/deployment-error-1210-2026-10-09.json",
+        "output/trandb/token-events-1210-2026-10-09.json",
+        "output/trandb/invalidation-access-1210-2026-10-09.json"
+      ],
+      "requiredTrace": [
+        "Harmony deployment request at 09:01:48 UTC, organization 410469/environment 570050/group 678370",
+        "Agent Services request/response correlation IDs and response validation",
+        "Sanitized local invalidation response body and expected protocol shape"
+      ]
+    },
+    {
+      "date": "2026-10-11",
+      "hypothesis": "User-provided Jitterbit AI account of 3LO token invalidation routed through a proxy",
+      "sourceClassification": "Unverified account supplied by user; investigation lead, not a confirmed cause on this host",
+      "installedVersion": "12.10.1.1",
+      "vendorProxyEnabled": false,
+      "startupJvmProxyHostOverridesObserved": false,
+      "proxyServerEnvironmentVariablesObserved": false,
+      "processNoProxy": "localhost,127.0.0.1",
+      "jitterbitConfProxyRelatedFieldsObserved": false,
+      "effectiveJvmSystemPropertiesAvailable": false,
+      "effectiveJvmLimitation": "Neither bundled nor system jcmd available; runtime-set properties not inspected",
+      "previousActualInvalidationResponses": {
+        "date": "2026-10-09",
+        "httpStatus": 200,
+        "count": 4,
+        "source": "output/trandb/invalidation-access-1210-2026-10-09.json"
+      },
+      "conclusion": "Proxy misrouting is not supported by checked configuration and captured local responses; end-to-end logical response/acknowledgement remains unresolved",
+      "mutationsPerformed": false,
+      "repeatableCollector": "scripts/management/inspect-agent-proxy.py",
+      "evidence": [
+        "output/trandb/proxy-investigation-2026-10-11.json",
+        "output/trandb/proxy-config-fields-2026-10-11.json",
+        "output/trandb/vendor-proxy-configuration-2026-10-11.json"
+      ],
+      "primaryReferences": [
+        "https://docs.jitterbit.com/agent/proxy/",
+        "https://docs.oracle.com/en/java/javase/21/docs/api/java.base/java/net/doc-files/net-properties.html"
+      ]
+    },
+    {
+      "date": "2026-10-11",
+      "agentId": 667310,
+      "agentGroupId": 679240,
+      "environmentId": 571300,
+      "paVersion": "12.10.1.1",
+      "newPagNewEnvironmentSameFailure": true,
+      "observedLocalHttpStatus": 200,
+      "observedResponseBodyStatus": false,
+      "observedResponseErrorCode": null,
+      "responseBodyBytes": 202,
+      "responseTransferEncoding": "chunked",
+      "capturedAtUtc": "2026-10-11T19:37:57.022107+00:00",
+      "evidence": "output/trandb/invalidation-response-new-pag-2026-10-11.json",
+      "interpretation": "Transport success masks explicit application failure. Endpoint handler error details required; a generic missing acknowledgement is no longer the leading unexplained gap.",
+      "synchronizedDefinitions": 10,
+      "retainedRuns": 0,
+      "configurationOrServiceMutationsPerformed": false,
+      "repeatableCollector": "scripts/management/capture-invalidation-response.py"
+    },
+    {
+      "date": "2026-10-11",
+      "agentId": 667310,
+      "agentGroupId": 679240,
+      "environmentId": 571300,
+      "endpointEntityId": 37201,
+      "connectorName": "gmail",
+      "connectionName": "Gmail Endpoint",
+      "activeOperationCountBeforeProposedUpdate": 0,
+      "actualRequest": "One connector GUID; environmentId571300",
+      "actualResponse": {
+        "httpStatus": 200,
+        "status": false,
+        "operation": null,
+        "errorCode": null,
+        "errorMessage": null,
+        "errorID": null,
+        "successfulConnectorEndpointGuidList": [],
+        "failedConnectorEndpointGuidList": [],
+        "notFoundConnectorEndpointGuidList": []
+      },
+      "serverLogFinding": "TokenActionController unable to find connector for endpoint entity37201",
+      "connectorLoadFinding": "OverlappingFileLockException in the connector-load diagnostic window; Retryable RetryException also observed",
+      "controllerMetadata": "ConnectorRegistry.lookup followed by TokenInvalidateResponse creation or JitterbitConnectorAdapter.performTokenInvalidation",
+      "conclusion": "Missing Gmail adapter explains empty application-failure response. Underlying connector loading recovery remains to be verified.",
+      "proposedRepair": "Supported Update connectors action on only PAG679240, followed by connector load and deployment verification",
+      "repairState": "AWAITING_CONFIRMATION_ON_HARMONY_DIALOG",
+      "confirmationReason": "Browser confirmation policy requires approval to accept an unapproved third-party are-you-sure warning",
+      "evidence": [
+        "output/trandb/invalidation-request-response-2026-10-11.json",
+        "output/trandb/token-controller-registry-log-2026-10-11.json",
+        "output/trandb/connector37201-load-error-2026-10-11.json",
+        "output/trandb/token-controller-references-2026-10-11.json",
+        "output/trandb/connector-update-confirmation-2026-10-11.jpg"
+      ],
+      "primaryRepairReference": "https://docs.jitterbit.com/integration-studio/troubleshooting/connector/"
+    },
+    {
+      "date": "2026-10-12",
+      "agentId": 667310,
+      "agentGroupId": 679240,
+      "environmentId": 571300,
+      "connectorName": "gmail",
+      "endpointEntityId": 37201,
+      "repairState": "RESOLVED_CUSTOMER_CONFIRMED_DEPLOYMENT",
+      "customerPerformedConnectorUpdate": true,
+      "customerPerformedGmailConnectionTest": true,
+      "customerConfirmedDeploymentSuccess": true,
+      "verifiedLogObservation": "Gmail download followed by ConnectorLoader loaded event at 2026-10-12 09:28:25 UTC",
+      "recoverySequence": [
+        "Update connectors for the affected PAG",
+        "Test the saved Gmail connection",
+        "Deploy the saved project"
+      ],
+      "evidence": [
+        "output/trandb/gmail-deployment-recovery-2026-10-12.json"
+      ],
+      "evidenceLimits": [
+        "Deployment success confirmed by customer; no post-recovery invalidation response body captured",
+        "Earlier file-lock exceptions are associated observations, not proof of the sole underlying cause",
+        "Sequence does not isolate the effect of connector update from connection testing"
+      ]
+    }
+  ],
+  "currentVerifiedPlatform": {
+    "sourceTarget": "JBLAB-PA-AUTOMATION",
+    "observedDate": "2026-10-12",
+    "state": "INSTALLED_AND_REGISTERED",
+    "paVersion": "12.10.1.1",
+    "agentId": 667310,
+    "agentGroupId": 679240,
+    "agentName": "automated-agent_2026-10-11 19:19:38.307",
+    "agentGroupName": "7-Automated Infrastructure",
+    "registrationConfirmed": true,
+    "coreServicesHealthy": true,
+    "harmonyConnectionCheck": true,
+    "configuredHealthStatus": "HEALTHY",
+    "axisHttpStatus": 200,
+    "expectedAxisLibraries": 256,
+    "expandedAxisLibraries": 256,
+    "currentBaseline": "output/trandb/workloads/fresh-1210-pag679240-2026-10-11",
+    "evidence": [
+      "output/trandb/agent-1210-pag679240-verification-2026-10-11.json",
+      "output/trandb/agent-1210-pag679240-health-2026-10-11.json",
+      "output/trandb/gmail-deployment-recovery-2026-10-12.json"
+    ],
+    "productionSizingValidated": false,
+    "deploymentIssueRetestedInNewPag": true,
+    "deploymentIssueResolved": true,
+    "environmentId": 571300,
+    "connectorRegistryIssue": {
+      "endpointEntityId": 37201,
+      "connector": "gmail",
+      "repairState": "RESOLVED_CUSTOMER_CONFIRMED_DEPLOYMENT",
+      "gmailLoadedAtUtc": "2026-10-12T09:28:25Z",
+      "deploymentSuccessEvidence": "Customer confirmation after Gmail connection test"
+    }
+  },
+  "lifecycleObservations": [
+    {
+      "requested": "Uninstall then install v12.10",
+      "previousPaVersion": "12.11.3.1",
+      "newPaVersion": "12.10.1.1",
+      "previousAgentId": 665400,
+      "newAgentId": 665430,
+      "agentGroupId": 678370,
+      "uninstallStatus": "SUCCESS",
+      "installStatus": "SUCCESS",
+      "customerWrapperAttempt": "Failed before package installation; direct configured framework installation succeeded after clean-host/preflight validation",
+      "dataContinuity": "Complete uninstall removed local TranDb; old workload snapshots remain preserved. Do not treat new database counters as continuous with v12.11.",
+      "oldHarmonyRecordDeleted": false,
+      "deploymentRetryPending": true,
+      "evidence": [
+        "output/trandb/agent-uninstall-2026-10-08.json",
+        "output/trandb/agent-install-1210-2026-10-08.json",
+        "output/trandb/agent-1210-verification-2026-10-08.json"
+      ]
+    },
+    {
+      "date": "2026-10-11",
+      "requested": "Uninstall agent; customer will delete PAG/environment and provide new PAG ID",
+      "uninstallStatus": "SUCCESS",
+      "uninstallState": "LOCAL_UNINSTALL_COMPLETE",
+      "harmonyDeletionPerformedByAssistant": false,
+      "nextInstallPendingNewPagId": true,
+      "evidence": "output/trandb/agent-uninstall-2026-10-11.json"
+    },
+    {
+      "date": "2026-10-11",
+      "requested": "Fresh v12.10 installation in new PAG 679240",
+      "paVersion": "12.10.1.1",
+      "agentId": 667310,
+      "agentGroupId": 679240,
+      "status": "SUCCESS",
+      "configuredHealth": "HEALTHY",
+      "initialRegistrationAttempt": "Failed with previous registration token; customer supplied a new token, then registration succeeded",
+      "customerConfirmedOldPagAndEnvironmentDeleted": true,
+      "currentEnvironmentId": null,
+      "deploymentRetryPending": true,
+      "evidence": [
+        "output/trandb/agent-install-1210-pag679240-completed-2026-10-11.json",
+        "output/trandb/agent-1210-pag679240-verification-2026-10-11.json",
+        "output/trandb/agent-1210-pag679240-health-2026-10-11.json"
+      ]
+    }
+  ],
+  "configurationLearnings": [
+    {
+      "date": "2026-10-11",
+      "topic": "Changing PAG for a fresh install",
+      "previousGroupId": 678370,
+      "requestedGroupId": 679240,
+      "customerConfirmedOldPagAndEnvironmentDeleted": true,
+      "method": "Update configured local-file group reference; preserve registration token and other protected settings; clear stale group-name/environment metadata",
+      "inputConstraint": "LocalFileSecretProvider rejects control characters including a trailing newline for single-line registration fields. Group-ID file must contain digits only, without newline.",
+      "backupPath": "/var/lib/jbpa/backups/pag-change-20261011T190810Z",
+      "preflightFailureBeforeCorrection": "LOCAL_SECRET_INVALID; installation preflight mutationPerformed=false",
+      "newEnvironmentId": null,
+      "installationState": "INSTALLED_AND_REGISTERED",
+      "newTokenRequired": true,
+      "tokenValuesRetainedInCatalogue": false,
+      "registrationRecovery": "Existing package registration resumed after protected token/payload update and service restart; no second package install",
+      "healthIdentitySource": "Group ID supplied by customer; DB identity corroborated by runtime login and Support Tools; name-prefix checked against configured reference",
+      "freshBaselineQueries": {
+        "profile": 148,
+        "reporting": 25
+      },
+      "freshBaselineUnavailableQueries": 0
+    }
+  ],
+  "connectorReadinessRunbook": {
+    "scope": "Deployment token-invalidation failure with an unavailable connector adapter",
+    "steps": [
+      {
+        "order": 1,
+        "action": "Check PA identity, core health and affected environment",
+        "purpose": "Establish the correct target; core health alone is insufficient"
+      },
+      {
+        "order": 2,
+        "action": "Inspect invalidation application status and correlate endpoint entity with connector registry logs",
+        "purpose": "HTTP 200 can contain status:false"
+      },
+      {
+        "order": 3,
+        "action": "Use supported PAG Update connectors action when connector packages need refreshing",
+        "purpose": "Obtain current connector packages; completion can be asynchronous"
+      },
+      {
+        "order": 4,
+        "action": "Test the saved affected connection and verify download/load completion",
+        "purpose": "Validate connection and runtime connector readiness; do not edit credentials unnecessarily"
+      },
+      {
+        "order": 5,
+        "action": "Deploy and verify the actual deployment outcome",
+        "purpose": "Confirm recovery rather than infer it from agent or HTTP health"
+      }
+    ],
+    "productRequirement": "Represent connector package download, runtime load and registry availability separately. Include affected-connector readiness in deployment acceptance checks.",
+    "automationStatus": "Documented requirement; no automated remediation implemented",
+    "safety": "Connection testing may contact the configured external service; use the customer-authorized saved connection.",
+    "knownWorkingExample": {
+      "connector": "gmail",
+      "paVersion": "12.10.1.1",
+      "agentId": 667310,
+      "agentGroupId": 679240,
+      "date": "2026-10-12"
+    }
+  },
+  "learningRegister": "docs/lessons-learned.md",
+  "productRequirementIds": [
+    "RDY-001",
+    "RDY-002",
+    "RDY-003",
+    "RDY-004"
+  ],
+  "pendingWorkloadCapture": {
+    "purpose": "Customer project run to analyze mixed operation/log evidence",
+    "state": "DURING_RUN_CAPTURED_AWAITING_CUSTOMER_COMPLETION",
+    "sourceTarget": "JBLAB-PA-AUTOMATION",
+    "baseline": "output/trandb/workloads/mixed-logs-before-2026-10-12-02",
+    "observedAtUtc": "2026-10-12T09:42:37.631239+00:00",
+    "profileQueries": 157,
+    "reportingQueries": 25,
+    "unavailableQueries": [],
+    "sampleLimit": 1000,
+    "nextSteps": [
+      "Reporting-only capture while customer reports running",
+      "After-completion capture and offline baseline comparison",
+      "Review status changes, execution lineage, message metadata and populated reporting families"
+    ],
+    "limits": [
+      "No background monitor started",
+      "Message metadata is collected; raw message bodies are excluded",
+      "Baseline captures do not prove a lossless event stream"
+    ]
+  },
+  "sftpLoggingLearning": {
+    "date": "2026-10-12",
+    "customerReportedFilesProcessed": 20,
+    "observedConfiguration": {
+      "CurlDebugDir": "",
+      "TransformationEngine.WriteLog": "0",
+      "OperationEngine.Debug": "false"
+    },
+    "conclusion": "Dedicated curl transfer logging was not configured during this run; absence of retained protocol trace is not absence of SFTP capability. Earlier 13 successes was an in-progress snapshot, not a final file total.",
+    "supportedDiagnostic": "Set Settings.CurlDebugDir to an agent-writable controlled directory for future FTP/SFTP/HTTP/HTTPS request traces; operation debug is separate.",
+    "outputFormat": "One GUID-named .txt file per request, according to official configuration documentation",
+    "reference": [
+      "https://docs.jitterbit.com/agent/log/",
+      "https://docs.jitterbit.com/agent/jitterbit-conf/",
+      "https://docs.jitterbit.com/agent/log/operation-debug-private/"
+    ],
+    "configurationChanged": true,
+    "evidence": "output/trandb/sftp-logging-settings-2026-10-12.json",
+    "limits": [
+      "Previously unrecorded traces cannot be reconstructed",
+      "Curl traces may contain credentials, headers or payload data; restrict collection and redact exports",
+      "Generic Java connector logger configuration must not be assumed to apply to native curl-based FTP/SFTP"
+    ],
+    "currentLoggingConfiguration": {
+      "status": "SUCCESS",
+      "observedAtUtc": "2026-10-12T10:05:06.594541+00:00",
+      "setting": "Settings.CurlDebugDir",
+      "value": "/opt/jitterbit/log/curl",
+      "changed": true,
+      "backupPath": "/var/lib/jbpa/backups/curl-logging-20261012T100506Z/jitterbit.conf",
+      "directoryOwner": "jitterbit",
+      "directoryMode": "0700",
+      "unrelatedSettingsPreserved": true,
+      "serviceRestartPerformed": false,
+      "runtimeTraceGenerationVerified": true
+    },
+    "nextVerification": "Run a new authorized file-transfer operation and check for GUID-named curl .txt output; configuration success alone does not prove runtime uptake.",
+    "rerunEvidence": {
+      "capture": "output/trandb/sftp-curl-rerun-2026-10-12.json",
+      "sanitizedText": "output/trandb/sftp-rerun-2026-10-12.sanitized.log",
+      "traceFiles": 64,
+      "combinedBytes": 705087,
+      "sftpEndpointPort": 2022,
+      "diagnosticFindings": [
+        "Authentication complete and connection reuse observed",
+        "rm command failed: No such file or directory in retained diagnostic text",
+        "Upload completion text observed"
+      ],
+      "qualificationLimits": [
+        "Trace file counts are not business-file counts",
+        "Curl trace GUIDs are not proven operation run GUIDs",
+        "Repeated-request text exists within individual traces; correlation requires more than file identity",
+        "rm failures may be pre-upload cleanup; exact path and business consequence not captured by diagnostic-only export"
+      ],
+      "restartPerformedByAssistant": false
+    }
+  },
+  "operationAssessment": {
+    "architecture": "docs/trandb/operation-assessment-api.md",
+    "contract": "docs/trandb/operation-assessment-contract.json",
+    "sql": "docs/trandb/operation-assessment.sql",
+    "offlineExecutable": "scripts/management/assess-trandb.py",
+    "productionStatus": "PROPOSED_DEFERRED_UPG_001",
+    "requirementIds": [
+      "OBS-016",
+      "OBS-017",
+      "OBS-018"
+    ]
+  },
+  "estateHealth": {
+    "architecture": "docs/estate-health.md",
+    "executable": "scripts/management/estate-health.py",
+    "evaluator": "src/jbpa/estate_health.py",
+    "qaEvidence": "output/estate-health/qa-2026-10-12",
+    "productionQualification": false,
+    "newPaListenersOrDaemonsInstalled": false,
+    "grafanaShippingPerformed": false,
+    "sourceReferenceProject": "RATP API Processing Verification",
+    "requirementIds": [
+      "OBS-019",
+      "OBS-020",
+      "OBS-021",
+      "OBS-022"
+    ],
+    "qaValidation": {
+      "date": "2026-10-12",
+      "initialSample": "output/estate-health/qa-2026-10-12",
+      "finalSmoke": "output/estate-health/qa-final-2026-10-12",
+      "sqlQueriesBefore": 15,
+      "sqlQueriesAfter": 15,
+      "unavailableSqlQueries": [],
+      "behavioralTestsPassed": 11,
+      "lint": "PASS",
+      "skillValidation": "PASS",
+      "fleetHostsLiveValidated": 1,
+      "productionQualification": false
+    },
+    "latestOnDemand": {
+      "date": "2026-10-12",
+      "sourceTarget": "JBLAB-PA-AUTOMATION",
+      "evidence": "output/estate-health/live-parent-child-2026-10-12-01",
+      "interpretation": "output/estate-health/live-parent-child-2026-10-12-01/interpretation.md",
+      "customerConfirmedWorkload": "Parent/child running; overlapping execution progress verified",
+      "state": "DEGRADED_IO_PRESSURE_AND_GROWING_LOG_SYNC_WITH_PARTIAL_VERIFICATION",
+      "cpuMeanPercent": 49.0392244643297,
+      "unsyncedRecordsBefore": 18819,
+      "unsyncedRecordsAfter": 45625,
+      "scaling": "Investigate I/O and synchronization before CPU/RAM scale-up or agent additions; exact production sizing unqualified",
+      "configOrServiceChangesPerformed": false,
+      "helperStageAutomaticallyRemoved": true
+    },
+    "noPortVisibility": {
+      "method": "docs/noport-runtime-visibility.md",
+      "helperSource": "scripts/management/java/JBPAReadOnlyMetricsV1.java",
+      "attachClient": "scripts/management/local-jvm-attach.py",
+      "runtimeQualification": "Native PA12.10.1.1/Java25/Linux same namespace and UID",
+      "apacheExistingPort": 46908,
+      "noNewServicesOrPorts": true,
+      "noRestart": true,
+      "loadedEvidence": "output/estate-health/noport-restarted-load-2026-10-12-01",
+      "finalAssessment": "output/estate-health/noport-restarted-load-2026-10-12-01/assessed-with-io-sync-findings.json",
+      "loadedInterpretation": "output/estate-health/noport-restarted-load-2026-10-12-01/interpretation.md",
+      "loadedFindings": [
+        "STORAGE_PRESSURE",
+        "LOG_SYNC_BACKLOG_GROWING"
+      ],
+      "scope": "Active restarted workload; not production/fleet sizing qualification",
+      "privateRepeatableProfile": "secrets/qa-health-profile.json",
+      "behavioralTestsPassed": 16,
+      "stageCleanupVerified": true,
+      "postWindow": {
+        "observedAtUtc": "2026-10-12T17:08:13.190261+00:00",
+        "running": 0,
+        "pending": 0,
+        "terminalSuccessWithInfoExecutionsInHour": 20002,
+        "unsyncedRecords": 86014,
+        "syncedRecords": 35452,
+        "interpretation": "Backlog remained after workload completion; drain/stall/loss not established",
+        "evidence": "output/estate-health/noport-restarted-load-2026-10-12-01/post-window-db.json"
+      }
+    }
+  },
+  "vendorUpgradeIncident": {
+    "recordedAt": "2026-10-14",
+    "target": "JBLAB-PA-AUTOMATION",
+    "installedFrom": "12.10.1.1",
+    "installedTo": "12.11.3.2",
+    "confirmed": [
+      "Vendor installer starts by default; JBPA verifier unconditionally restarted again",
+      "Upgrade result recorded success despite incomplete Axis deployment",
+      "118 missing libraries and truncated joda-time-2.1.jar",
+      "Axis conversion/OAuth/import endpoints returned 404"
+    ],
+    "inferred": "Second startup likely interrupted expansion; not independently reproduced",
+    "decision": "Vendor owns upgrade configuration/startup; JBPA triggers then monitors read-only",
+    "changes": [
+      "NativeLinuxWorkflow.monitor_runtime",
+      "ApplicationReadinessProbe",
+      "Upgrade observer does not restart or override vendor-restored configuration",
+      "Remote reinstall supports requested downgrade via fresh install"
+    ],
+    "liveQualification": "Observer upgrade and 12.9 recovery not yet run",
+    "references": [
+      "docs/vendor-owned-upgrades.md",
+      "output/trandb/axis-repair-result-2026-10-14-retry.json"
+    ],
+    "validation": {
+      "unitSuite": 487,
+      "laterTransportRegression": "Passed; final full suite 487 tests passed",
+      "liveApplicationProbe": "READY; 302 packaged Axis files match and conversion WSDL HTTP 200",
+      "candidateArchiveSHA256": "f666f6880228bface7a28213c5d92cb7757884ba3e9d33481ab8b2c342db8156",
+      "candidateRelease": "/opt/jbpa/qa-candidates/upgrade-observer-20261014-v2/jbpa-1.0.0-rc9",
+      "reinstall12_9": "Blocked before removal by 2-vCPU host vs 4-vCPU policy",
+      "credentialCheck": "PASS; prerequisite gate skipped later preflight checks"
+    }
+  },
+  "qa129Reset": {
+    "recordedAt": "2026-10-14",
+    "target": "JBLAB-PA-AUTOMATION",
+    "authorization": "Explicit user approval in this chat",
+    "scope": {
+      "packageVersion": "12.9.2.2",
+      "cpuCount": 2,
+      "controlledTestOnly": true,
+      "productionSizingValidated": false
+    },
+    "candidateArchiveSHA256": "f48f0b5aa610ebe048a0241eac2410c93b6af66f7878436e0228682ed5b109d0",
+    "unitTests": 495,
+    "preflight": "PASS_WITH_SCOPED_QA_EXCEPTION",
+    "status": "INSTALLED_REGISTERED_SYNCHRONIZED",
+    "evidenceSnapshot": "output/trandb/pre-reinstall-12.9-2026-10-14.json",
+    "privateLogBackup": "/var/lib/jbpa/backups/pre-reinstall-20261014-68f03df1",
+    "nextUpgrade": "NOT_REQUESTED_THIS_TURN",
+    "newAgentId": 667590,
+    "agentGroupId": 679240,
+    "packageVersion": "12.9.2.2",
+    "candidateRelease": "/opt/jbpa/qa-candidates/upgrade-observer-20261014-v4/jbpa-1.0.0-rc9",
+    "initialAttempt": "Package installed; initial observer failed because vendor services were stopped",
+    "recovery": "Supported fresh registration/start on verified installed/unregistered package; no repeat uninstall",
+    "applicationReadiness": "READY; 302 matching files; conversion WSDL HTTP 200",
+    "connectionCheck": true,
+    "initialGroupSynchronizationUtc": "2026-10-14T17:34:00Z",
+    "recoveryEvidence": "output/trandb/12.9-registration-recovery-2026-10-14.json",
+    "finalVerification": "output/trandb/12.9-final-verification-2026-10-14.json",
+    "finalHealth": {
+      "status": "HEALTHY",
+      "agentIdentityConfirmed": true,
+      "coreServices": true,
+      "connectionCheck": true,
+      "evidence": "output/trandb/12.9-final-health-2026-10-14.json",
+      "supplementaryGap": "Support Tools detailed service table unclassified; not a mandatory core-health check"
+    }
+  },
+  "qa1211FixedUpgrade": {
+    "date": "2026-10-15",
+    "target": "JBLAB-PA-AUTOMATION",
+    "fromVersion": "12.9.2.2",
+    "toVersion": "12.11.3.2",
+    "status": "UPGRADE_COMPLETE",
+    "agentId": 667590,
+    "agentGroupId": 679240,
+    "qaException": "EXPLICIT_USER_APPROVAL; exact named host/package; 2 vCPU; controlled QA only",
+    "candidate": "/opt/jbpa/qa-candidates/upgrade-observer-20261015-v6/jbpa-1.0.0-rc9",
+    "candidateSha256": "3703b3344266bd47c44b4a03df13e53b1623e2a2b36dc16d4266def6a82dedc6",
+    "packageSha256": "6e69a441c866ef2610aae603485ac82a05b711ccaca524f56c980458cb4907f0",
+    "backupDirectory": "/var/lib/jbpa/backups/upgrade-d47f0b2fbc274041a7d7655795040412",
+    "vendorPackageCompletedUtc": "2026-10-15T11:52:05Z",
+    "verificationProfile": "VENDOR_UPGRADE_OBSERVATION",
+    "axis": {
+      "contentMismatches": 0,
+      "conversionServicePublished": true,
+      "expectedFiles": 302,
+      "httpStatus": 200,
+      "missingFiles": 0,
+      "readOnly": true,
+      "reason": null,
+      "status": "READY"
+    },
+    "configurationChangesObserved": [],
+    "operationDefinitionsRetained": 15,
+    "postUpgradeReportingQueriesPassed": 25,
+    "operationExecutionCanary": "NOT_RUN; no business operation or external connector invocation",
+    "qualification": "Single named-host QA upgrade observation; not production approval",
+    "evidence": [
+      "output/trandb/upgrade-12.11.3.2-result-2026-10-15.json",
+      "output/trandb/post-upgrade-12.11.3.2-reporting-2026-10-15.json",
+      "output/trandb/upgrade-12.11.3.2-endpoints-2026-10-15.json",
+      "output/trandb/upgrade-12.11.3.2-final-health-2026-10-15.json"
+    ],
+    "independentFinalHealth": "SUCCESS / HEALTHY",
+    "supplementaryServiceStatus": "AgentSupportTools parser unavailable; native status/application evidence used",
+    "healthMetadataBackup": "/var/lib/jbpa/backups/health-identity-20261015-01afb630"
+  }
+}

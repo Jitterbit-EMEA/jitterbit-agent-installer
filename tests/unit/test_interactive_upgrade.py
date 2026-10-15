@@ -8,13 +8,12 @@ from contextlib import nullcontext
 from pathlib import Path
 from unittest.mock import patch
 
-from test_native_linux import SUCCESS_LOG, FakeBackend, artifact, config
+from test_native_linux import SUCCESS_LOG, FakeBackend
 
 from jbpa import release_cli, upgrade
 from jbpa.config import ROOT
 from jbpa.errors import FrameworkError
-from jbpa.native_linux import CREDENTIALS, NativeLinuxWorkflow
-from jbpa.security import Secret
+from jbpa.native_linux import CREDENTIALS
 
 CONFIG = str(ROOT / "config/examples/local-file-qa.example.yaml")
 HOST = {"os": "ubuntu", "version": "24.04", "architecture": "x86_64"}
@@ -29,9 +28,25 @@ class InteractiveTests(unittest.TestCase):
     def test_versions_lists_entire_governed_catalogue(self):
         code, data = release_cli.versions([])
         self.assertEqual(code, 0)
-        self.assertEqual(data["catalogueCount"], 19)
-        self.assertEqual(data["versions"][0]["packageVersion"], "12.10.1.1")
+        self.assertEqual(data["catalogueCount"], 20)
+        self.assertEqual(data["versions"][0]["packageVersion"], "12.11.3.2")
         self.assertEqual(data["dynamicLatest"], "MUTABLE_NOT_RESOLVED")
+
+    def test_exact_1211_is_pinned_but_requires_explicit_qa_mode(self):
+        from jbpa.catalogue import load_catalogues, resolve
+
+        catalogue, _ = load_catalogues()
+        logical, entry = resolve("12.11.3.2", catalogue)
+        self.assertEqual(logical, "12.11")
+        self.assertEqual(entry["approval"], "pending")
+        self.assertEqual(entry["qualification"]["overall"], "AVAILABLE_UNQUALIFIED")
+        self.assertEqual(len(entry["integrity"]["sha256"]), 64)
+        with self.assertRaises(FrameworkError):
+            release_cli.qualification_guard("12.11.3.2", entry, HOST)
+        self.assertEqual(
+            release_cli.qualification_guard("12.11.3.2", entry, HOST, True),
+            "EXPERIMENTAL_VERSION_TEST",
+        )
 
     def test_latest_prompts_with_exact_artifact_before_install(self):
         artifact = {
@@ -208,24 +223,35 @@ class UpgradeTests(unittest.TestCase):
                 patch("jbpa.upgrade.os.geteuid", return_value=0),
                 patch("jbpa.upgrade._backup", return_value=[]),
                 patch("jbpa.upgrade._drain"),
-                patch("jbpa.upgrade._restore_changed", return_value=[]),
                 patch("jbpa.upgrade._provider", return_value=Provider()),
-                patch("jbpa.upgrade._resolve_registration_fields"),
+                patch(
+                    "jbpa.upgrade._resolve_registration_fields",
+                    side_effect=lambda c, _p: c["harmony"].update(agent_group_id=200),
+                ),
                 patch("jbpa.upgrade.CREDENTIALS", str(credentials)),
             ):
                 code, result = self.execute(
                     package_runner=package_runner,
-                    verify_runner=lambda *_args: NativeLinuxWorkflow(runtime).run(
-                        config(), artifact(package_version="12.10.1.1"), Secret(None)
-                    ),
+                    runtime_backend=runtime,
+                    application_probe=lambda: {"status": "READY", "readOnly": True},
                 )
         self.assertEqual(code, 0)
         self.assertEqual(result["state"], "UPGRADE_COMPLETE")
         self.assertTrue(result["changed"])
         self.assertFalse(result["runtimeVerification"]["synchronizationRequired"])
         self.assertFalse(result["runtimeVerification"]["synchronizationObserved"])
+        self.assertEqual(
+            result["runtimeVerification"]["verificationProfile"], "VENDOR_UPGRADE_OBSERVATION"
+        )
+        self.assertFalse(
+            any(
+                command == ["/opt/jitterbit/bin/jitterbit", "restart"]
+                for command, _ in runtime.commands
+            )
+        )
+        self.assertFalse(runtime.writes)
 
-    def test_backup_restores_changed_configuration_privately(self):
+    def test_backup_retains_evidence_without_overriding_vendor_configuration(self):
         with tempfile.TemporaryDirectory(dir=ROOT / "tests") as folder:
             product = Path(folder) / "jitterbit"
             product.mkdir()
@@ -240,8 +266,8 @@ class UpgradeTests(unittest.TestCase):
                 saved = upgrade._backup(backup_root / "upgrade-fixture")
                 self.assertEqual(saved[0][1].stat().st_mode & 0o777, 0o600)
                 configuration.write_text("changed")
-                self.assertEqual(upgrade._restore_changed(saved), ["jitterbit.conf"])
-            self.assertEqual(configuration.read_text(), "original")
+                self.assertEqual(saved[0][1].read_text(), "original")
+            self.assertEqual(configuration.read_text(), "changed")
             self.assertEqual(configuration.stat().st_mode & 0o777, 0o600)
 
 

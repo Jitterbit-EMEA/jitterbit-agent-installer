@@ -19,14 +19,14 @@ from jbpa.qualification import compare_runtime, regression, run_steps
 class CatalogueReleaseTests(unittest.TestCase):
     def test_exact_catalogue_counts_and_scope(self):
         catalogue, _ = load_catalogues()
-        self.assertEqual(len(catalogue["versions"]), 19)
+        self.assertEqual(len(catalogue["versions"]), 20)
         self.assertEqual(set(catalogue["dynamic_sources"]), {"latest"})
         self.assertEqual(
             sum(
                 e["qualification"]["overall"] == "AVAILABLE_UNQUALIFIED"
                 for e in catalogue["versions"].values()
             ),
-            17,
+            18,
         )
         self.assertNotIn("latest", catalogue["aliases"])
         self.assertEqual(
@@ -330,7 +330,7 @@ class ArtifactTests(unittest.TestCase):
             raise FrameworkError("DOWNLOAD_FAILED")
 
         results = artifacts.intake_all(self.root / "metadata", self.catalogue, inspect_fn=inspector)
-        self.assertEqual(len(results), 17)
+        self.assertEqual(len(results), 18)
         self.assertTrue(all(r["status"] == "FAILED" for r in results))
         self.assertTrue(all(not Path(path).exists() for path in seen))
 
@@ -652,7 +652,7 @@ class ArtifactCliCoverageTests(unittest.TestCase):
             code = release_cli.main(["artifact", "list"], stdout=output)
         data = json.loads(output.getvalue())
         self.assertEqual(code, 0)
-        self.assertEqual(len(data["details"]["versions"]), 19)
+        self.assertEqual(len(data["details"]["versions"]), 20)
         self.assertEqual(data["operation"], "ARTIFACT_LIST")
 
     def test_version_resolve_exact_package(self):

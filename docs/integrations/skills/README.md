@@ -70,3 +70,7 @@ Uninstall removes the local PA; it does not delete a Harmony agent record. A fre
 ## AI integration boundary
 
 The infrastructure AI supplies the existing VM, access, secret delivery and a named operation. The `jbpa` skill tells the AI when and how to invoke the fixed CLI. The CLI returns a process exit and structured result; the AI should report those fields and leave vendor-log interpretation and PA lifecycle decisions to JBPA. Read the [canonical external orchestrator contract](../../external-orchestrator-contract.md) for the broader boundary. Its legacy RC3 request schema and SSH reference caller are separate from this RC9 customer remote command.
+
+## Read-only operation assessment
+
+The matching JBPA skills include operation lineage/health and SFTP diagnostic interpretation. Detailed schema/query guidance lives in the checkout under `docs/trandb/operation-assessment-api.md` and `knowledge-catalogue.json`; install the skill against a checkout containing those resources. `scripts/management/assess-trandb.py` evaluates existing QA captures offline. `pa_assess_operations` is a proposed UPG-001 API/MCP action, not a deployed endpoint.

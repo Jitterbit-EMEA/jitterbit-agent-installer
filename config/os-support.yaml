@@ -5,7 +5,7 @@ platforms:
     architecture: x86_64
     package_kind: deb
     package_manager: apt
-    agent_versions: ["12.9", "12.9.2.2", "12.10"]
+    agent_versions: ["12.9", "12.9.2.2", "12.10", "12.11"]
     minimum:
       cpu_count: 4
       memory_bytes: 8000000000

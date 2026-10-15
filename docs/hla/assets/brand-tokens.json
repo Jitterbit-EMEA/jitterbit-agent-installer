@@ -1,0 +1,22 @@
+{
+  "brand": {
+    "name": "Jitterbit",
+    "colors": {
+      "orange": "#FF6529",
+      "deepTeal": "#073847",
+      "lightBlueGrey": "#C7D4DA",
+      "mutedBlueGrey": "#A5BEC3",
+      "offWhite": "#EBF0F3"
+    }
+  },
+  "usage": {
+    "primaryAccent": "orange",
+    "primaryDark": "deepTeal",
+    "pageBackground": "offWhite",
+    "secondaryPanel": "lightBlueGrey",
+    "secondaryAccent": "mutedBlueGrey"
+  },
+  "assets": {
+    "iconPack": "brand/icons/jitterbit-icon-pack.pdf"
+  }
+}
