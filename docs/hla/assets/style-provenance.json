@@ -1,0 +1,27 @@
+{
+  "reference_project": "jitterbit-se-opportunity-intelligence",
+  "reference_renderer": ".agents/skills/jitterbit-opportunity-intelligence/scripts/render_pack.py",
+  "customer_reference_renderer": "tools/render_customer_reference.py",
+  "visual_references": [
+    "output/pdf/jitterbit-opportunity-intelligence-user-guide.pdf",
+    "reference-reports/esker-jitterbit-operator-managed-oem-architecture.pdf",
+    "reference-reports/Sealey - Reference Architecture.pdf"
+  ],
+  "reused_design_elements": [
+    "Transparent icon and brand wordmark",
+    "Framed title panel with orange accent",
+    "Shaded cards and callout panels",
+    "Dark teal table headers and alternating row fill",
+    "Grouped architecture zones and numbered workflows"
+  ],
+  "implementation": "New ReportLab page master and vector drawing definitions; no previous HTML or diagram generator is used",
+  "preference": "Restructure tables and containers; retain visual hierarchy and technical detail.",
+  "current_diagram_style": {
+    "parent_zones": "#EBF0F3",
+    "component_fill": "#FFFFFF",
+    "component_header_and_result_path": "#073847",
+    "component_border": "#9FB5BE",
+    "requests_and_step_numbers": "#FF6529",
+    "rule": "All component bodies use the same white fill and teal top bar; parent zones use a shared grey. Numbering represents order, not separate deployed instances."
+  }
+}

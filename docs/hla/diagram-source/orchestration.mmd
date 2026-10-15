@@ -1,9 +1,0 @@
-flowchart LR
-  S[Studio submit<br/>Validate request] --> A[Parent API<br/>Job + outbox]
-  A --> R[Return job ID<br/>Accepted state]
-  A -. Pending send .-> L[Studio relay<br/>Recover publication]
-  A -->|Job reference| P[Studio publish<br/>Job reference]
-  L --> P
-  P --> Q[(JBMQ<br/>Requests)]
-  classDef jitterbit fill:#073847,color:#ffffff,stroke:#FF6529,stroke-width:2px
-  class S,L,P,Q jitterbit

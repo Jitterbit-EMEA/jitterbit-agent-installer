@@ -106,3 +106,7 @@ The catalogue contains an ordered `connectorReadinessRunbook` for requerying thi
 ## Composite operation assessment
 
 See the [API/MCP architecture and interpretation rules](operation-assessment-api.md), [planning contract](operation-assessment-contract.json) and [root assessment SQL](operation-assessment.sql). The offline `scripts/management/assess-trandb.py` assesses a selected root from existing reporting/transfer evidence. This is executable QA research; UPG-001 API/MCP deployment remains deferred until baseline validation.
+
+## Retention and historical paths
+
+Dated research captures describe historical agent state, not current health. Distinct TranDb/workload/estate evidence is retained locally. Superseded upgrade preflight captures and one-off repair scripts were removed in the 15 October cleanup; portable upgrade/benchmark findings remain under `evidence/`. A missing historical `output/` path means the raw capture is no longer available, not an empty or healthy source. Regenerate a new authorized capture when current evidence is needed.

@@ -21,7 +21,7 @@ Version 8 retains the approved Version 7 page master and refines its native-vect
 - `../../output/hla/rebuild/layout.json`: measured page content boundaries.
 - `../../output/hla/rebuild/qa.json`: structural and geometry checks.
 
-The design references are the Opportunity Intelligence shared report renderer, customer reference renderer, user guide and immutable Esker/Sealey architecture examples. Their typography, component roles, spacing and hierarchy informed this rebuild. Reference-project files were not modified. Earlier HTML/Mermaid/native v6 artifacts remain historical and are not part of the current build.
+The design references are the Opportunity Intelligence shared report renderer, customer reference renderer, user guide and immutable Esker/Sealey architecture examples. Their typography, component roles, spacing and hierarchy informed this rebuild. Reference-project files were not modified. Superseded HTML/Mermaid renderers, duplicate source models and earlier draft exports were removed in the 15 October cleanup. They remain recoverable from Git commit `dfe797e`; the current native-vector build is retained. Brand/source provenance is preserved in `assets/style-provenance.json`.
 
 ## Build and verification
 

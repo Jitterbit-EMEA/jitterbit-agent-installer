@@ -40,7 +40,7 @@ For this release the collector uses the existing RC9 runtime location, as the pr
 
 ## Measured improvement — 15 October 2026
 
-Same QA target and installed 12.11.3.2 agent, same client, limit 100, three sequential samples per path. Baseline source is commit `39f89b0`; raw captures stay local. Timings cover CLI launch through private capture write, including SSH/network. They exclude AI reasoning, tool scheduling and UI rendering. This is a small-history QA measurement, not a production performance SLA or peak-load benchmark.
+Same QA target and installed 12.11.3.2 agent, same client, limit 100, three sequential samples per path. Baseline source is commit `39f89b0`; final raw captures stay local. Timings cover CLI launch through private capture write, including SSH/network. They exclude AI reasoning, tool scheduling and UI rendering. This is a small-history QA measurement, not a production performance SLA or peak-load benchmark.
 
 | Read | Before median | After median | Scope |
 | --- | ---: | ---: | --- |
@@ -66,3 +66,7 @@ Timing fields distinguish client preparation, remote collector elapsed time, agg
 Live validation also passed active, errors, definitions, backlog and identity modes, plus the original 164-query schema profile. Stable agent identity/operation definitions and all 25 SQL strings matched the baseline. These facts and per-mode timings are in the benchmark summary.
 
 Final validation: 509 unit tests and four additional offline operation-assessment checks pass. Both skills validate; targeted lint and whitespace checks pass. The final primary benchmark was repeated after response-validation changes; the evidence also retains preliminary samples.
+
+## Local evidence retention after cleanup
+
+The 15 October cleanup removed preliminary benchmark captures and the original raw before samples after their timings, source revision and compatibility findings had been recorded in the portable evidence summary. Final `after-final/` captures, baseline timing summary and mode-validation summary remain local. Historical before/after database-row comparisons cannot be replayed from removed raw samples; their recorded findings remain evidence, not a currently replayable dataset. The current benchmark command remains executable. See `docs/maintenance/cleanup-2026-10-15.json` for removal roots and retained artifacts.
