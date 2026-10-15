@@ -1,4 +1,4 @@
--- Read-only TranDb query catalogue. Generated from validate-trandb-reporting.py.
+-- Read-only TranDb query catalogue. Catalogue defined in scripts/management/trandb_reporting.py; executed by validate-trandb-reporting.py.
 -- LIMIT 100 below is a SQL example; executable reporting defaults to 500 (maximum 2000).
 -- Every query uses a separate transaction. No credentials or message contents included.
 

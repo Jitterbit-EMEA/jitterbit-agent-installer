@@ -126,10 +126,18 @@ class SSH:
             target["identityFile"],
         ]
 
-    def run(self, argv: list[str], *, timeout: int = 60) -> tuple[int, str]:
+    def run(
+        self, argv: list[str], *, timeout: int = 60, input_text: str | None = None
+    ) -> tuple[int, str]:
+        if input_text is not None and (
+            not isinstance(input_text, str) or len(input_text.encode()) > MAX_OUTPUT
+        ):
+            raise RemoteError("REMOTE_INPUT_TOO_LARGE")
+        input_options = {"input": input_text.encode()} if input_text is not None else {}
         try:
             result = subprocess.run(
                 ["ssh", *self.options, "-T", self.address, shlex.join(argv)],
+                **input_options,
                 capture_output=True,
                 timeout=timeout,
                 check=False,

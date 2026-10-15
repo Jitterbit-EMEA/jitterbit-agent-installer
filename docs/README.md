@@ -30,3 +30,5 @@ Estate observability: [expert health architecture and QA toolkit](estate-health.
 
 - [Vendor-owned upgrade behavior](vendor-owned-upgrades.md) and [12.11.3.2 live QA validation](upgrade-12.11.3.2-qa-validation.md).
 - [Portable sanitized upgrade evidence](../evidence/pa-12.11.3.2/fixed-upgrade-2026-10-15.json); generated captures and candidates stay local under ignored `output/`.
+
+- [Interactive read path and measured performance](read-path-performance.md): focused modes, preserved security controls and repeatable benchmarks.

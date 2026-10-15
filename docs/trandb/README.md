@@ -9,11 +9,15 @@ This directory catalogues the PA database findings and provides executable, read
 | [Knowledge catalogue](knowledge-catalogue.json) | Machine-readable connection method, identities, joins, status mapping, timing semantics, evidence levels, open questions and executable query catalogue |
 | [Reporting assessment](reporting-assessment.md) | Full explanation and classification of all 130 tables |
 | `output/trandb/reportability-matrix-2026-10-08.json` | Complete table/column/type dictionary and reporting classifications |
-| [SQL catalogue](reporting-queries.sql) | 25 read-only reporting queries; executable source is `validate-trandb-reporting.py` |
+| [SQL catalogue](reporting-queries.sql) | 25 read-only reporting queries; shared source is `trandb_reporting.py`; execution uses `validate-trandb-reporting.py` |
 | `output/trandb/parent-child-links-2026-10-08.json` | Verified runtime parent/child GUID linkage |
 | `output/trandb/workloads/pre-production-2026-10-08/` | New replayable baseline: schema/profile, reporting data, query audit and evidence digests |
 
 The dictionary and assessment preserve schema-supported reporting opportunities even when their tables are empty. The catalogue separates observed relationships from meanings that still need workload validation. The baseline PA is 12.11.3.1; qualification remains AVAILABLE_UNQUALIFIED.
+
+## Interactive questions
+
+For current running/active/error executions, definitions, backlog or identity, use the focused one-SSH modes in [read-path-performance.md](../read-path-performance.md). Specify the mode explicitly; omit `--output` for a bounded direct JSON result or retain a new private capture. Full `reporting` (all original 25 queries), `profile`, workload comparison and offline assessment remain available. Do not use full schema profiling for a simple running-operation question.
 
 ## Capture the next workload
 

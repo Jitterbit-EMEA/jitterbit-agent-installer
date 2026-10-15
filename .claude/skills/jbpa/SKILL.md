@@ -86,7 +86,15 @@ For upgrade verification, compare baseline and final agent/group identity, exact
 
 ## Operation and transfer-log assessment
 
-Use this mode for requests about operation outcomes, child failures, backlog or SFTP diagnostics on the named QA target. Read `docs/trandb/operation-assessment-api.md` for the query plan/interpretation and `docs/trandb/knowledge-catalogue.json` for qualified schema/status evidence, from the same checkout used by the caller. The assessment API/MCP action is a proposed UPG-001 service; do not claim it is deployed. If these research resources are absent in a pinned customer checkout, report that version gap rather than invent queries.
+For simple current running/active/error-operation, definition, backlog or identity questions, use one focused read invocation from the checkout:
+
+```bash
+python3 scripts/management/capture-trandb.py --inventory /private/inventory.json --target qa-vm --mode running --limit 100
+```
+
+Select `running` for status 3 only; `active` also includes submitted/pending/received/cancel-requested. Use `errors` for raw statuses 7/9/11, `definitions`, `backlog` or `identity` for those questions. Without `--output`, bounded JSON returns directly; add a new private output path for large or retained captures. Preserve failure/truncation metadata and raw statuses. This path makes one pinned SSH call, verifies trusted collector code in memory, and installs no PA service, port or persistent session. Do not repeat schema discovery or a full health check for a simple query. Read `docs/read-path-performance.md` when timing, mode selection or transport details matter.
+
+For broader operation outcomes, child failures or SFTP diagnosis, read `docs/trandb/operation-assessment-api.md` for the query plan/interpretation and `docs/trandb/knowledge-catalogue.json` for qualified schema/status evidence, from the same checkout used by the caller. Existing `--mode reporting` retains all 25 reports; `--mode profile` retains heavier schema research. The assessment API/MCP action is a proposed UPG-001 service; do not claim it is deployed. If these research resources are absent in a pinned customer checkout, report that version gap rather than invent queries.
 
 1. Resolve target, environment and one root execution or bounded UTC window. For repeated runs, list candidates and select the intended root; do not combine them. Reuse protected inventory and existing SSH. Read-only assessment does not authorize enabling debug logs, restarting services, deployment or repair.
 2. Capture bounded reporting with `scripts/management/capture-trandb.py --mode reporting`; use `docs/trandb/operation-assessment.sql` for root-scoped totals and the fixed reporting library for definition, lineage, message metadata, summaries, progress, file counters and current backlog. Credentials remain local. Use explicit read-only transactions/local timeouts through PgBouncer. Do not accept arbitrary SQL or unrestricted filesystem paths from an AI request.

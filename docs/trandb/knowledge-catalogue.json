@@ -1067,5 +1067,27 @@
     "independentFinalHealth": "SUCCESS / HEALTHY",
     "supplementaryServiceStatus": "AgentSupportTools parser unavailable; native status/application evidence used",
     "healthMetadataBackup": "/var/lib/jbpa/backups/health-identity-20261015-01afb630"
+  },
+  "interactiveReadPath": {
+    "date": "2026-10-15",
+    "entrypoint": "scripts/management/capture-trandb.py",
+    "modes": [
+      "running",
+      "active",
+      "errors",
+      "definitions",
+      "backlog",
+      "identity",
+      "reporting",
+      "profile"
+    ],
+    "security": "One pinned noninteractive SSH/sudo execution; trusted bounded bundle checked before execution; existing explicit read-only SQL/rollback/timeouts; credentials remain on PA; private exclusive capture files; no services/ports/persistent sessions",
+    "reportingCompatibility": "All 25 original SQL strings and report families unchanged",
+    "benchmarkEvidence": "evidence/read-path/benchmark-2026-10-15.json",
+    "beforeReportingMedianMs": 18180.4,
+    "afterReportingMedianMs": 2977.73,
+    "focusedRunningMedianMs": 2340.91,
+    "benchmarkLimits": "Three primary samples each on one QA target; CLI/network included, AI scheduler/reasoning excluded; not production SLA or peak-load qualification",
+    "guidance": "Choose focused modes for simple questions. Use full reporting/profile only when needed. Raw status, truncation and unavailable-source semantics retained."
   }
 }

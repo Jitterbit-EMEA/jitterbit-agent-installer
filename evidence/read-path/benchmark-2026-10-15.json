@@ -1,0 +1,390 @@
+{
+  "schemaVersion": 1,
+  "date": "2026-10-15",
+  "target": "JBLAB-PA-AUTOMATION",
+  "installedPA": "12.11.3.2",
+  "baselineCommit": "39f89b0",
+  "method": {
+    "samplesPerPrimaryPath": 3,
+    "rowLimit": 100,
+    "clock": "monotonic wall-clock; CLI launch through private capture write",
+    "includes": [
+      "SSH/network",
+      "collector/query execution",
+      "local serialization"
+    ],
+    "excludes": [
+      "AI reasoning",
+      "tool scheduling",
+      "UI rendering"
+    ],
+    "workload": "No active/running operations observed in focused validation; bounded QA history, not a peak-load benchmark",
+    "sameClientAndTarget": true,
+    "securityAndLifecycle": "Existing SSH, root sudo, local credential provider and read-only query controls retained; no services, ports, persistent sessions or lifecycle actions added"
+  },
+  "beforeFullReporting": [
+    {
+      "sample": 1,
+      "elapsedMs": 19044.3,
+      "queryMs": 225,
+      "queries": 25,
+      "responseBytes": 209293,
+      "failures": []
+    },
+    {
+      "sample": 2,
+      "elapsedMs": 18180.4,
+      "queryMs": 168,
+      "queries": 25,
+      "responseBytes": 209290,
+      "failures": []
+    },
+    {
+      "sample": 3,
+      "elapsedMs": 18101.3,
+      "queryMs": 159,
+      "queries": 25,
+      "responseBytes": 209291,
+      "failures": []
+    }
+  ],
+  "after": {
+    "samples": [
+      {
+        "mode": "reporting",
+        "sample": 1,
+        "elapsedMs": 3305.05,
+        "queries": 25,
+        "timings": {
+          "remoteElapsedMs": 448.44,
+          "queryElapsedMs": 153,
+          "clientPreparationMs": 2.92,
+          "sshRoundTripMs": 3110.44,
+          "sshAndStartupOverheadMs": 2662.0,
+          "totalMs": 3113.36,
+          "sshInvocations": 1,
+          "collectorBytes": 23094,
+          "responseBytes": 158797
+        },
+        "failures": [],
+        "truncated": []
+      },
+      {
+        "mode": "running",
+        "sample": 1,
+        "elapsedMs": 2356.59,
+        "queries": 1,
+        "timings": {
+          "remoteElapsedMs": 303.92,
+          "queryElapsedMs": 6,
+          "clientPreparationMs": 1.58,
+          "sshRoundTripMs": 2233.26,
+          "sshAndStartupOverheadMs": 1929.34,
+          "totalMs": 2234.85,
+          "sshInvocations": 1,
+          "collectorBytes": 23094,
+          "responseBytes": 969
+        },
+        "failures": [],
+        "truncated": []
+      },
+      {
+        "mode": "reporting",
+        "sample": 2,
+        "elapsedMs": 2977.73,
+        "queries": 25,
+        "timings": {
+          "remoteElapsedMs": 474.27,
+          "queryElapsedMs": 167,
+          "clientPreparationMs": 3.26,
+          "sshRoundTripMs": 2839.66,
+          "sshAndStartupOverheadMs": 2365.39,
+          "totalMs": 2842.92,
+          "sshInvocations": 1,
+          "collectorBytes": 23094,
+          "responseBytes": 158797
+        },
+        "failures": [],
+        "truncated": []
+      },
+      {
+        "mode": "running",
+        "sample": 2,
+        "elapsedMs": 2340.91,
+        "queries": 1,
+        "timings": {
+          "remoteElapsedMs": 312.42,
+          "queryElapsedMs": 7,
+          "clientPreparationMs": 1.83,
+          "sshRoundTripMs": 2209.23,
+          "sshAndStartupOverheadMs": 1896.81,
+          "totalMs": 2211.06,
+          "sshInvocations": 1,
+          "collectorBytes": 23094,
+          "responseBytes": 969
+        },
+        "failures": [],
+        "truncated": []
+      },
+      {
+        "mode": "reporting",
+        "sample": 3,
+        "elapsedMs": 2870.7,
+        "queries": 25,
+        "timings": {
+          "remoteElapsedMs": 462.16,
+          "queryElapsedMs": 159,
+          "clientPreparationMs": 0.91,
+          "sshRoundTripMs": 2767.28,
+          "sshAndStartupOverheadMs": 2305.12,
+          "totalMs": 2768.19,
+          "sshInvocations": 1,
+          "collectorBytes": 23094,
+          "responseBytes": 158797
+        },
+        "failures": [],
+        "truncated": []
+      },
+      {
+        "mode": "running",
+        "sample": 3,
+        "elapsedMs": 2330.88,
+        "queries": 1,
+        "timings": {
+          "remoteElapsedMs": 310.33,
+          "queryElapsedMs": 6,
+          "clientPreparationMs": 0.83,
+          "sshRoundTripMs": 2183.78,
+          "sshAndStartupOverheadMs": 1873.45,
+          "totalMs": 2184.61,
+          "sshInvocations": 1,
+          "collectorBytes": 23094,
+          "responseBytes": 969
+        },
+        "failures": [],
+        "truncated": []
+      }
+    ],
+    "mediansMs": {
+      "reporting": 2977.73,
+      "running": 2340.91
+    },
+    "scope": "CLI launch through private capture write; SSH/network included; AI/tool-scheduler latency excluded"
+  },
+  "results": {
+    "beforeMedianMs": 18180.4,
+    "afterFullReportingMedianMs": 2977.73,
+    "fullReportingReductionPercent": 83.62,
+    "fullReportingSpeedup": 6.11,
+    "newFocusedRunningMedianMs": 2340.91,
+    "focusedBaseline": "No equivalent focused path existed; do not treat fewer queries as an identical full-report comparison",
+    "beforeSshScpInvocations": 8,
+    "afterSshInvocations": 1
+  },
+  "compatibility": {
+    "all25SQLStringsUnchanged": true,
+    "stableAgentIdentityUnchanged": true,
+    "stableOperationDefinitionsUnchanged": true,
+    "fullReportsLabelsUnchanged": true,
+    "separateQuerySnapshots": "Dynamic counters/timestamps can differ; no multi-query snapshot guarantee added"
+  },
+  "remainingLiveModes": [
+    {
+      "mode": "active",
+      "elapsedMs": 2749.34,
+      "queryCount": 1,
+      "failures": [],
+      "readOnlyEnforced": true,
+      "rows": {
+        "operation_runs": 0
+      }
+    },
+    {
+      "mode": "errors",
+      "elapsedMs": 2324.57,
+      "queryCount": 1,
+      "failures": [],
+      "readOnlyEnforced": true,
+      "rows": {
+        "operation_runs": 8
+      }
+    },
+    {
+      "mode": "definitions",
+      "elapsedMs": 2382.2,
+      "queryCount": 1,
+      "failures": [],
+      "readOnlyEnforced": true,
+      "rows": {
+        "operation_definitions": 15
+      }
+    },
+    {
+      "mode": "backlog",
+      "elapsedMs": 2339.11,
+      "queryCount": 2,
+      "failures": [],
+      "readOnlyEnforced": true,
+      "rows": {
+        "incoming_queue_summary": 0,
+        "log_sync_backlog": 6
+      }
+    },
+    {
+      "mode": "identity",
+      "elapsedMs": 2335.56,
+      "queryCount": 1,
+      "failures": [],
+      "readOnlyEnforced": true,
+      "rows": {
+        "agent_identity_whitelist": 6
+      }
+    },
+    {
+      "mode": "profile",
+      "elapsedMs": 4660.66,
+      "queryCount": 164,
+      "failures": [],
+      "readOnlyEnforced": true,
+      "rows": {}
+    }
+  ],
+  "collectorSourceSha256": {
+    "scripts/management/inspect-trandb.py": "49fcc00de1568a465243488abc6e30315a5ad8533c1715603bbc7d19d9d4d58b",
+    "scripts/management/validate-trandb-reporting.py": "b1f577355ba49cc96fbb65d18abc78d7adfc8ef29838d5dc12581eec42414c80",
+    "scripts/management/trandb_reporting.py": "68439fc060797e3e6200aa25ab679de965c5a46e7f5aaf53fba17a5811ffaffa",
+    "tools/handoff/readonly_capture.py": "831a5dac7316115a6eee0c86fa7c048ff6d4542913b204027e145b14b74598a2"
+  },
+  "preliminaryAfter": {
+    "samples": [
+      {
+        "mode": "reporting",
+        "sample": 1,
+        "elapsedMs": 3036.56,
+        "queries": 25,
+        "timings": {
+          "remoteElapsedMs": 471.13,
+          "queryElapsedMs": 165,
+          "clientPreparationMs": 4.11,
+          "sshRoundTripMs": 2825.08,
+          "sshAndStartupOverheadMs": 2353.95,
+          "totalMs": 2829.19,
+          "sshInvocations": 1,
+          "collectorBytes": 23094,
+          "responseBytes": 158798
+        },
+        "failures": [],
+        "truncated": []
+      },
+      {
+        "mode": "running",
+        "sample": 1,
+        "elapsedMs": 2329.68,
+        "queries": 1,
+        "timings": {
+          "remoteElapsedMs": 313.75,
+          "queryElapsedMs": 6,
+          "clientPreparationMs": 1.09,
+          "sshRoundTripMs": 2208.66,
+          "sshAndStartupOverheadMs": 1894.91,
+          "totalMs": 2209.75,
+          "sshInvocations": 1,
+          "collectorBytes": 23094,
+          "responseBytes": 969
+        },
+        "failures": [],
+        "truncated": []
+      },
+      {
+        "mode": "reporting",
+        "sample": 2,
+        "elapsedMs": 2972.26,
+        "queries": 25,
+        "timings": {
+          "remoteElapsedMs": 485.28,
+          "queryElapsedMs": 174,
+          "clientPreparationMs": 0.68,
+          "sshRoundTripMs": 2820.53,
+          "sshAndStartupOverheadMs": 2335.25,
+          "totalMs": 2821.21,
+          "sshInvocations": 1,
+          "collectorBytes": 23094,
+          "responseBytes": 158798
+        },
+        "failures": [],
+        "truncated": []
+      },
+      {
+        "mode": "running",
+        "sample": 2,
+        "elapsedMs": 2300.49,
+        "queries": 1,
+        "timings": {
+          "remoteElapsedMs": 308.15,
+          "queryElapsedMs": 7,
+          "clientPreparationMs": 1.66,
+          "sshRoundTripMs": 2180.92,
+          "sshAndStartupOverheadMs": 1872.77,
+          "totalMs": 2182.58,
+          "sshInvocations": 1,
+          "collectorBytes": 23094,
+          "responseBytes": 969
+        },
+        "failures": [],
+        "truncated": []
+      },
+      {
+        "mode": "reporting",
+        "sample": 3,
+        "elapsedMs": 3033.59,
+        "queries": 25,
+        "timings": {
+          "remoteElapsedMs": 479.85,
+          "queryElapsedMs": 176,
+          "clientPreparationMs": 1.87,
+          "sshRoundTripMs": 2918.08,
+          "sshAndStartupOverheadMs": 2438.23,
+          "totalMs": 2919.95,
+          "sshInvocations": 1,
+          "collectorBytes": 23094,
+          "responseBytes": 158798
+        },
+        "failures": [],
+        "truncated": []
+      },
+      {
+        "mode": "running",
+        "sample": 3,
+        "elapsedMs": 2322.43,
+        "queries": 1,
+        "timings": {
+          "remoteElapsedMs": 309.36,
+          "queryElapsedMs": 7,
+          "clientPreparationMs": 3.21,
+          "sshRoundTripMs": 2176.44,
+          "sshAndStartupOverheadMs": 1867.08,
+          "totalMs": 2179.66,
+          "sshInvocations": 1,
+          "collectorBytes": 23094,
+          "responseBytes": 969
+        },
+        "failures": [],
+        "truncated": []
+      }
+    ],
+    "mediansMs": {
+      "reporting": 3033.59,
+      "running": 2322.43
+    },
+    "scope": "CLI launch through private capture write; SSH/network included; AI/tool-scheduler latency excluded"
+  },
+  "validation": {
+    "unitTestsPassed": 509,
+    "additionalOfflineAssessmentChecksPassed": 4,
+    "skillsValidated": [
+      "Codex",
+      "Claude"
+    ],
+    "rawCapturesCommitted": false
+  }
+}
