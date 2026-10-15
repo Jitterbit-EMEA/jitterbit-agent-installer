@@ -66,3 +66,7 @@ Phase 3B recorded standalone REINSTALL and comprehensive host preflight gaps. RC
 ## Phase 3C runtime completeness
 
 Standalone REINSTALL: IMPLEMENTED / MOCK-TESTED in RC3. Shared host readiness: IMPLEMENTED / MOCK/LOCAL TESTED. RC3 closes the documented runtime implementation gaps; Phase 3B history remains preserved. Live Ubuntu 22.04 and separately controlled external handoff are still required for GATE-10/GATE-13. No infrastructure provisioning capability is added.
+
+## Engineering QA confirmation — 15 October 2026
+
+The current catalogue records user-relayed Jitterbit Engineering QA verification for all 20 pinned packages, with test-only approvals. See [the confirmation](../evidence/engineering-qa/confirmation-2026-10-15.json) and [current matrix](version-qualification-matrix.md). This supersedes historical available/unqualified labels as version-level QA status. It does not waive host/platform eligibility, local artifact integrity, sizing or independent production approval. Existing local runtime contracts and tested/recommended aliases remain unchanged.

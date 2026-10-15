@@ -34,3 +34,5 @@ Estate observability: [expert health architecture and QA toolkit](estate-health.
 - [Interactive read path and measured performance](read-path-performance.md): focused modes, preserved security controls and repeatable benchmarks.
 
 Local cleanup: [15 October retention/removal record](maintenance/cleanup-2026-10-15.json). Distinct research evidence and required immutable release fixtures are retained; superseded document builds and intermediate exports were removed.
+
+Engineering QA status: [all 20 pinned agent versions confirmed](../evidence/engineering-qa/confirmation-2026-10-15.json), with local/runtime and production evidence kept separate in the [matrix](version-qualification-matrix.md).

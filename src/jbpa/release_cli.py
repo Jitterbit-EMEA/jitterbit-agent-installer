@@ -252,6 +252,7 @@ def versions(argv):
                 "packageVersion": entry["package_version"],
                 "artifactStatus": entry["artifact_status"],
                 "qualification": entry["qualification"]["overall"],
+                "qaVerification": entry["qualification"].get("engineering_qa"),
                 "approval": entry["approval"],
             }
             for logical, entry in catalogue["versions"].items()

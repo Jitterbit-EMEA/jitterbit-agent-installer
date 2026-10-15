@@ -1089,5 +1089,16 @@
     "focusedRunningMedianMs": 2340.91,
     "benchmarkLimits": "Three primary samples each on one QA target; CLI/network included, AI scheduler/reasoning excluded; not production SLA or peak-load qualification",
     "guidance": "Choose focused modes for simple questions. Use full reporting/profile only when needed. Raw status, truncation and unavailable-source semantics retained."
+  },
+  "engineeringQaConfirmation": {
+    "date": "2026-10-15",
+    "status": "QA_VERIFIED",
+    "source": "USER_RELAYED_ENGINEERING_CONFIRMATION",
+    "confirmedBy": "Jitterbit Engineering",
+    "evidence": "evidence/engineering-qa/confirmation-2026-10-15.json",
+    "cataloguedPackages": 20,
+    "productionApproved": false,
+    "localPlatformAndIntegrityEvidencePreserved": true,
+    "futureLatestPackagesExcluded": true
   }
 }

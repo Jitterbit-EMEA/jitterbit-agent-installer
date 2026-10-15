@@ -239,6 +239,23 @@
                 "items": {
                   "type": "string"
                 }
+              },
+              "engineering_qa": {
+                "type": "object",
+                "additionalProperties": false,
+                "required": [
+                  "status",
+                  "evidence_ref"
+                ],
+                "properties": {
+                  "status": {
+                    "const": "QA_VERIFIED"
+                  },
+                  "evidence_ref": {
+                    "type": "string",
+                    "pattern": "^evidence/engineering-qa/[A-Za-z0-9._-]+\\.json$"
+                  }
+                }
               }
             }
           }

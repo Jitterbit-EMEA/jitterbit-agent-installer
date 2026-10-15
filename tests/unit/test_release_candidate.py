@@ -23,7 +23,7 @@ class CatalogueReleaseTests(unittest.TestCase):
         self.assertEqual(set(catalogue["dynamic_sources"]), {"latest"})
         self.assertEqual(
             sum(
-                e["qualification"]["overall"] == "AVAILABLE_UNQUALIFIED"
+                e["qualification"]["overall"] == "QA_APPROVED"
                 for e in catalogue["versions"].values()
             ),
             18,
@@ -141,7 +141,7 @@ class ArtifactTests(unittest.TestCase):
             "Depends": "odbcinst, unixodbc",
         }
 
-    def test_inspect_unqualified_does_not_promote(self):
+    def test_inspection_preserves_qa_status_without_production_promotion(self):
         original = copy.deepcopy(self.catalogue)
         manifest, _ = artifacts.inspect(
             "12.8",
@@ -150,7 +150,7 @@ class ArtifactTests(unittest.TestCase):
             downloader=self.downloader,
             inspector=self.inspector,
         )
-        self.assertEqual(manifest["runtime_qualification"], "AVAILABLE_UNQUALIFIED")
+        self.assertEqual(manifest["runtime_qualification"], "QA_APPROVED")
         self.assertFalse(manifest["production_approved"])
         self.assertEqual(original, self.catalogue)
         validate_schema(manifest, "artifact-manifest")
@@ -751,7 +751,7 @@ class ArtifactCliCoverageTests(unittest.TestCase):
                 )
         self.assertEqual(code, 0)
         self.assertEqual(data["qualificationClassification"], "EXPERIMENTAL_VERSION_TEST")
-        self.assertEqual(load_catalogues()[0]["versions"]["12.8"]["approval"], "pending")
+        self.assertEqual(load_catalogues()[0]["versions"]["12.8"]["approval"], "approved_for_test")
 
 
 class LocalArtifactVerificationTests(unittest.TestCase):

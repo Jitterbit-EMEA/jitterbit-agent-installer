@@ -38,8 +38,8 @@ class InteractiveTests(unittest.TestCase):
         catalogue, _ = load_catalogues()
         logical, entry = resolve("12.11.3.2", catalogue)
         self.assertEqual(logical, "12.11")
-        self.assertEqual(entry["approval"], "pending")
-        self.assertEqual(entry["qualification"]["overall"], "AVAILABLE_UNQUALIFIED")
+        self.assertEqual(entry["approval"], "approved_for_test")
+        self.assertEqual(entry["qualification"]["overall"], "QA_APPROVED")
         self.assertEqual(len(entry["integrity"]["sha256"]), 64)
         with self.assertRaises(FrameworkError):
             release_cli.qualification_guard("12.11.3.2", entry, HOST)

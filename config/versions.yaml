@@ -20,13 +20,16 @@ versions:
     integrity:
       sha256: 6e69a441c866ef2610aae603485ac82a05b711ccaca524f56c980458cb4907f0
       classification: LOCALLY_CALCULATED
-    artifact_status: METADATA_VERIFIED
+    artifact_status: QA_APPROVED
     qualification:
-      overall: AVAILABLE_UNQUALIFIED
+      engineering_qa:
+        status: QA_VERIFIED
+        evidence_ref: evidence/engineering-qa/confirmation-2026-10-15.json
+      overall: QA_APPROVED
       platforms:
         ubuntu-24.04-amd64: NOT_TESTED
       scope: []
-    approval: pending
+    approval: approved_for_test
     artifacts:
     - os_id: ubuntu
       os_version: '24.04'
@@ -50,6 +53,9 @@ versions:
       classification: LOCALLY_CALCULATED
     artifact_status: QA_APPROVED
     qualification:
+      engineering_qa:
+        status: QA_VERIFIED
+        evidence_ref: evidence/engineering-qa/confirmation-2026-10-15.json
       overall: TESTED_LIVE
       platforms:
         ubuntu-24.04-amd64: TESTED_LIVE
@@ -99,8 +105,11 @@ versions:
     integrity:
       sha256: null
       classification: NOT_VERIFIED
-    artifact_status: KNOWN
+    artifact_status: QA_APPROVED
     qualification:
+      engineering_qa:
+        status: QA_VERIFIED
+        evidence_ref: evidence/engineering-qa/confirmation-2026-10-15.json
       overall: TESTED_LIVE
       platforms:
         ubuntu-24.04-amd64: TESTED_LIVE
@@ -109,7 +118,7 @@ versions:
         - installation
         - registration
         - health
-    approval: pending
+    approval: approved_for_test
     artifacts:
       - os_id: ubuntu
         os_version: '24.04'
@@ -131,14 +140,17 @@ versions:
     integrity:
       sha256: null
       classification: NOT_VERIFIED
-    artifact_status: KNOWN
+    artifact_status: QA_APPROVED
     qualification:
-      overall: AVAILABLE_UNQUALIFIED
+      engineering_qa:
+        status: QA_VERIFIED
+        evidence_ref: evidence/engineering-qa/confirmation-2026-10-15.json
+      overall: QA_APPROVED
       platforms:
         ubuntu-24.04-amd64: NOT_TESTED
         ubuntu-22.04-amd64: NOT_TESTED
       scope: []
-    approval: pending
+    approval: approved_for_test
     artifacts:
       - os_id: ubuntu
         os_version: '24.04'
@@ -169,14 +181,17 @@ versions:
     integrity:
       sha256: null
       classification: NOT_VERIFIED
-    artifact_status: KNOWN
+    artifact_status: QA_APPROVED
     qualification:
-      overall: AVAILABLE_UNQUALIFIED
+      engineering_qa:
+        status: QA_VERIFIED
+        evidence_ref: evidence/engineering-qa/confirmation-2026-10-15.json
+      overall: QA_APPROVED
       platforms:
         ubuntu-24.04-amd64: NOT_TESTED
         ubuntu-22.04-amd64: NOT_TESTED
       scope: []
-    approval: pending
+    approval: approved_for_test
     artifacts:
       - os_id: ubuntu
         os_version: '24.04'
@@ -207,14 +222,17 @@ versions:
     integrity:
       sha256: null
       classification: NOT_VERIFIED
-    artifact_status: KNOWN
+    artifact_status: QA_APPROVED
     qualification:
-      overall: AVAILABLE_UNQUALIFIED
+      engineering_qa:
+        status: QA_VERIFIED
+        evidence_ref: evidence/engineering-qa/confirmation-2026-10-15.json
+      overall: QA_APPROVED
       platforms:
         ubuntu-24.04-amd64: NOT_TESTED
         ubuntu-22.04-amd64: NOT_TESTED
       scope: []
-    approval: pending
+    approval: approved_for_test
     artifacts:
       - os_id: ubuntu
         os_version: '24.04'
@@ -245,14 +263,17 @@ versions:
     integrity:
       sha256: null
       classification: NOT_VERIFIED
-    artifact_status: KNOWN
+    artifact_status: QA_APPROVED
     qualification:
-      overall: AVAILABLE_UNQUALIFIED
+      engineering_qa:
+        status: QA_VERIFIED
+        evidence_ref: evidence/engineering-qa/confirmation-2026-10-15.json
+      overall: QA_APPROVED
       platforms:
         ubuntu-24.04-amd64: NOT_TESTED
         ubuntu-22.04-amd64: NOT_TESTED
       scope: []
-    approval: pending
+    approval: approved_for_test
     artifacts:
       - os_id: ubuntu
         os_version: '24.04'
@@ -283,14 +304,17 @@ versions:
     integrity:
       sha256: null
       classification: NOT_VERIFIED
-    artifact_status: KNOWN
+    artifact_status: QA_APPROVED
     qualification:
-      overall: AVAILABLE_UNQUALIFIED
+      engineering_qa:
+        status: QA_VERIFIED
+        evidence_ref: evidence/engineering-qa/confirmation-2026-10-15.json
+      overall: QA_APPROVED
       platforms:
         ubuntu-24.04-amd64: NOT_TESTED
         ubuntu-22.04-amd64: NOT_TESTED
       scope: []
-    approval: pending
+    approval: approved_for_test
     artifacts:
       - os_id: ubuntu
         os_version: '24.04'
@@ -321,14 +345,17 @@ versions:
     integrity:
       sha256: null
       classification: NOT_VERIFIED
-    artifact_status: KNOWN
+    artifact_status: QA_APPROVED
     qualification:
-      overall: AVAILABLE_UNQUALIFIED
+      engineering_qa:
+        status: QA_VERIFIED
+        evidence_ref: evidence/engineering-qa/confirmation-2026-10-15.json
+      overall: QA_APPROVED
       platforms:
         ubuntu-24.04-amd64: NOT_TESTED
         ubuntu-22.04-amd64: NOT_TESTED
       scope: []
-    approval: pending
+    approval: approved_for_test
     artifacts:
       - os_id: ubuntu
         os_version: '24.04'
@@ -359,14 +386,17 @@ versions:
     integrity:
       sha256: null
       classification: NOT_VERIFIED
-    artifact_status: KNOWN
+    artifact_status: QA_APPROVED
     qualification:
-      overall: AVAILABLE_UNQUALIFIED
+      engineering_qa:
+        status: QA_VERIFIED
+        evidence_ref: evidence/engineering-qa/confirmation-2026-10-15.json
+      overall: QA_APPROVED
       platforms:
         ubuntu-24.04-amd64: NOT_TESTED
         ubuntu-22.04-amd64: NOT_TESTED
       scope: []
-    approval: pending
+    approval: approved_for_test
     artifacts:
       - os_id: ubuntu
         os_version: '24.04'
@@ -397,14 +427,17 @@ versions:
     integrity:
       sha256: null
       classification: NOT_VERIFIED
-    artifact_status: KNOWN
+    artifact_status: QA_APPROVED
     qualification:
-      overall: AVAILABLE_UNQUALIFIED
+      engineering_qa:
+        status: QA_VERIFIED
+        evidence_ref: evidence/engineering-qa/confirmation-2026-10-15.json
+      overall: QA_APPROVED
       platforms:
         ubuntu-24.04-amd64: NOT_TESTED
         ubuntu-22.04-amd64: NOT_TESTED
       scope: []
-    approval: pending
+    approval: approved_for_test
     artifacts:
       - os_id: ubuntu
         os_version: '24.04'
@@ -435,14 +468,17 @@ versions:
     integrity:
       sha256: null
       classification: NOT_VERIFIED
-    artifact_status: KNOWN
+    artifact_status: QA_APPROVED
     qualification:
-      overall: AVAILABLE_UNQUALIFIED
+      engineering_qa:
+        status: QA_VERIFIED
+        evidence_ref: evidence/engineering-qa/confirmation-2026-10-15.json
+      overall: QA_APPROVED
       platforms:
         ubuntu-24.04-amd64: NOT_TESTED
         ubuntu-22.04-amd64: NOT_TESTED
       scope: []
-    approval: pending
+    approval: approved_for_test
     artifacts:
       - os_id: ubuntu
         os_version: '24.04'
@@ -473,14 +509,17 @@ versions:
     integrity:
       sha256: null
       classification: NOT_VERIFIED
-    artifact_status: KNOWN
+    artifact_status: QA_APPROVED
     qualification:
-      overall: AVAILABLE_UNQUALIFIED
+      engineering_qa:
+        status: QA_VERIFIED
+        evidence_ref: evidence/engineering-qa/confirmation-2026-10-15.json
+      overall: QA_APPROVED
       platforms:
         ubuntu-24.04-amd64: NOT_TESTED
         ubuntu-22.04-amd64: NOT_TESTED
       scope: []
-    approval: pending
+    approval: approved_for_test
     artifacts:
       - os_id: ubuntu
         os_version: '24.04'
@@ -511,14 +550,17 @@ versions:
     integrity:
       sha256: null
       classification: NOT_VERIFIED
-    artifact_status: KNOWN
+    artifact_status: QA_APPROVED
     qualification:
-      overall: AVAILABLE_UNQUALIFIED
+      engineering_qa:
+        status: QA_VERIFIED
+        evidence_ref: evidence/engineering-qa/confirmation-2026-10-15.json
+      overall: QA_APPROVED
       platforms:
         ubuntu-24.04-amd64: NOT_TESTED
         ubuntu-22.04-amd64: NOT_TESTED
       scope: []
-    approval: pending
+    approval: approved_for_test
     artifacts:
       - os_id: ubuntu
         os_version: '24.04'
@@ -549,14 +591,17 @@ versions:
     integrity:
       sha256: null
       classification: NOT_VERIFIED
-    artifact_status: KNOWN
+    artifact_status: QA_APPROVED
     qualification:
-      overall: AVAILABLE_UNQUALIFIED
+      engineering_qa:
+        status: QA_VERIFIED
+        evidence_ref: evidence/engineering-qa/confirmation-2026-10-15.json
+      overall: QA_APPROVED
       platforms:
         ubuntu-24.04-amd64: NOT_TESTED
         ubuntu-22.04-amd64: NOT_TESTED
       scope: []
-    approval: pending
+    approval: approved_for_test
     artifacts:
       - os_id: ubuntu
         os_version: '24.04'
@@ -587,14 +632,17 @@ versions:
     integrity:
       sha256: null
       classification: NOT_VERIFIED
-    artifact_status: KNOWN
+    artifact_status: QA_APPROVED
     qualification:
-      overall: AVAILABLE_UNQUALIFIED
+      engineering_qa:
+        status: QA_VERIFIED
+        evidence_ref: evidence/engineering-qa/confirmation-2026-10-15.json
+      overall: QA_APPROVED
       platforms:
         ubuntu-24.04-amd64: NOT_TESTED
         ubuntu-22.04-amd64: NOT_TESTED
       scope: []
-    approval: pending
+    approval: approved_for_test
     artifacts:
       - os_id: ubuntu
         os_version: '24.04'
@@ -625,14 +673,17 @@ versions:
     integrity:
       sha256: null
       classification: NOT_VERIFIED
-    artifact_status: KNOWN
+    artifact_status: QA_APPROVED
     qualification:
-      overall: AVAILABLE_UNQUALIFIED
+      engineering_qa:
+        status: QA_VERIFIED
+        evidence_ref: evidence/engineering-qa/confirmation-2026-10-15.json
+      overall: QA_APPROVED
       platforms:
         ubuntu-24.04-amd64: NOT_TESTED
         ubuntu-22.04-amd64: NOT_TESTED
       scope: []
-    approval: pending
+    approval: approved_for_test
     artifacts:
       - os_id: ubuntu
         os_version: '24.04'
@@ -663,14 +714,17 @@ versions:
     integrity:
       sha256: null
       classification: NOT_VERIFIED
-    artifact_status: KNOWN
+    artifact_status: QA_APPROVED
     qualification:
-      overall: AVAILABLE_UNQUALIFIED
+      engineering_qa:
+        status: QA_VERIFIED
+        evidence_ref: evidence/engineering-qa/confirmation-2026-10-15.json
+      overall: QA_APPROVED
       platforms:
         ubuntu-24.04-amd64: NOT_TESTED
         ubuntu-22.04-amd64: NOT_TESTED
       scope: []
-    approval: pending
+    approval: approved_for_test
     artifacts:
       - os_id: ubuntu
         os_version: '24.04'
@@ -701,14 +755,17 @@ versions:
     integrity:
       sha256: null
       classification: NOT_VERIFIED
-    artifact_status: KNOWN
+    artifact_status: QA_APPROVED
     qualification:
-      overall: AVAILABLE_UNQUALIFIED
+      engineering_qa:
+        status: QA_VERIFIED
+        evidence_ref: evidence/engineering-qa/confirmation-2026-10-15.json
+      overall: QA_APPROVED
       platforms:
         ubuntu-24.04-amd64: NOT_TESTED
         ubuntu-22.04-amd64: NOT_TESTED
       scope: []
-    approval: pending
+    approval: approved_for_test
     artifacts:
       - os_id: ubuntu
         os_version: '24.04'
@@ -739,14 +796,17 @@ versions:
     integrity:
       sha256: null
       classification: NOT_VERIFIED
-    artifact_status: KNOWN
+    artifact_status: QA_APPROVED
     qualification:
-      overall: AVAILABLE_UNQUALIFIED
+      engineering_qa:
+        status: QA_VERIFIED
+        evidence_ref: evidence/engineering-qa/confirmation-2026-10-15.json
+      overall: QA_APPROVED
       platforms:
         ubuntu-24.04-amd64: NOT_TESTED
         ubuntu-22.04-amd64: NOT_TESTED
       scope: []
-    approval: pending
+    approval: approved_for_test
     artifacts:
       - os_id: ubuntu
         os_version: '24.04'

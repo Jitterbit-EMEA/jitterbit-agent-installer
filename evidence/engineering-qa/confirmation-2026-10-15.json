@@ -1,0 +1,99 @@
+{
+  "date": "2026-10-15",
+  "status": "QA_VERIFIED",
+  "confirmedBy": "Jitterbit Engineering",
+  "source": "USER_RELAYED_ENGINEERING_CONFIRMATION",
+  "userStatement": "mark all agent versions as qa verified, jitterbit engineering has confirmed",
+  "scope": "All 20 exact packages in the current governed agent catalogue; future/unresolved latest packages are excluded",
+  "packages": [
+    {
+      "logicalVersion": "12.11",
+      "packageVersion": "12.11.3.2"
+    },
+    {
+      "logicalVersion": "12.10",
+      "packageVersion": "12.10.1.1"
+    },
+    {
+      "logicalVersion": "12.9",
+      "packageVersion": "12.9.2.2"
+    },
+    {
+      "logicalVersion": "12.8",
+      "packageVersion": "12.8.1.6"
+    },
+    {
+      "logicalVersion": "12.7",
+      "packageVersion": "12.7.1.2"
+    },
+    {
+      "logicalVersion": "12.6",
+      "packageVersion": "12.6.0.34"
+    },
+    {
+      "logicalVersion": "12.5",
+      "packageVersion": "12.5.0.51"
+    },
+    {
+      "logicalVersion": "12.4",
+      "packageVersion": "12.4.0.46"
+    },
+    {
+      "logicalVersion": "11.59",
+      "packageVersion": "11.59.0.61"
+    },
+    {
+      "logicalVersion": "11.58",
+      "packageVersion": "11.58.0.28"
+    },
+    {
+      "logicalVersion": "11.57",
+      "packageVersion": "11.57.0.51"
+    },
+    {
+      "logicalVersion": "11.56",
+      "packageVersion": "11.56.0.28"
+    },
+    {
+      "logicalVersion": "11.55",
+      "packageVersion": "11.55.0.17"
+    },
+    {
+      "logicalVersion": "11.53",
+      "packageVersion": "11.53.0.34"
+    },
+    {
+      "logicalVersion": "11.52",
+      "packageVersion": "11.52.1.3"
+    },
+    {
+      "logicalVersion": "11.51",
+      "packageVersion": "11.51.1.2"
+    },
+    {
+      "logicalVersion": "11.50",
+      "packageVersion": "11.50.1.1"
+    },
+    {
+      "logicalVersion": "11.49",
+      "packageVersion": "11.49.1.1"
+    },
+    {
+      "logicalVersion": "11.48",
+      "packageVersion": "11.48.0.38"
+    },
+    {
+      "logicalVersion": "11.47",
+      "packageVersion": "11.47.0.61"
+    }
+  ],
+  "boundaries": {
+    "productionApproved": false,
+    "newLocalLiveTestsPerformed": false,
+    "artifactDigestsInvented": false,
+    "platformCompatibilityExpanded": false,
+    "sizingExceptionsExpanded": false,
+    "immutableReleaseArchivesRewritten": false
+  },
+  "interpretation": "Engineering QA confirmation is recorded as QA_APPROVED/approved_for_test with QA_VERIFIED provenance. Existing TESTED_LIVE observations, per-platform evidence, local metadata/digests and deployment safeguards are retained independently."
+}

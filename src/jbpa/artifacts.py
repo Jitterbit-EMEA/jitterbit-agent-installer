@@ -258,7 +258,7 @@ def intake_all(directory, catalogue=None, inspect_fn=inspect):
     catalogue = catalogue or load_catalogues()[0]
     results = []
     for version, entry in catalogue["versions"].items():
-        if entry["qualification"]["overall"] != "AVAILABLE_UNQUALIFIED":
+        if entry["qualification"]["overall"] not in {"AVAILABLE_UNQUALIFIED", "QA_APPROVED"}:
             continue
         try:
             with tempfile.TemporaryDirectory(prefix="jbpa-intake-") as temporary:
